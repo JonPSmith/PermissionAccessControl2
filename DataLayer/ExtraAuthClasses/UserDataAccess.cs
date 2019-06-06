@@ -3,25 +3,27 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using PermissionParts;
+using DataAuthorize;
 
 namespace DataLayer.ExtraAuthClasses
 {
     /// <summary>
-    /// This holds what modules a user can access, using the user's identity key
+    /// This handles the data access authorization
     /// </summary>
-    public class ModulesForUser
+    public class UserDataAccess
     {
-        public ModulesForUser(string userId, PaidForModules allowedPaidForModules)
+        public UserDataAccess(string userId, string accessKey)
         {
             UserId = userId ?? throw new ArgumentNullException(nameof(userId));
-            AllowedPaidForModules = allowedPaidForModules;
+            AccessKey = accessKey;
         }
 
         [Key]
+        [Required(AllowEmptyStrings = false)]
         [MaxLength(ExtraAuthConstants.UserIdSize)]
-        public string UserId { get; set; }
+        public string UserId { get; private set; }
 
-        public PaidForModules AllowedPaidForModules { get; set; }
+        [MaxLength(DataAuthConstants.AccessKeySize)]
+        public string AccessKey { get; private set; }
     }
 }

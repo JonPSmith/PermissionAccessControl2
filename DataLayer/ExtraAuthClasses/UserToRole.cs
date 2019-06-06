@@ -26,6 +26,5 @@ namespace DataLayer.ExtraAuthClasses
 
         [ForeignKey(nameof(RoleName))]
         public RoleToPermissions Role { get; private set; }
-
     }
 }

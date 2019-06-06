@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataAuthorize\DataAuthorize.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
   </ItemGroup>
 

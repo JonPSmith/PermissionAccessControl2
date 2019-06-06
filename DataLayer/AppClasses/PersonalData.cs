@@ -1,10 +1,14 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
-namespace DataAuthorize
+
+using DataAuthorize;
+
+namespace DataLayer.AppClasses
 {
-    public interface IGetClaimsProvider
+    public class PersonalData : DataKeyBase, IUserId
     {
-        string AccessKey { get; }
-        string UserId { get; }
+        public int PersonalDataId { get; set; }
+
+        public string YourNote { get; set; }
     }
 }

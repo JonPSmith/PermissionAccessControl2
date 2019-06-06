@@ -1,10 +1,10 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
+
 namespace DataAuthorize
 {
-    public interface IGetClaimsProvider
+    public interface IUserId : IDataKey
     {
-        string AccessKey { get; }
-        string UserId { get; }
+        void SetAccessKey(string userId);
     }
 }
