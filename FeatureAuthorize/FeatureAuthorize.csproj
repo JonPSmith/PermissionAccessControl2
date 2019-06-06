@@ -9,4 +9,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
+  </ItemGroup>
+
 </Project>
