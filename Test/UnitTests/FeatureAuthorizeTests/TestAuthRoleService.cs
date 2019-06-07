@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
-using FeatureAuthorize.UserFeatureServices.Concrete;
+using DataLayer.ExtraAuthClasses;
 using PermissionParts;
 using Test.EfHelpers;
 using TestSupport.EfHelpers;
@@ -16,153 +16,93 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 {
     public class TestAuthRoleService
     {
-        [Theory]
-        [InlineData("TestRole1", true)]
-        [InlineData("TestRole2", true)]
-        [InlineData("BadRole", false)]
-        public async Task TestRoleExistsAsync(string roleName, bool expectedResult)
+        [Fact]
+        public void TestSeedUserWithTwoRoles()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
             using (var context = new ExtraAuthorizeDbContext(options))
             {
                 context.Database.EnsureCreated();
-                var service = new AuthRoleService(context);
-                await service.SeedUserWithTwoRolesAsync();
 
                 //ATTEMPT
-                var result = await service.RoleExistsAsync(roleName);
+                context.SeedUserWithTwoRoles();
 
                 //VERIFY
-                result.ShouldEqual(expectedResult);
+                context.UserToRoles.Select(x => x.RoleName).ToArray().ShouldEqual(new[] { "TestRole1", "TestRole2" });
             }
         }
 
         [Fact]
-        public async Task TestGetRolesForUserAsync()
+        public void TestCreateRoleWithPermissions()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
             using (var context = new ExtraAuthorizeDbContext(options))
             {
                 context.Database.EnsureCreated();
-                var service = new AuthRoleService(context);
-                await service.SeedUserWithTwoRolesAsync();
 
                 //ATTEMPT
-                var result = await service.GetRolesForUserAsync("userId");
+                var createStatus = RoleToPermissions.CreateRoleWithPermissions(
+                    "test", new List<Permissions> { Permissions.ColorCreate }, context);
+                createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
+                context.Add(createStatus.Result);
+                context.SaveChanges();
 
                 //VERIFY
-                result.Select(x => x.RoleName).ShouldEqual(new []{"TestRole1", "TestRole2"});
-            }
-        }
-
-        [Fact]
-        public async Task TestRemoveRoleFromUserAsync()
-        {
-            //SETUP
-            var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options))
-            {
-                context.Database.EnsureCreated();
-                var service = new AuthRoleService(context);
-                await service.SeedUserWithTwoRolesAsync();
-
-                //ATTEMPT
-                var result = await service.RemoveRoleFromUserAsync("userId", "TestRole2");
-
-                //VERIFY
-                (await service.GetRolesForUserAsync("userId")).Select(x => x.RoleName)
-                    .ShouldEqual(new[] { "TestRole1" });
-            }
-        }
-
-        [Fact]
-        public async Task TestCreateRoleWithPermissionsAsync()
-        {
-            //SETUP
-            var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options))
-            {
-                context.Database.EnsureCreated();
-                var service = new AuthRoleService(context);
-
-                //ATTEMPT
-                var status = await service.CreateRoleWithPermissionsAsync("test", 
-                    new List<Permissions> {Permissions.ColorCreate});
-
-                //VERIFY
-                status.IsValid.ShouldBeTrue(status.GetAllErrors());
                 context.RolesToPermissions.Single().PermissionsInRole.ShouldEqual(new List<Permissions> { Permissions.ColorCreate });
             }
         }
 
         [Fact]
-        public async Task TestUpdatePermissionsInRoleAsync()
+        public void TestUpdatePermissionsInRole()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
             using (var context = new ExtraAuthorizeDbContext(options))
             {
                 context.Database.EnsureCreated();
-                var service = new AuthRoleService(context);
-                (await service.CreateRoleWithPermissionsAsync("test", new List<Permissions> {Permissions.ColorCreate}))
-                    .IsValid.ShouldBeTrue();
+
+                var createStatus = RoleToPermissions.CreateRoleWithPermissions(
+                        "test", new List<Permissions> { Permissions.ColorCreate }, context);
+                createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
+                context.Add(createStatus.Result);
+                context.SaveChanges();
 
                 //ATTEMPT
-                var status = await service.UpdatePermissionsInRoleAsync("test",
-                    new List<Permissions> { Permissions.ColorRead, Permissions.ColorDelete });
+                var roleToUpdate = context.Find<RoleToPermissions>("test");
+                roleToUpdate.UpdatePermissionsInRole(new List<Permissions> { Permissions.ColorRead, Permissions.ColorDelete });
+                context.SaveChanges();
 
                 //VERIFY
-                status.IsValid.ShouldBeTrue(status.GetAllErrors());
                 context.RolesToPermissions.Single().PermissionsInRole
                     .ShouldEqual(new List<Permissions> { Permissions.ColorRead, Permissions.ColorDelete });
             }
         }
 
         [Fact]
-        public async Task TestDeleteRoleAsync()
+        public void TestDeleteRole()
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
             using (var context = new ExtraAuthorizeDbContext(options))
             {
                 context.Database.EnsureCreated();
-                var service = new AuthRoleService(context);
-                (await service.CreateRoleWithPermissionsAsync("test", new List<Permissions> { Permissions.ColorCreate }))
-                    .IsValid.ShouldBeTrue();
+                var createStatus = RoleToPermissions.CreateRoleWithPermissions(
+                    "test", new List<Permissions> { Permissions.ColorCreate }, context);
+                createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
+                context.Add(createStatus.Result);
+                context.SaveChanges();
 
                 //ATTEMPT
-                var status = await service.DeleteRoleAsync("test", false);
+                var roleToDelete = context.Find<RoleToPermissions>("test");
+                context.Remove(roleToDelete);
+                context.SaveChanges();
 
                 //VERIFY
-                status.IsValid.ShouldBeTrue(status.GetAllErrors());
                 context.RolesToPermissions.Any().ShouldBeFalse();
             }
         }
-
-        [Fact]
-        public async Task TestDeleteRoleAsyncUsedByExistingUser()
-        {
-            //SETUP
-            var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options))
-            {
-                context.Database.EnsureCreated();
-                var service = new AuthRoleService(context);
-                await service.SeedUserWithTwoRolesAsync();
-
-                //ATTEMPT
-                var status = await service.DeleteRoleAsync("TestRole1", true);
-
-                //VERIFY
-                status.IsValid.ShouldBeTrue(status.GetAllErrors());
-                context.RolesToPermissions.Count().ShouldEqual(1);
-               (await service.GetRolesForUserAsync("userId")).Select(x => x.RoleName)
-                    .ShouldEqual(new[] { "TestRole2" });
-            }
-        }
-
 
     }
 }

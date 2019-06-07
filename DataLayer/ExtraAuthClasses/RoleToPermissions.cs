@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using DataLayer.EfCode;
+using GenericServices;
 using PermissionParts;
 
 namespace DataLayer.ExtraAuthClasses
@@ -23,12 +25,11 @@ namespace DataLayer.ExtraAuthClasses
         /// This creates the Role with its permissions
         /// </summary>
         /// <param name="roleName"></param>
-        /// <param name="description"></param>
         /// <param name="permissions"></param>
-        public RoleToPermissions(string roleName, ICollection<Permissions> permissions)
+        private RoleToPermissions(string roleName, ICollection<Permissions> permissions)
         {
             RoleName = roleName;
-            Update(permissions);
+            UpdatePermissionsInRole(permissions);
         }
 
         /// <summary>
@@ -44,12 +45,49 @@ namespace DataLayer.ExtraAuthClasses
         /// </summary>
         public IEnumerable<Permissions> PermissionsInRole => _permissionsInRole.UnpackPermissionsFromString();
 
-        public void Update(ICollection<Permissions> permissions)
+        public static IStatusGeneric<RoleToPermissions> CreateRoleWithPermissions(string roleName, ICollection<Permissions> permissionInRole,
+            ExtraAuthorizeDbContext context)
+        {
+            var status = new StatusGenericHandler<RoleToPermissions>();
+            if (context.Find<RoleToPermissions>(roleName) != null)
+            {
+                status.AddError("That role already exists");
+                return status;
+            }
+
+            return status.SetResult(new RoleToPermissions(roleName, permissionInRole));
+        }
+
+        public void UpdatePermissionsInRole(ICollection<Permissions> permissions)
         {
             if (permissions == null || !permissions.Any())
                 throw new InvalidOperationException("There should be at least one permission associated with a role.");
 
             _permissionsInRole = permissions.PackPermissionsIntoString();
         }
+
+        public IStatusGeneric DeleteRole(string roleName, bool removeFromUsers,
+            ExtraAuthorizeDbContext context)
+        {
+            var status = new StatusGenericHandler { Message = "Deleted role successfully." };
+            var roleToUpdate = context.Find<RoleToPermissions>(roleName);
+            if (roleToUpdate == null)
+                return status.AddError("That role doesn't exists");
+
+            var usersWithRoles = context.UserToRoles.Where(x => x.RoleName == roleName).ToList();
+            if (usersWithRoles.Any())
+            {
+                if (!removeFromUsers)
+                    return status.AddError($"That role is used by {usersWithRoles.Count} and you didn't ask for them to be updated.");
+
+                context.RemoveRange(usersWithRoles);
+                status.Message = $"Removed role from {usersWithRoles.Count} user and then deleted role successfully.";
+            }
+
+            context.Remove(roleToUpdate);
+            return status;
+        }
+
+
     }
 }

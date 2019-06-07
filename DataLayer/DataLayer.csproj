@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EfCore.GenericServices" Version="2.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.4" />
   </ItemGroup>
 

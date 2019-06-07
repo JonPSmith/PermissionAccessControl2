@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EfCore.GenericServices.AspNetCore" Version="3.0.2" />
+    <PackageReference Include="EfCore.GenericServices" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
   </ItemGroup>
@@ -13,6 +13,10 @@
   <ItemGroup>
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UserFeatureServices\Concrete\" />
   </ItemGroup>
 
 </Project>

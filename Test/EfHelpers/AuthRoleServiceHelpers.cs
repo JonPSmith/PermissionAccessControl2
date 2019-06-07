@@ -3,7 +3,8 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FeatureAuthorize.UserFeatureServices.Concrete;
+using DataLayer.EfCode;
+using DataLayer.ExtraAuthClasses;
 using PermissionParts;
 using Xunit.Extensions.AssertExtensions;
 
@@ -11,17 +12,25 @@ namespace Test.EfHelpers
 {
     public static class AuthRoleServiceHelpers
     {
-        public static async Task SeedUserWithTwoRolesAsync(this AuthRoleService service, string userId = "userId")
+        public static void SeedUserWithTwoRoles(this ExtraAuthorizeDbContext context, string userId = "userId")
         {
-            var userStatus = await service.CreateRoleWithPermissionsAsync("TestRole1", new List<Permissions> { Permissions.ColorRead});
+            var userStatus = RoleToPermissions.CreateRoleWithPermissions(
+                "TestRole1", new List<Permissions> { Permissions.ColorRead}, context);
             userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
-            userStatus = await service.CreateRoleWithPermissionsAsync("TestRole2", new List<Permissions> { Permissions.ColorDelete });
+            context.Add(userStatus.Result);
+            userStatus = RoleToPermissions.CreateRoleWithPermissions(
+                "TestRole2", new List<Permissions> { Permissions.ColorDelete }, context);
             userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
+            context.Add(userStatus.Result);
 
-            userStatus = await service.AddRoleToUserAsync(userId, "TestRole1");
-            userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
-            userStatus = await service.AddRoleToUserAsync(userId, "TestRole2");
-            userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
+            var roleStatus = UserToRole.AddRoleToUser(userId, "TestRole1", context);
+            roleStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
+            context.Add(roleStatus.Result);
+            roleStatus = UserToRole.AddRoleToUser(userId, "TestRole2", context);
+            roleStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
+            context.Add(roleStatus.Result);
+
+            context.SaveChanges();
         }
     }
 }

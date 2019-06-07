@@ -1,8 +1,11 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DataLayer.EfCode;
+using GenericServices;
 
 namespace DataLayer.ExtraAuthClasses
 {
@@ -34,5 +37,18 @@ namespace DataLayer.ExtraAuthClasses
         public RoleToPermissions Role { get; private set; }
 
 
+        public static IStatusGeneric<UserToRole> AddRoleToUser(string userId, string roleName, ExtraAuthorizeDbContext context)
+        {
+            if (roleName == null) throw new ArgumentNullException(nameof(roleName));
+
+            var status = new StatusGenericHandler<UserToRole>();
+            var roleToAdd = context.Find<RoleToPermissions>(roleName);
+            if (roleToAdd == null)
+            {
+                status.AddError($"I could not find the role {roleName}.");
+                return status;
+            }
+            return status.SetResult(new UserToRole(userId, roleToAdd));
+        }
     }
 }
