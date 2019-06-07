@@ -12,7 +12,7 @@ namespace DataLayer.AppClasses
     /// <summary>
     /// This contains the definition of a 
     /// </summary>
-    [DoesNotHaveAccessKey]
+    [DoesNotNeedAccessKey]
     public class ShopDefinition
     {
         public ShopDefinition(string shopName, PaidForModules allowedPaidForModules)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAuthorize
 {
-    public static class DcContextExtensions
+    public static class DbContextExtensions
     {
         /// <summary>
         /// This is called in the overridden SaveChanges in the application's DbContext

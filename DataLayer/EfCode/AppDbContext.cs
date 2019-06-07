@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DataLayer.EfCode
 {
@@ -27,6 +29,19 @@ namespace DataLayer.EfCode
         {
             _userId = claimsProvider.UserId;
             _accessKey = claimsProvider.AccessKey;
+        }
+
+        //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            this.MarkWithDataKeyIfNeeded(_userId, _accessKey);
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        {
+            this.MarkWithDataKeyIfNeeded(_userId, _accessKey);
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
