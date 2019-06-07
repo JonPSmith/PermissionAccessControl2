@@ -1,26 +1,42 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using DataAuthorize;
+using PermissionParts;
 
 namespace DataLayer.AppClasses
 {
-    public class ShopDefinition : ITenantKey
+
+    /// <summary>
+    /// This contains the definition of a 
+    /// </summary>
+    [DoesNotHaveAccessKey]
+    public class ShopDefinition
     {
+        public ShopDefinition(string shopName, PaidForModules allowedPaidForModules)
+        {
+            ShopName = shopName ?? throw new ArgumentNullException(nameof(shopName));
+            AllowedPaidForModules = allowedPaidForModules;
+        }
+
         /// <summary>
-        /// The access key is its primary key
+        /// The shop's primary key becomes the Access Key
         /// </summary>
         [Key]
-        [Required] //This means SQL will throw an error if we don't fill it in
-        [MaxLength(DataAuthConstants.AccessKeySize)]
-        public string DataKey { get; private set; }
+        public Guid ShopKey { get; private set; }
 
+        [Required]
         public string ShopName { get; private set; }
 
-        public void SetAccessKey(string tenantKey)
-        {
-            DataKey = tenantKey;
-        }
+        #region PaidForModules
+
+        /// <summary>
+        /// This holds the modules this multi-tenant user has access to
+        /// </summary>
+        public PaidForModules AllowedPaidForModules { get; set; }
+
+        #endregion
     }
 }

@@ -5,13 +5,10 @@ using DataAuthorize;
 
 namespace DataLayer.AppClasses
 {
-    /// <summary>
-    /// This class is marked with the DoesNotHaveAccessKey attribute to tell the unit tests it doesn't need a query filter
-    /// </summary>
     [DoesNotHaveAccessKey]
-    public class AnyoneCanAccess
+    public class GeneralNote
     {
         public int Id { get; set; }
-        public string GeneralData { get; set; }
+        public string Note { get; set; }
     }
 }
