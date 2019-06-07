@@ -110,6 +110,7 @@ namespace Test.UnitTests.DataLayerTests
                 //VERIFY
                 stocksFiltered.Count.ShouldEqual(0);
                 stocksNotFiltered.Count.ShouldEqual(1);
+                stocksNotFiltered.First().DataKey.ShouldEqual("accessKey");
             }
         }
     }

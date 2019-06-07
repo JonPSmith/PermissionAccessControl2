@@ -25,10 +25,10 @@ namespace DataLayer.ExtraAuthClasses
         /// <param name="roleName"></param>
         /// <param name="description"></param>
         /// <param name="permissions"></param>
-        public RoleToPermissions(string roleName, string description, ICollection<Permissions> permissions)
+        public RoleToPermissions(string roleName, ICollection<Permissions> permissions)
         {
             RoleName = roleName;
-            Update(description, permissions);
+            Update(permissions);
         }
 
         /// <summary>
@@ -40,19 +40,12 @@ namespace DataLayer.ExtraAuthClasses
         public string RoleName { get; private set; }
 
         /// <summary>
-        /// A human-friendly description of what the Role does
-        /// </summary>
-        [Required(AllowEmptyStrings = false)]
-        public string Description { get; private set; }
-
-        /// <summary>
         /// This returns the list of permissions in this role
         /// </summary>
         public IEnumerable<Permissions> PermissionsInRole => _permissionsInRole.UnpackPermissionsFromString();
 
-        public void Update(string description, ICollection<Permissions> permissions)
+        public void Update(ICollection<Permissions> permissions)
         {
-            Description = description;
             if (permissions == null || !permissions.Any())
                 throw new InvalidOperationException("There should be at least one permission associated with a role.");
 

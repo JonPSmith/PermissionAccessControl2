@@ -11,20 +11,28 @@ namespace DataLayer.ExtraAuthClasses
     /// </summary>
     public class UserToRole
     {
-        //I use a composite key for this table: combination of UserId and RoleName 
-        [Key]
-        [Column(Order = 1)]
+        private UserToRole() { } //needed by EF Core
+
+        public UserToRole(string userId, RoleToPermissions role)
+        {
+            UserId = userId;
+            Role = role;
+        }
+
+        //I use a composite key for this table: combination of UserId and RoleName
+        //That has to be defined by EF Core's fluent API
         [Required(AllowEmptyStrings = false)]
         [MaxLength(ExtraAuthConstants.UserIdSize)] 
         public string UserId { get; private set; }
 
-        [Key]
-        [Column(Order = 2)]
+
         [Required(AllowEmptyStrings = false)]
         [MaxLength(ExtraAuthConstants.RoleNameSize)]
         public string RoleName { get; private set; }
 
         [ForeignKey(nameof(RoleName))]
         public RoleToPermissions Role { get; private set; }
+
+
     }
 }

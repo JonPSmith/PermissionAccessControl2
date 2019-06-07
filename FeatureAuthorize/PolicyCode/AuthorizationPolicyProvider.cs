@@ -1,18 +1,19 @@
-﻿// Copyright (c) 2018 Inventory Innovations, Inc.
+﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
+// Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace FeatureAuthorize
+namespace FeatureAuthorize.PolicyCode
 {
     //thanks to https://www.jerriepelser.com/blog/creating-dynamic-authorization-policies-aspnet-core/
 
     public class AuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
     {
-        private readonly AuthorizationOptions _options;
         private readonly IConfiguration _configuration;
+        private readonly AuthorizationOptions _options;
 
         public AuthorizationPolicyProvider(IOptions<AuthorizationOptions> options, IConfiguration configuration) : base(options)
         {

@@ -14,5 +14,10 @@ namespace DataLayer.EfCode
 
         public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options)
             : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserToRole>().HasKey(x => new {x.UserId, x.RoleName});
+        }
     }
 }
