@@ -11,6 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using DataLayer.AppClasses.MultiTenantParts;
 
 namespace DataLayer.EfCode
 {
@@ -21,7 +22,7 @@ namespace DataLayer.EfCode
 
         public DbSet<GeneralNote> GeneralNotes { get; set; }
         public DbSet<PersonalData> PersonalDatas { get; set; }
-        public DbSet<ShopDefinition> ShopDefinitions { get; set; }
+        public DbSet<TenantBase> TenantItems { get; set; }
         public DbSet<ShopStock> ShopStocks { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options, IGetClaimsProvider claimsProvider)

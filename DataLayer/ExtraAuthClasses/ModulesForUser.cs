@@ -8,20 +8,23 @@ using PermissionParts;
 namespace DataLayer.ExtraAuthClasses
 {
     /// <summary>
-    /// This holds what modules a user can access, using the user's identity key
+    /// This holds what modules a user or tenant has
     /// </summary>
     public class ModulesForUser
     {
-        public ModulesForUser(string userId, PaidForModules allowedPaidForModules)
+        public ModulesForUser(string moduleKey, PaidForModules allowedPaidForModules)
         {
-            UserId = userId ?? throw new ArgumentNullException(nameof(userId));
+            ModuleKey = moduleKey ?? throw new ArgumentNullException(nameof(moduleKey));
             AllowedPaidForModules = allowedPaidForModules;
         }
 
+        /// <summary>
+        /// The ModuleKey can be either the UserId, or in multi-tenant systems it is likely to be the tenant Id
+        /// </summary>
         [Key]
-        [MaxLength(ExtraAuthConstants.UserIdSize)]
-        public string UserId { get; set; }
+        [MaxLength(ExtraAuthConstants.ModuleKeySize)]
+        public string ModuleKey { get; private set; }
 
-        public PaidForModules AllowedPaidForModules { get; set; }
+        public PaidForModules AllowedPaidForModules { get; private set; }
     }
 }

@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using PermissionParts;
@@ -14,7 +13,7 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.FeatureAuthorizeTests
 {
-    public class TestAuthRoleService
+    public class TestExtraAuthorizeDbContext
     {
         [Fact]
         public void TestSeedUserWithTwoRoles()
