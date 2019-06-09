@@ -18,7 +18,7 @@ namespace DataLayer.EfCode
     public class AppDbContext : DbContext
     {
         private readonly string _userId;
-        private readonly string _accessKey;
+        private readonly string _dataKey;
 
         public DbSet<GeneralNote> GeneralNotes { get; set; }
         public DbSet<PersonalData> PersonalDatas { get; set; }
@@ -29,26 +29,26 @@ namespace DataLayer.EfCode
             : base(options)
         {
             _userId = claimsProvider.UserId;
-            _accessKey = claimsProvider.AccessKey;
+            _dataKey = claimsProvider.DataKey;
         }
 
         //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            this.MarkWithDataKeyIfNeeded(_userId, _accessKey);
+            this.MarkWithUserIdIfNeeded(_userId);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
         {
-            this.MarkWithDataKeyIfNeeded(_userId, _accessKey);
+            this.MarkWithUserIdIfNeeded(_userId);
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             AddQueryFilterAndIndex(modelBuilder.Entity<PersonalData>(), x => x.DataKey == _userId);
-            AddQueryFilterAndIndex(modelBuilder.Entity<ShopStock>(), x => x.DataKey == _accessKey);
+            AddQueryFilterAndIndex(modelBuilder.Entity<ShopStock>(), x => x.DataKey == _dataKey);
         }
 
         /// <summary>

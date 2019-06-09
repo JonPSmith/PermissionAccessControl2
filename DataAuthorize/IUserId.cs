@@ -5,6 +5,6 @@ namespace DataAuthorize
 {
     public interface IUserId : IDataKey
     {
-        void SetAccessKey(string userId);
+        void SetDataKey(string userId);
     }
 }

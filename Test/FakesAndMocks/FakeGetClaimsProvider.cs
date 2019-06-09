@@ -8,13 +8,13 @@ namespace Test.FakesAndMocks
 {
     public class FakeGetClaimsProvider : IGetClaimsProvider
     {
-        public FakeGetClaimsProvider(string userId, string accessKey)
+        public FakeGetClaimsProvider(string userId, string dataKey)
         {
             UserId = userId ?? throw new ArgumentNullException(nameof(userId));
-            AccessKey = accessKey;
+            DataKey = dataKey;
         }
 
-        public string AccessKey { get; }
         public string UserId { get; }
+        public string DataKey { get; }
     }
 }

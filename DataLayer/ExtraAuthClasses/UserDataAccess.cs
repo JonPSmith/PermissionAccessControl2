@@ -23,7 +23,7 @@ namespace DataLayer.ExtraAuthClasses
         [MaxLength(ExtraAuthConstants.UserIdSize)]
         public string UserId { get; private set; }
 
-        [MaxLength(DataAuthConstants.AccessKeySize)]
+        [MaxLength(DataAuthConstants.HierarchicalKeySize)]
         public string AccessKey { get; private set; }
     }
 }

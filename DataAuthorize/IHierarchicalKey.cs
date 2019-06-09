@@ -3,8 +3,8 @@
 
 namespace DataAuthorize
 {
-    public interface ITenantKey : IDataKey
+    public interface IHierarchicalKey : IDataKey
     {
-        void SetAccessKey(string tenantKey);
+        void SetDataKey(string tenantKey);
     }
 }

@@ -4,7 +4,7 @@ namespace DataAuthorize
 {
     public interface IGetClaimsProvider
     {
-        string AccessKey { get; }
         string UserId { get; }
+        string DataKey { get; }
     }
 }

@@ -1,12 +1,11 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataAuthorize;
-using DataLayer.EfCode;
-using GenericServices;
 
 namespace DataLayer.AppClasses.MultiTenantParts
 {
@@ -14,7 +13,7 @@ namespace DataLayer.AppClasses.MultiTenantParts
     /// <summary>
     /// This contains the class that all the hierarchical tenant classes inherit from
     /// </summary>
-    public class TenantBase : DataKeyBase
+    public class TenantBase : IDataKey
     {
         private TenantBase(){} // needed by EF Core
 
@@ -29,6 +28,13 @@ namespace DataLayer.AppClasses.MultiTenantParts
         /// </summary>
         [Key]
         public int TenantItemId { get; private set; }
+
+        /// <summary>
+        /// This holds the DataKey, which is hierarchical in nature, working down from 
+        /// i.e. it has the PK of each parent as hex strings, with a | at the end of each hex string.
+        /// e.g. 1|2|4
+        /// </summary>
+        public string DataKey { get; private set; }
 
         /// <summary>
         /// This is the name of the tenant: could be CompanyName, Area/Group or retail outlet name
@@ -51,16 +57,26 @@ namespace DataLayer.AppClasses.MultiTenantParts
         /// </summary>
         public ICollection<TenantBase> Children { get; private set; }
 
-        //---------------------------------------------------
-        //access methods
+        //----------------------------------------------------
+        // methods
 
-        public IStatusGeneric AddChild(TenantBase newChild, AppDbContext context)
+        public void LinkToParent(TenantBase parent)
         {
-            if (Children == null)
-            {
-                
-            }
+            Parent = parent ?? throw new ApplicationException($"The parent cannot be null.");
         }
+
+        public void SetAccessKey()
+        {
+            if (!(this is Company) && Parent == null)
+                throw new ApplicationException($"The parent cannot be null if this tenant isn't a {nameof(Company)}.");
+            if (TenantItemId == 0)
+                throw new ApplicationException("This class must have a primary key set before calling SetDataKey.");
+
+            DataKey = $"{TenantItemId:x}|";
+            if (Parent != null)
+                DataKey = Parent.DataKey + DataKey;
+        }
+
 
     }
 }

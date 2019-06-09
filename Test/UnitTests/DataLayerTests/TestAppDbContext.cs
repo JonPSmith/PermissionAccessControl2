@@ -4,6 +4,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.AppClasses;
+using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
 using Test.FakesAndMocks;

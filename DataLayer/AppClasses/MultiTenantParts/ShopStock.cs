@@ -3,12 +3,12 @@
 
 using DataAuthorize;
 
-namespace DataLayer.AppClasses
+namespace DataLayer.AppClasses.MultiTenantParts
 {
     /// <summary>
     /// This contains an item stocked in the shop, and how many they have
     /// </summary>
-    public class ShopStock : DataKeyBase, ITenantKey
+    public class ShopStock : DataKeyBase, IHierarchicalKey
     {
         public int ShopStockId { get; set; }
         public string Name { get; set; }

@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using DataAuthorize;
 using PermissionParts;
 
 namespace DataLayer.AppClasses.MultiTenantParts

@@ -8,10 +8,10 @@ namespace DataAuthorize
     public class DataKeyBase : IDataKey
     {
         [Required] //This means SQL will throw an error if we don't fill it in
-        [MaxLength(DataAuthConstants.AccessKeySize)]
+        [MaxLength(DataAuthConstants.HierarchicalKeySize)]
         public string DataKey { get; private set; }
 
-        public void SetAccessKey(string key)
+        public void SetDataKey(string key)
         {
             DataKey = key;
         }

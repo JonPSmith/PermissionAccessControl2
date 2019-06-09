@@ -18,8 +18,6 @@
 
   <ItemGroup>
     <Folder Include="AppStart\" />
-    <Folder Include="AuthServices\Concrete\" />
-    <Folder Include="UserServices\Concrete\" />
   </ItemGroup>
 
 </Project>

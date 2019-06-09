@@ -11,11 +11,13 @@ namespace DataAuthorize
     {
         public GetClaimsFromUser(IHttpContextAccessor accessor)
         {
-            UserId = accessor.HttpContext?.User.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-            AccessKey = accessor.HttpContext?.User.Claims.SingleOrDefault(x => x.Type == DataAuthConstants.AccessKeyClaimName)?.Value;
+            UserId = accessor.HttpContext?.User.Claims
+                .SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            DataKey = accessor.HttpContext?.User.Claims
+                .SingleOrDefault(x => x.Type == DataAuthConstants.HierarchicalKeyClaimName)?.Value;
         }
 
         public string UserId { get; }
-        public string AccessKey { get; }
+        public string DataKey { get; }
     }
 }
