@@ -6,6 +6,7 @@ namespace DataAuthorize
     public static class DataAuthConstants
     {
         public const int HierarchicalKeySize = 64;
+        public const int AccessKeySize = 64;
 
         public const string HierarchicalKeyClaimName = "DataKey";
     }

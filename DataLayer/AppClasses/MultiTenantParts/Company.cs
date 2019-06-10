@@ -8,7 +8,7 @@ using PermissionParts;
 namespace DataLayer.AppClasses.MultiTenantParts
 {
     /// <summary>
-    /// This is the root entry for a multi-tenant entry. There should be only one Company per multi-tenan
+    /// This is the root entry for a multi-tenant entry. There should be only one Company per multi-tenant
     /// </summary>
     public class Company : TenantBase
     {
@@ -20,8 +20,6 @@ namespace DataLayer.AppClasses.MultiTenantParts
         /// <summary>
         /// This holds the modules this company have purchased
         /// </summary>
-        public PaidForModules AllowedPaidForModules { get; private set; }
-
-
+        public PaidForModules AllowedPaidForModules { get; set; }
     }
 }

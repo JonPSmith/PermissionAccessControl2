@@ -13,15 +13,15 @@ namespace Test.EfHelpers
     public static class HierarchicalHelpers
     {
 
-        public static Company AddCompanyAndChildrenInDatabase(this AppDbContext context, params string[] companyDefinitions)
+        public static List<Company> AddCompanyAndChildrenInDatabase(this AppDbContext context, params string[] companyDefinitions)
         {
-            var rootCompany = context.CreateCompanyAndChildren(companyDefinitions);
+            var rootCompanies = context.CreateCompanyAndChildren(companyDefinitions);
             var service = new TenantService(context);
-            service.SetupCompany(rootCompany);
-            return rootCompany;
+            rootCompanies.ForEach(x => service.SetupCompany(x));
+            return rootCompanies;
         }
 
-        private static Company CreateCompanyAndChildren(this AppDbContext context, params string[] companyDefinitions)
+        private static List<Company> CreateCompanyAndChildren(this AppDbContext context, params string[] companyDefinitions)
         {
             if (!companyDefinitions.Any())
                 companyDefinitions = new[]
@@ -30,15 +30,17 @@ namespace Test.EfHelpers
                     "4U Inc.|West Coast|LA|LA Dress4U, LA Tie4U, LA Shirt4U"
                 };
 
-            Company rootCompany = null;
+            var companyDict = new Dictionary<string, Company>();
             var subGroupsDict = new Dictionary<int, List<SubGroup>>();
             foreach (var companyDefinition in companyDefinitions)
             {
                 var hierarchyNames = companyDefinition.Split('|');
-                if (rootCompany == null)
-                    rootCompany = new Company(hierarchyNames[0], PaidForModules.None);
+                if (!companyDict.ContainsKey(hierarchyNames[0]))
+                {
+                    companyDict[hierarchyNames[0]] = new Company(hierarchyNames[0], PaidForModules.None);
+                }
 
-                TenantBase parent = rootCompany;
+                TenantBase parent = companyDict[hierarchyNames[0]];
 
                 for (int i = 1; i < hierarchyNames.Length; i++)
                 {
@@ -74,7 +76,7 @@ namespace Test.EfHelpers
                 }
             }
 
-            return rootCompany;
+            return new List<Company>(companyDict.Values);
         }
     }
 }

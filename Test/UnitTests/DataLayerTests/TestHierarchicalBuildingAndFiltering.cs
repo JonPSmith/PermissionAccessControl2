@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
+using Microsoft.EntityFrameworkCore;
 using ServiceLayer.MultiTenant.Concrete;
 using Test.EfHelpers;
 using Test.FakesAndMocks;
@@ -34,10 +35,10 @@ namespace Test.UnitTests.DataLayerTests
                 context.Database.EnsureCreated();
 
                 //ATTEMPT
-                var rootCompany = context.AddCompanyAndChildrenInDatabase();
+                context.AddCompanyAndChildrenInDatabase();
 
                 //VERIFY
-                var display = context.TenantItems.Select(x => x.ToString()).ToList();
+                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -59,6 +60,60 @@ namespace Test.UnitTests.DataLayerTests
         }
 
         [Fact]
+        public void TestAddCompanyAndChildrenInDatabaseTwoCompaniesOk()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<AppDbContext>();
+            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
+            {
+                context.Database.EnsureCreated();
+
+                //ATTEMPT
+                context.AddCompanyAndChildrenInDatabase(
+                    "Company1|Shop1", "Company1|Shop2", "Company2|Shop3");
+
+                //VERIFY
+                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                foreach (var line in display)
+                {
+                    _output.WriteLine($"\"{line}\",");
+                }
+                display.ShouldEqual(new List<string>
+                {
+                    "Company: Name = Company1, DataKey = 1|",
+                    "RetailOutlet: Name = Shop1, DataKey = 1|2*",
+                    "RetailOutlet: Name = Shop2, DataKey = 1|3*",
+                    "Company: Name = Company2, DataKey = 4|",
+                    "RetailOutlet: Name = Shop3, DataKey = 4|5*",
+                });
+            }
+        }
+
+        [Fact]
+        public void TestExtractCompanyId()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<AppDbContext>();
+            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "123*")))
+            {
+                context.Database.EnsureCreated();
+                var rootCompanies = context.AddCompanyAndChildrenInDatabase();
+
+                //ATTEMPT
+                //                   -- West Coast --|--- San Fran ---
+                var sfDress4U = rootCompanies.First().Children.Single().Children.First().Children.First();
+                //                  -- West Coast --|------ LA ------
+                var la = rootCompanies.First().Children.Single().Children.Last();
+
+
+                //VERIFY
+                rootCompanies.First().ExtractCompanyId().ShouldEqual(1);
+                sfDress4U.ExtractCompanyId().ShouldEqual(1);
+                la.ExtractCompanyId().ShouldEqual(1);
+            }
+        }
+
+        [Fact]
         public void TestMoveToNewParentSimple()
         {
             //SETUP
@@ -66,18 +121,18 @@ namespace Test.UnitTests.DataLayerTests
             using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "123*")))
             {
                 context.Database.EnsureCreated();
-                var rootCompany = context.AddCompanyAndChildrenInDatabase();
+                var rootCompanies = context.AddCompanyAndChildrenInDatabase();
                 //                          -- West Coast --|--- San Fran ---|-- SF Dress4U --
-                var sfDress4U = rootCompany.Children.Single().Children.First().Children.First();
+                var sfDress4U = rootCompanies.First().Children.Single().Children.First().Children.First();
                 //                          - West Coast --
-                var westCoast = rootCompany.Children.Single();
+                var westCoast = rootCompanies.First().Children.Single();
 
                 //ATTEMPT
                 sfDress4U.MoveToNewParent(westCoast, context);
                 context.SaveChanges();
 
                 //VERIFY
-                var display = context.TenantItems.Select(x => x.ToString()).ToList();
+                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -107,18 +162,18 @@ namespace Test.UnitTests.DataLayerTests
             using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "123*")))
             {
                 context.Database.EnsureCreated();
-                var rootCompany = context.AddCompanyAndChildrenInDatabase();
+                var rootCompanies = context.AddCompanyAndChildrenInDatabase();
                 //                   -- West Coast --|--- San Fran ---
-                var sanFran = rootCompany.Children.Single().Children.First();
+                var sanFran = rootCompanies.First().Children.Single().Children.First();
                 //                  -- West Coast --|------ LA ------
-                var la = rootCompany.Children.Single().Children.Last();
+                var la = rootCompanies.First().Children.Single().Children.Last();
 
                 //ATTEMPT
                 sanFran.MoveToNewParent(la, context);
                 context.SaveChanges();
 
                 //VERIFY
-                var display = context.TenantItems.Select(x => x.ToString()).ToList();
+                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -147,9 +202,9 @@ namespace Test.UnitTests.DataLayerTests
             using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
             {
                 context.Database.EnsureCreated();
-                var rootCompany = context.AddCompanyAndChildrenInDatabase();
+                var rootCompanies = context.AddCompanyAndChildrenInDatabase();
                 //                   -- West Coast --|--- San Fran ---
-                var sanFran = rootCompany.Children.Single().Children.First();
+                var sanFran = rootCompanies.First().Children.Single().Children.First();
                 var service = new TenantService(context);
 
                 //ATTEMPT
@@ -157,7 +212,7 @@ namespace Test.UnitTests.DataLayerTests
 
 
                 //VERIFY
-                var display = context.TenantItems.Select(x => x.ToString()).ToList();
+                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -187,16 +242,16 @@ namespace Test.UnitTests.DataLayerTests
             using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
             {
                 context.Database.EnsureCreated();
-                var rootCompany = context.AddCompanyAndChildrenInDatabase();
+                var rootCompanies = context.AddCompanyAndChildrenInDatabase();
                 //                          - West Coast --
-                var westCoast = rootCompany.Children.Single();
+                var westCoast = rootCompanies.First().Children.Single();
                 var service = new TenantService(context);
 
                 //ATTEMPT
                 service.AddNewTenant(new SubGroup("Seattle", westCoast));
 
                 //VERIFY
-                var display = context.TenantItems.Select(x => x.ToString()).ToList();
+                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");

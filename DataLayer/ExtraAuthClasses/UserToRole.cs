@@ -28,7 +28,6 @@ namespace DataLayer.ExtraAuthClasses
         [MaxLength(ExtraAuthConstants.UserIdSize)] 
         public string UserId { get; private set; }
 
-
         [Required(AllowEmptyStrings = false)]
         [MaxLength(ExtraAuthConstants.RoleNameSize)]
         public string RoleName { get; private set; }
@@ -42,12 +41,18 @@ namespace DataLayer.ExtraAuthClasses
             if (roleName == null) throw new ArgumentNullException(nameof(roleName));
 
             var status = new StatusGenericHandler<UserToRole>();
+            if (context.Find<UserToRole>(userId, roleName) != null)
+            {
+                status.AddError($"The user already has the Role '{roleName}'.");
+                return status;
+            }
             var roleToAdd = context.Find<RoleToPermissions>(roleName);
             if (roleToAdd == null)
             {
-                status.AddError($"I could not find the role {roleName}.");
+                status.AddError($"I could not find the Role '{roleName}'.");
                 return status;
             }
+
             return status.SetResult(new UserToRole(userId, roleToAdd));
         }
     }

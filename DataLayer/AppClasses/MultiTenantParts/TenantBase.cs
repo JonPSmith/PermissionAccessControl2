@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using System.Globalization;
 using DataAuthorize;
 using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +68,14 @@ namespace DataLayer.AppClasses.MultiTenantParts
         public override string ToString()
         {
             return $"{GetType().Name}: Name = {Name}, DataKey = {DataKey ?? "<null>"}";
+        }
+
+        public int ExtractCompanyId()
+        {
+            if (DataKey == null)
+                throw new NullReferenceException("The DataKey must be set before we can extract the CompanyId.");
+
+            return int.Parse(DataKey.Substring(0, DataKey.IndexOf('|')), NumberStyles.HexNumber);
         }
 
         //----------------------------------------------------

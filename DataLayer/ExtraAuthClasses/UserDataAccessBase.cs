@@ -10,14 +10,16 @@ namespace DataLayer.ExtraAuthClasses
     /// <summary>
     /// This handles the data access authorization
     /// </summary>
-    public class UserDataAccessKey  : UserDataAccessBase
+    public class UserDataAccessBase
     {
-        public UserDataAccessKey(string userId, string accessKey) : base(userId)
+        public UserDataAccessBase(string userId)
         {
-            AccessKey = accessKey;
+            UserId = userId ?? throw new ArgumentNullException(nameof(userId));
         }
 
-        [MaxLength(DataAuthConstants.AccessKeySize)]
-        public string AccessKey { get; private set; }
+        [Key]
+        [Required(AllowEmptyStrings = false)]
+        [MaxLength(ExtraAuthConstants.UserIdSize)]
+        public string UserId { get; private set; }
     }
 }
