@@ -32,7 +32,7 @@ namespace DataLayer.EfCode
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ExtraAuthorizeConfig();
-            modelBuilder.AppConfig(null, null);
+            modelBuilder.AppConfig(null);
         }
     }
 }

@@ -13,8 +13,8 @@ namespace DataLayer.EfCode
 {
     public class AppDbContext : DbContext
     {
-        private readonly string _userId;
-        private readonly string _dataKey;
+        internal readonly string UserId;
+        internal readonly string DataKey;
 
         public DbSet<GeneralNote> GeneralNotes { get; set; }
         public DbSet<PersonalData> PersonalDatas { get; set; }
@@ -24,26 +24,26 @@ namespace DataLayer.EfCode
         public AppDbContext(DbContextOptions<AppDbContext> options, IGetClaimsProvider claimsProvider)
             : base(options)
         {
-            _userId = claimsProvider.UserId;
-            _dataKey = claimsProvider.DataKey;
+            UserId = claimsProvider.UserId;
+            DataKey = claimsProvider.DataKey;
         }
 
         //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            this.MarkWithUserIdIfNeeded(_userId);
+            this.MarkWithUserIdIfNeeded(UserId);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
         {
-            this.MarkWithUserIdIfNeeded(_userId);
+            this.MarkWithUserIdIfNeeded(UserId);
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AppConfig(_userId, _dataKey);
+            modelBuilder.AppConfig(this);
         }
     }
 }

@@ -24,11 +24,11 @@ namespace DataLayer.EfCode.Configurations
             modelBuilder.Entity<UserToRole>().HasKey(x => new { x.UserId, x.RoleName });
         }
 
-        public static void AppConfig(this ModelBuilder modelBuilder, string userId, string dataKey)
+        public static void AppConfig(this ModelBuilder modelBuilder, AppDbContext context)
         {
-            AddQueryFilterAndIndex(modelBuilder.Entity<PersonalData>(), x => x.DataKey == userId);
-            AddQueryFilterAndIndex(modelBuilder.Entity<TenantBase>(), x => x.DataKey.StartsWith(dataKey));
-            AddQueryFilterAndIndex(modelBuilder.Entity<ShopStock>(), x => x.DataKey.StartsWith(dataKey));
+            AddUserIdQueryFilter(modelBuilder.Entity<PersonalData>(), context);
+            AddHierarchicalQueryFilter(modelBuilder.Entity<TenantBase>(), context);
+            AddHierarchicalQueryFilter(modelBuilder.Entity<ShopStock>(), context);
         }
 
         /// <summary>
@@ -43,6 +43,16 @@ namespace DataLayer.EfCode.Configurations
             builder.HasQueryFilter(filter);
             //add an index to make the filter quicker
             builder.HasIndex(nameof(IDataKey.DataKey));
+        }
+
+        private static void AddUserIdQueryFilter<T>(EntityTypeBuilder<T> builder, AppDbContext context) where T : class, IDataKey
+        {
+            builder.HasQueryFilter(x => x.DataKey == context.UserId);
+        }
+
+        private static void AddHierarchicalQueryFilter<T>(EntityTypeBuilder<T> builder, AppDbContext context) where T : class, IDataKey
+        {
+            builder.HasQueryFilter(x => x.DataKey.StartsWith(context.DataKey));
         }
     }
 }

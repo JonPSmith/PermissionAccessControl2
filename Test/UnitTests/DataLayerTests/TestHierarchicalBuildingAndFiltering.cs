@@ -7,7 +7,7 @@ using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
 using ServiceLayer.MultiTenant.Concrete;
-using Test.EfHelpers;
+using ServiceLayer.SeedDemo.Internal;
 using Test.FakesAndMocks;
 using TestSupport.EfHelpers;
 using Xunit;
@@ -18,7 +18,7 @@ namespace Test.UnitTests.DataLayerTests
 {
     public class TestHierarchicalBuildingAndFiltering
     {
-        private ITestOutputHelper _output;
+        private readonly ITestOutputHelper _output;
 
         public TestHierarchicalBuildingAndFiltering(ITestOutputHelper output)
         {

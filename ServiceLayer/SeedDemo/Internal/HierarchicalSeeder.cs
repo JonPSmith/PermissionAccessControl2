@@ -3,14 +3,17 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
 using PermissionParts;
 using ServiceLayer.MultiTenant.Concrete;
 
-namespace Test.EfHelpers
+[assembly: InternalsVisibleTo("Test")]
+
+namespace ServiceLayer.SeedDemo.Internal
 {
-    public static class HierarchicalHelpers
+    public static class HierarchicalSeeder
     {
 
         public static List<Company> AddCompanyAndChildrenInDatabase(this AppDbContext context, params string[] companyDefinitions)
