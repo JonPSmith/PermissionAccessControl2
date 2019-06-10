@@ -25,6 +25,7 @@ namespace DataLayer.AppClasses.MultiTenantParts
         {
             Name = name;
             Parent = parent;
+            Children = new List<TenantBase>(); //NOTE: This is not used by EF Core, so 
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace DataLayer.AppClasses.MultiTenantParts
         public string DataKey { get; private set; }
 
         /// <summary>
-        /// This is the name of the tenant: could be CompanyName, Area/Group or retail outlet name
+        /// This is the name of the tenant: could be CompanyName, Area/SubGroup or retail outlet name
         /// </summary>
         public string Name { get; private set; }
 
@@ -74,29 +75,6 @@ namespace DataLayer.AppClasses.MultiTenantParts
         public void LinkToParent(TenantBase parent)
         {
             Parent = parent ?? throw new ApplicationException($"The parent cannot be null.");
-        }
-
-        /// <summary>
-        /// This adds a child to the Children collection, BUT it does NOT handle 
-        /// </summary>
-        /// <param name="child"></param>
-        /// <param name="context"></param>
-        public void AddChild(TenantBase child, AppDbContext context)
-        {
-            if (this is RetailOutlet)
-                throw new ApplicationException($"You can't add a child to a {nameof(RetailOutlet)}.");
-
-            if (Children == null)
-            {
-                if (context.Entry(this).State == EntityState.Detached)
-                    Children = new List<TenantBase>();
-                else
-                {
-                    context.Entry(this).Collection(x => x.Children).Load();
-                }
-            }
-            Children.Add(child);
-
         }
 
         /// <summary>

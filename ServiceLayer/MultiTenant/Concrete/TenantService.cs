@@ -81,6 +81,7 @@ namespace ServiceLayer.MultiTenant.Concrete
                 return;
             if (tenant is RetailOutlet)
                 throw new ApplicationException("Retail outlets cannot have children");
+            tenant.SetDataKeyFromHierarchy();
             foreach (var child in tenant.Children)
             {
                 child.SetDataKeyFromHierarchy();

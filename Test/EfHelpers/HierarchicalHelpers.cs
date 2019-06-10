@@ -71,14 +71,14 @@ namespace Test.EfHelpers
                         var shopNames = hierarchyNames[i].Split(',').Select(x => x.Trim());
                         foreach (var shopName in shopNames)
                         {
-                            parent.AddChild(new RetailOutlet(shopName, parent), context);
+                            parent.Children.Add(new RetailOutlet(shopName, parent));
                         }
                     }
                     else
                     {
                         //Groups
-                        var group = new Group(hierarchyNames[i], parent);
-                        parent.AddChild(group, context);
+                        var group = new SubGroup(hierarchyNames[i], parent);
+                        parent.Children.Add(group);
                         parent = group;
                     }
                 }

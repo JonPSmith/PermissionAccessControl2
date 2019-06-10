@@ -1,13 +1,11 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using DataAuthorize;
-
 namespace DataLayer.AppClasses.MultiTenantParts
 {
-    public class Group : TenantBase
+    public class SubGroup : TenantBase
     {
-        public Group(string name, TenantBase parent) : base(name, parent)
+        public SubGroup(string name, TenantBase parent) : base(name, parent)
         {
         }
     }
