@@ -45,23 +45,23 @@ namespace ServiceLayer.MultiTenant.Concrete
             }
         }
 
-        public void AddTenantToParent(TenantBase newTenant, TenantBase parent)
+        public void AddNewTenant(TenantBase newTenant)
         {
             if (newTenant == null) throw new ArgumentNullException(nameof(newTenant));
 
             if (newTenant is Company)
                 throw new ApplicationException($"You should use the {nameof(SetupCompany)} method to add a Company.");
-            if (parent == null)
+            if (newTenant.Parent == null)
                 throw new ApplicationException($"The parent cannot be null.");
-            if (parent.ParentItemId == 0)
-                throw new ApplicationException($"The parent {parent.Name} must be already in the database.");
+            if (newTenant.Parent.ParentItemId == 0)
+                throw new ApplicationException($"The parent {newTenant.Parent.Name} must be already in the database.");
             if (_context.Entry(newTenant).State != EntityState.Detached)
                 throw new ApplicationException($"You can't use this method to add a tenant that is already in the database.");
 
             using (var transaction = _context.Database.BeginTransaction())
             {
-                // This gets the whole hierarchy into the database, and their primary keys set
-                newTenant.LinkToParent(parent);
+                // Add this to get primary key set
+                _context.Add(newTenant);
                 _context.SaveChanges();
 
                 //Now we can set the DataKey

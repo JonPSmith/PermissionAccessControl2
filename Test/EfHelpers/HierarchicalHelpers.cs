@@ -12,31 +12,6 @@ namespace Test.EfHelpers
 {
     public static class HierarchicalHelpers
     {
-        public static List<string> DisplayHierarchy(this TenantBase rootCompany)
-        {
-            var shopsStrings = new List<string>();
-            foreach (var tenant in rootCompany.Children ?? new List<TenantBase>())
-            {
-                if (tenant is RetailOutlet)
-                {
-                    string shopDisplay = $"{tenant.Name}, DataKey = {tenant.DataKey ?? "<null>"}";
-                    var parent = tenant.Parent;
-                    while (parent != null)
-                    {
-                        shopDisplay = $"{parent.Name}->{shopDisplay}";
-                        parent = parent.Parent;
-                    }
-
-                    shopsStrings.Add(shopDisplay);
-                }
-                else
-                {
-                    shopsStrings.AddRange(DisplayHierarchy(tenant));
-                }
-            }
-
-            return shopsStrings;
-        }
 
         public static Company AddCompanyAndChildrenInDatabase(this AppDbContext context, params string[] companyDefinitions)
         {
@@ -46,7 +21,7 @@ namespace Test.EfHelpers
             return rootCompany;
         }
 
-        public static Company CreateCompanyAndChildren(this AppDbContext context, params string[] companyDefinitions)
+        private static Company CreateCompanyAndChildren(this AppDbContext context, params string[] companyDefinitions)
         {
             if (!companyDefinitions.Any())
                 companyDefinitions = new[]
@@ -56,6 +31,7 @@ namespace Test.EfHelpers
                 };
 
             Company rootCompany = null;
+            var subGroupsDict = new Dictionary<int, List<SubGroup>>();
             foreach (var companyDefinition in companyDefinitions)
             {
                 var hierarchyNames = companyDefinition.Split('|');
@@ -63,8 +39,13 @@ namespace Test.EfHelpers
                     rootCompany = new Company(hierarchyNames[0], PaidForModules.None);
 
                 TenantBase parent = rootCompany;
+
                 for (int i = 1; i < hierarchyNames.Length; i++)
                 {
+                    if (!subGroupsDict.ContainsKey(i))
+                    {
+                        subGroupsDict[i] = new List<SubGroup>();
+                    }
                     if (i + 1 == hierarchyNames.Length)
                     {
                         //End, which are shops
@@ -77,9 +58,18 @@ namespace Test.EfHelpers
                     else
                     {
                         //Groups
-                        var group = new SubGroup(hierarchyNames[i], parent);
-                        parent.Children.Add(group);
-                        parent = group;
+                        SubGroup subGroup = null;
+                        if (subGroupsDict[i].Any(x => x.Name == hierarchyNames[i]))
+                        {
+                            subGroup = subGroupsDict[i].Single(x => x.Name == hierarchyNames[i]);
+                        }
+                        else
+                        {
+                            subGroup = new SubGroup(hierarchyNames[i], parent);
+                            subGroupsDict[i].Add(subGroup);
+                            parent.Children.Add(subGroup);
+                        }
+                        parent = subGroup;
                     }
                 }
             }

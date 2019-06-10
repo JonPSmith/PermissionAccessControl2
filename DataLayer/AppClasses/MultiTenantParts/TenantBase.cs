@@ -72,11 +72,6 @@ namespace DataLayer.AppClasses.MultiTenantParts
         //----------------------------------------------------
         // methods
 
-        public void LinkToParent(TenantBase parent)
-        {
-            Parent = parent ?? throw new ApplicationException($"The parent cannot be null.");
-        }
-
         /// <summary>
         /// This sets the DataKey to create the hierarchical DataAccess key.
         /// See <see cref="DataKey"/> for more on the format of the hierarchical DataAccess key.
@@ -102,14 +97,14 @@ namespace DataLayer.AppClasses.MultiTenantParts
         {
             void SetKeyExistingHierarchy(TenantBase existingTenant)
             {
+                existingTenant.SetDataKeyFromHierarchy();
                 if (existingTenant.Children == null)
                     context.Entry(existingTenant).Collection(x => x.Children).Load();
 
                 if (!existingTenant.Children.Any())
                     return;
                 foreach (var tenant in existingTenant.Children)
-                {
-                    tenant.SetDataKeyFromHierarchy();
+                {                   
                     SetKeyExistingHierarchy(tenant);
                 }
             }
@@ -120,11 +115,15 @@ namespace DataLayer.AppClasses.MultiTenantParts
                 throw new ApplicationException($"The parent cannot be null.");
             if (newParent.ParentItemId == 0)
                 throw new ApplicationException($"The parent {newParent.Name} must be already in the database.");
+            if (newParent == this)
+                throw new ApplicationException($"You can't be your own parent.");
             if (context.Entry(this).State == EntityState.Detached)
                 throw new ApplicationException($"You can't use this method to add a new tenant.");
+            if (context.Entry(newParent).State == EntityState.Detached)
+                throw new ApplicationException($"The parent must already be in the database.");
 
-            LinkToParent(newParent);
-            SetDataKeyFromHierarchy();
+            Parent.Children?.Remove(this);
+            Parent = newParent;
             //Now change the data key for all the hierarchy from this entry down
             SetKeyExistingHierarchy(this);
         }
