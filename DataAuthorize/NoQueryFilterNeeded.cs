@@ -6,10 +6,10 @@ using System;
 namespace DataAuthorize
 {
     /// <summary>
-    /// This is used to mark a database class that doesn't need an access key.
+    /// This is used to mark a database class that doesn't need a query filter.
     /// This is only there so that you can unit test that all filters are set up for the classes that do have an access key
     /// </summary>
-    public class DoesNotNeedDataKey : Attribute
+    public class NoQueryFilterNeeded : Attribute
     {
         
     }

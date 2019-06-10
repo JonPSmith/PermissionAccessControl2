@@ -5,7 +5,7 @@ using DataAuthorize;
 
 namespace DataLayer.AppClasses
 {
-    [DoesNotNeedDataKey]
+    [NoQueryFilterNeeded]
     public class GeneralNote
     {
         public int Id { get; set; }

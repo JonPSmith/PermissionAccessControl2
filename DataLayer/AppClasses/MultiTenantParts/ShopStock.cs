@@ -8,7 +8,7 @@ namespace DataLayer.AppClasses.MultiTenantParts
     /// <summary>
     /// This contains an item stocked in the shop, and how many they have
     /// </summary>
-    public class ShopStock : DataKeyBase, IHierarchicalKey
+    public class ShopStock : HierarchicalKeyBase
     {
         public int ShopStockId { get; set; }
         public string Name { get; set; }

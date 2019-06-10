@@ -14,7 +14,7 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.DataLayerTests
 {
-    public class TestAppDbContext
+    public class TestNoFilteringAndUserIdFiltering
     {
         [Fact]
         public void TestCreateValidDatabaseOk()

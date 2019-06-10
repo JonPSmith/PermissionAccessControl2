@@ -5,6 +5,6 @@ namespace DataAuthorize
 {
     public interface IHierarchicalKey : IDataKey
     {
-        void SetDataKey(string tenantKey);
+        void SetHierarchicalDataKey(string tenantKey);
     }
 }

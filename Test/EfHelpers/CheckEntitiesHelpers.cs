@@ -18,7 +18,7 @@ namespace Test.EfHelpers
                 if (entityType.QueryFilter == null
                     && entityType.BaseType == null //not a TPH subclass
                     && entityType.ClrType.GetCustomAttribute<OwnedAttribute>() == null //not an owned type
-                    && entityType.ClrType.GetCustomAttribute<DoesNotNeedDataKey>() == null) //Not marked as global
+                    && entityType.ClrType.GetCustomAttribute<NoQueryFilterNeeded>() == null) //Not marked as global
                     yield return $"The entity class {entityType.Name} does not have a query filter";
             }
         }

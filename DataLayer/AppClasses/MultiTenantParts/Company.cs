@@ -12,7 +12,7 @@ namespace DataLayer.AppClasses.MultiTenantParts
     /// </summary>
     public class Company : TenantBase
     {
-        public Company(PaidForModules allowedPaidForModules, string name) : base(name, null)
+        public Company(string name, PaidForModules allowedPaidForModules) : base(name, null)
         {
             AllowedPaidForModules = allowedPaidForModules;
         }

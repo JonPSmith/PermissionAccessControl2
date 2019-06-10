@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
+using GenericServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLayer.MultiTenant.Concrete
@@ -37,8 +38,7 @@ namespace ServiceLayer.MultiTenant.Concrete
                 _context.SaveChanges();
                 
                 //Now we can set the DataKey
-                rootCompany.SetAccessKey();
-                SetKeyInNewHierarchy(rootCompany.Children);
+                SetKeyInNewHierarchy(rootCompany);
                 _context.SaveChanges();
 
                 transaction.Commit();
@@ -65,59 +65,29 @@ namespace ServiceLayer.MultiTenant.Concrete
                 _context.SaveChanges();
 
                 //Now we can set the DataKey
-                newTenant.SetAccessKey();
+                newTenant.SetDataKeyFromHierarchy();
                 _context.SaveChanges();
 
                 transaction.Commit();
             }
         }
 
-        public void MoveTenantToNewParent(TenantBase existingTenant, TenantBase newParent)
-        {
-            if (existingTenant == null) throw new ArgumentNullException(nameof(existingTenant));
-
-            if (existingTenant is Company)
-                throw new ApplicationException($"You should use the {nameof(SetupCompany)} method to add a Company.");
-            if (newParent == null)
-                throw new ApplicationException($"The parent cannot be null.");
-            if (newParent.ParentItemId == 0)
-                throw new ApplicationException($"The parent {newParent.Name} must be already in the database.");
-            if (_context.Entry(existingTenant).State == EntityState.Detached)
-                throw new ApplicationException($"You can't use this method to add a new tenant.");
-
-            existingTenant.LinkToParent(newParent);
-            existingTenant.SetAccessKey();
-            //Now change the data key for all the hierarchy from this entry down
-            SetKeyExistingHierarchy(existingTenant);
-            _context.SaveChanges();
-        }
-
         //---------------------------------------------------------
         //private methods
 
-        private static void SetKeyInNewHierarchy(ICollection<TenantBase> children)
+        private static void SetKeyInNewHierarchy(TenantBase tenant)
         {
-            if (children == null || !children.Any())
+            if (tenant.Children == null || !tenant.Children.Any())
                 return;
-            foreach (var tenant in children)
+            if (tenant is RetailOutlet)
+                throw new ApplicationException("Retail outlets cannot have children");
+            foreach (var child in tenant.Children)
             {
-                tenant.SetAccessKey();
-                SetKeyInNewHierarchy(tenant.Children);
+                child.SetDataKeyFromHierarchy();
+                SetKeyInNewHierarchy(child);
             }
         }
 
-        private  void SetKeyExistingHierarchy(TenantBase existingTenant)
-        {
-            if (existingTenant.Children == null)
-                _context.Entry(existingTenant).Collection(x => x.Children).Load();
 
-            if (!existingTenant.Children.Any())
-                return;
-            foreach (var tenant in existingTenant.Children)
-            {
-                tenant.SetAccessKey();
-                SetKeyInNewHierarchy(tenant.Children);
-            }
-        }
     }
 }
