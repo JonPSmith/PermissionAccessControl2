@@ -16,7 +16,7 @@ namespace DataLayer.EfCode
         
         //Now links to two classes in the AppDbContext that hold data used to set up the user's modules and data access rights
         public DbSet<TenantBase> Tenants { get; set; }
-        public DbSet<UserDataHierarchical<TenantBase>> DataAccess { get; set; }
+        public DbSet<UserDataHierarchical> DataAccess { get; set; }
 
         public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options)
             : base(options) { }

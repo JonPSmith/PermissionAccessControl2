@@ -26,7 +26,7 @@ namespace DataLayer.AppClasses.MultiTenantParts
         {
             Name = name;
             Parent = parent;
-            Children = new List<TenantBase>(); //NOTE: This is not used by EF Core, so 
+            Children = new List<TenantBase>(); //NOTE: This is not used by EF Core. Only used when creating manually 
         }
 
         /// <summary>

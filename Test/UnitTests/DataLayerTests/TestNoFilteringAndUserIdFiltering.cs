@@ -95,14 +95,14 @@ namespace Test.UnitTests.DataLayerTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
+            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey*")))
             {
                 context.Database.EnsureCreated();
                 context.Add(new ShopStock { Name = "dress" });
                 context.SaveChanges();
 
             }
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("DIFF-userId", "DIFF-accessKey")))
+            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("DIFF-userId", "DIFF-accessKey*")))
             {
                 //ATTEMPT
                 var stocksFiltered = context.ShopStocks.ToList();
@@ -111,7 +111,7 @@ namespace Test.UnitTests.DataLayerTests
                 //VERIFY
                 stocksFiltered.Count.ShouldEqual(0);
                 stocksNotFiltered.Count.ShouldEqual(1);
-                stocksNotFiltered.First().DataKey.ShouldEqual("accessKey");
+                stocksNotFiltered.First().DataKey.ShouldEqual("accessKey*");
             }
         }
     }

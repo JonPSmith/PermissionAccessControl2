@@ -44,9 +44,12 @@ namespace ServiceLayer.SeedDemo.Internal
 
         public void CheckAddDataAccessHierarchical(string userId, TenantBase linkToTenant)
         {
-            if (_context.Find<UserDataHierarchical<TenantBase>>(userId) == null)
+            if (linkToTenant == null || linkToTenant.TenantItemId == 0)
+                throw new ApplicationException($"The tenant was either null, or has not got its primary key set.");
+
+            if (_context.Find<UserDataHierarchical>(userId) == null)
             {
-                var dataAccess = new UserDataHierarchical<TenantBase>(userId, linkToTenant);
+                var dataAccess = new UserDataHierarchical(userId, linkToTenant.TenantItemId);
                 _context.Add(dataAccess);
             }
         }

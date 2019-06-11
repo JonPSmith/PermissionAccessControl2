@@ -31,13 +31,13 @@ namespace DataLayer.EfCode
         //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            this.MarkWithUserIdIfNeeded(UserId);
+            this.MarkWithDataKeyIfNeeded(UserId, DataKey);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
         {
-            this.MarkWithUserIdIfNeeded(UserId);
+            this.MarkWithDataKeyIfNeeded(UserId, DataKey);
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 

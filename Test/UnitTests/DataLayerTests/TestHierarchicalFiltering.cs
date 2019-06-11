@@ -14,7 +14,7 @@ namespace Test.UnitTests.DataLayerTests
 {
     public class TestHierarchicalFiltering
     {
-        private ITestOutputHelper _output;
+        private readonly ITestOutputHelper _output;
 
         public TestHierarchicalFiltering(ITestOutputHelper output)
         {
@@ -39,10 +39,10 @@ namespace Test.UnitTests.DataLayerTests
                 var tenants = context.TenantItems.ToList();
 
                 //VERIFY
-                foreach (var line in tenants)
-                {
-                    _output.WriteLine($"\"{line}\",");
-                }
+                //foreach (var line in tenants)
+                //{
+                //    _output.WriteLine($"\"{line}\",");
+                //}
                 tenants.Count.ShouldEqual(expectedCount);
             }
         }

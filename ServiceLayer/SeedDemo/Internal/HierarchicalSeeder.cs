@@ -41,6 +41,7 @@ namespace ServiceLayer.SeedDemo.Internal
                 if (!companyDict.ContainsKey(hierarchyNames[0]))
                 {
                     companyDict[hierarchyNames[0]] = new Company(hierarchyNames[0], PaidForModules.None);
+                    subGroupsDict.Clear();
                 }
 
                 TenantBase parent = companyDict[hierarchyNames[0]];

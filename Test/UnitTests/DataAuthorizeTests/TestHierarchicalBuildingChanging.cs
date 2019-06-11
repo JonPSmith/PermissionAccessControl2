@@ -14,13 +14,13 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Extensions.AssertExtensions;
 
-namespace Test.UnitTests.DataLayerTests
+namespace Test.UnitTests.DataAuthorizeTests
 {
-    public class TestHierarchicalBuildingAndFiltering
+    public class TestHierarchicalBuildingChanging
     {
         private readonly ITestOutputHelper _output;
 
-        public TestHierarchicalBuildingAndFiltering(ITestOutputHelper output)
+        public TestHierarchicalBuildingChanging(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -70,7 +70,7 @@ namespace Test.UnitTests.DataLayerTests
 
                 //ATTEMPT
                 context.AddCompanyAndChildrenInDatabase(
-                    "Company1|Shop1", "Company1|Shop2", "Company2|Shop3");
+                    "Company1|Area|Shop1", "Company1|Area|Shop2", "Company2|Area|Shop3");
 
                 //VERIFY
                 var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
@@ -81,10 +81,12 @@ namespace Test.UnitTests.DataLayerTests
                 display.ShouldEqual(new List<string>
                 {
                     "Company: Name = Company1, DataKey = 1|",
-                    "RetailOutlet: Name = Shop1, DataKey = 1|2*",
-                    "RetailOutlet: Name = Shop2, DataKey = 1|3*",
-                    "Company: Name = Company2, DataKey = 4|",
-                    "RetailOutlet: Name = Shop3, DataKey = 4|5*",
+                    "SubGroup: Name = Area, DataKey = 1|2|",
+                    "RetailOutlet: Name = Shop1, DataKey = 1|2|3*",
+                    "RetailOutlet: Name = Shop2, DataKey = 1|2|4*",
+                    "Company: Name = Company2, DataKey = 5|",
+                    "SubGroup: Name = Area, DataKey = 5|6|",
+                    "RetailOutlet: Name = Shop3, DataKey = 5|6|7*",
                 });
             }
         }

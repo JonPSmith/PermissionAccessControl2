@@ -19,7 +19,7 @@ namespace DataAuthorize
             foreach (var entityEntry in context.ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Added))
             {
-                if (entityEntry is IUserId hasUserId)
+                if (entityEntry.Entity is IUserId hasUserId)
                     hasUserId.SetDataKey(userId);
             }
         }
