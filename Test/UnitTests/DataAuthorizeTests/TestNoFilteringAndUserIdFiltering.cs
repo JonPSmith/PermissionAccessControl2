@@ -12,7 +12,7 @@ using TestSupport.EfHelpers;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
-namespace Test.UnitTests.DataLayerTests
+namespace Test.UnitTests.DataAuthorizeTests
 {
     public class TestNoFilteringAndUserIdFiltering
     {
