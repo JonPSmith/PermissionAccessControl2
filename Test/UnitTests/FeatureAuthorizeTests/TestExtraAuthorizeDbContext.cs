@@ -43,13 +43,13 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 
                 //ATTEMPT
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                    "test", new List<Permissions> { Permissions.ColorCreate }, context);
+                    "test", new List<Permissions> { Permissions.StockAddNew }, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();
 
                 //VERIFY
-                context.RolesToPermissions.Single().PermissionsInRole.ShouldEqual(new List<Permissions> { Permissions.ColorCreate });
+                context.RolesToPermissions.Single().PermissionsInRole.ShouldEqual(new List<Permissions> { Permissions.StockAddNew });
             }
         }
 
@@ -63,19 +63,19 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.Database.EnsureCreated();
 
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                        "test", new List<Permissions> { Permissions.ColorCreate }, context);
+                        "test", new List<Permissions> { Permissions.StockRead }, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();
 
                 //ATTEMPT
                 var roleToUpdate = context.Find<RoleToPermissions>("test");
-                roleToUpdate.UpdatePermissionsInRole(new List<Permissions> { Permissions.ColorRead, Permissions.ColorDelete });
+                roleToUpdate.UpdatePermissionsInRole(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
                 context.SaveChanges();
 
                 //VERIFY
                 context.RolesToPermissions.Single().PermissionsInRole
-                    .ShouldEqual(new List<Permissions> { Permissions.ColorRead, Permissions.ColorDelete });
+                    .ShouldEqual(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
             }
         }
 
@@ -88,7 +88,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 context.Database.EnsureCreated();
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                    "test", new List<Permissions> { Permissions.ColorCreate }, context);
+                    "test", new List<Permissions> { Permissions.StockSell }, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();

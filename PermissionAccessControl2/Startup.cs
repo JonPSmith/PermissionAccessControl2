@@ -42,6 +42,7 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddSingleton(Configuration); //Needed for SuperAdmin setup
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

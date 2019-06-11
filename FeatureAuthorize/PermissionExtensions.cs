@@ -19,7 +19,7 @@ namespace FeatureAuthorize
         {
             var permissionClaim =
                 user?.Claims.SingleOrDefault(x => x.Type == PermissionConstants.PackedPermissionClaimType);
-            return permissionClaim?.Value.UnpackPermissionsFromString().Contains(permission) == true;
+            return permissionClaim?.Value.UnpackPermissionsFromString().ToArray().UserHasThisPermission(permission) == true;
         }
     }
 }

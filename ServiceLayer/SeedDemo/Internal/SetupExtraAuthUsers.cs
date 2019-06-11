@@ -15,7 +15,7 @@ namespace ServiceLayer.SeedDemo.Internal
 {
     /// <summary>
     /// These contain the individual methods to add/update the database, BUT you should call SaveChanges to update the database
-    /// (This is different to SetupAspNetUsers, where the userManger updates the database (immediately)
+    /// (This is different to AspNetUserExtension, where the userManger updates the database (immediately)
     /// </summary>
     internal class SetupExtraAuthUsers
     {

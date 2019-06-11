@@ -48,11 +48,13 @@ namespace DataLayer.EfCode.Configurations
         private static void AddUserIdQueryFilter<T>(EntityTypeBuilder<T> builder, AppDbContext context) where T : class, IDataKey
         {
             builder.HasQueryFilter(x => x.DataKey == context.UserId);
+            builder.HasIndex(x => x.DataKey);
         }
 
         private static void AddHierarchicalQueryFilter<T>(EntityTypeBuilder<T> builder, AppDbContext context) where T : class, IDataKey
         {
             builder.HasQueryFilter(x => x.DataKey.StartsWith(context.DataKey));
+            builder.HasIndex(x => x.DataKey);
         }
     }
 }

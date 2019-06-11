@@ -11,22 +11,16 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ServiceLayer.SeedDemo.Internal
 {
-    internal class SetupAspNetUsers
+    internal static class AspNetUserExtension
     {
-        private readonly UserManager<IdentityUser> _userManager;
 
-        public SetupAspNetUsers(UserManager<IdentityUser> userManager)
+        public static async Task<IdentityUser> CheckAddNewUserAsync(this UserManager<IdentityUser> userManager, string email, string password)
         {
-            _userManager = userManager;
-        }
-
-        public async Task<IdentityUser> CheckAddNewUser(string email, string password)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(email);
             if (user != null)
                 return user;
             user = new IdentityUser { UserName = email, Email = email };
-            var result = await _userManager.CreateAsync(user, password); 
+            var result = await userManager.CreateAsync(user, password); 
             if (!result.Succeeded)
             {
                 var errorDescriptions = string.Join("\n", result.Errors.Select(x => x.Description));
