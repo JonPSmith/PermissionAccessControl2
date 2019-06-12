@@ -18,7 +18,7 @@ namespace PermissionAccessControl2
     {
         public static void RegisterDatabases(this IServiceCollection services, IConfiguration configuration)
         {
-            var type = configuration["DemoSetup.DatabaseSetup"];
+            var type = configuration["DemoSetup:DatabaseSetup"];
             if (type == "Permanent")
             {
                 //we are dealing with real databases

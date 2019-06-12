@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ServiceLayer.UserServices.Concrete
 {
-    public class ListUsersService
+    public class ListUsersService : IListUsersService
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ExtraAuthorizeDbContext _extraContext;
@@ -28,10 +28,17 @@ namespace ServiceLayer.UserServices.Concrete
             {
                 var userRoleNames = _extraContext.UserToRoles.Where(x => x.UserId == user.Id).Select(x => x.RoleName);
                 var dataEntry = _extraContext.Find<UserDataHierarchical>(user.Id);
-                var tenantName = dataEntry != null
-                    ? _extraContext.Find<TenantBase>(dataEntry.LinkedTenantId)?.Name ?? "tenant not found"
-                    : "no linked tenant";
-                result.Add(new ListUsersDto(user.UserName, string.Join(", ", userRoleNames), tenantName));
+                string tenantName = "no linked tenant";
+                string companyName = null;
+                if (dataEntry != null)
+                {
+                    var linkedTenant = _extraContext.Find<TenantBase>(dataEntry.LinkedTenantId);
+                    tenantName = linkedTenant?.Name ?? "tenant not found";
+                    if (linkedTenant != null)
+                        companyName = _extraContext.Find<TenantBase>(linkedTenant.ExtractCompanyId())?.Name;
+                }
+
+                result.Add(new ListUsersDto(user.UserName, string.Join(", ", userRoleNames), companyName, tenantName));
             }
 
             return result;

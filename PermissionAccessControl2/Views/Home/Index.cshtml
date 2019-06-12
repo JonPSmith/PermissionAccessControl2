@@ -1,8 +1,29 @@
-﻿@{
+﻿@model List<ServiceLayer.UserServices.ListUsersDto>
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to </h1>
+    <p>This is a demo of a web application using a feature and data authorization system described in the following articles.</p>
 </div>
+
+<h3>List of users <small>so you can log in</small> </h3>
+<p>NOTE: The Email address is also the Password!</p>
+<table class="table">
+    <tr>
+        <th>User Email</th>
+        <th>User roles</th>
+        <th>Company</th>
+        <th>Linked tenant</th>
+    </tr>
+    @foreach (var user in @Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.RoleNames</td>
+            <td>@user.CompanyName</td>
+            <td>@user.LinkedTenantName</td>
+        </tr>
+    }
+</table>

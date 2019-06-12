@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using PermissionAccessControl2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ServiceLayer.AppStart;
 using ServiceLayer.CodeCalledInStartup;
 
 namespace PermissionAccessControl2
@@ -46,9 +47,8 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            var demoSetupConfig = Configuration.GetSection("DemoSetup");
             //This enables Cookies for authentication and adds the feature and data claims to the user
-            services.ConfigureCookiesForExtraAuth(demoSetupConfig["UpdateCookieOnChange"] == "true");
+            services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "true");
 
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
             //Register the Permission policy handlers
@@ -59,7 +59,8 @@ namespace PermissionAccessControl2
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-
+            //This registers the services into DI
+            services.ServiceLayerStartup(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
