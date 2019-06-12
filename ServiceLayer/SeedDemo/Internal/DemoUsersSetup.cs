@@ -41,7 +41,7 @@ namespace ServiceLayer.SeedDemo.Internal
                     //We need to form names for outlets
                     foreach (var retailOutlet in allOutlets.Where(x => x.Name.EndsWith(userSpec.LinkedTenant.Substring(1))))
                     {
-                        var email = retailOutlet.Name.Replace(" ", "") + userSpec.Email.Substring(1);
+                        var email = retailOutlet.Name.Replace(' ', '-') + userSpec.Email.Substring(1);
                         await CheckAddUser(email, userSpec.RolesCommaDelimited, retailOutlet);
                     }
                 }

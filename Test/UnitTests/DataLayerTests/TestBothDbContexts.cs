@@ -44,7 +44,7 @@ namespace Test.UnitTests.DataLayerTests
                     "DataLayer.AppClasses.PersonalData",
                     "DataLayer.ExtraAuthClasses.ModulesForUser",
                     "DataLayer.ExtraAuthClasses.RoleToPermissions",
-                    "DataLayer.ExtraAuthClasses.UserDataAccessBase",
+                    "DataLayer.ExtraAuthClasses.UserDataHierarchical",
                     "DataLayer.ExtraAuthClasses.UserToRole",
                 });
             }

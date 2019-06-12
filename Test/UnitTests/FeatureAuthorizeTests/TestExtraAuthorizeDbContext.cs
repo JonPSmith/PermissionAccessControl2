@@ -26,7 +26,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 
                 //ATTEMPT
                 context.SeedUserWithTwoRoles();
-
+            }
+            using (var context = new ExtraAuthorizeDbContext(options))
+            { 
                 //VERIFY
                 context.UserToRoles.Select(x => x.RoleName).ToArray().ShouldEqual(new[] { "TestRole1", "TestRole2" });
             }
@@ -43,11 +45,13 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 
                 //ATTEMPT
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                    "test", new List<Permissions> { Permissions.StockAddNew }, context);
+                    "test", new List<Permissions> {Permissions.StockAddNew}, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();
-
+            }
+            using (var context = new ExtraAuthorizeDbContext(options))
+            {
                 //VERIFY
                 context.RolesToPermissions.Single().PermissionsInRole.ShouldEqual(new List<Permissions> { Permissions.StockAddNew });
             }
@@ -72,7 +76,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 var roleToUpdate = context.Find<RoleToPermissions>("test");
                 roleToUpdate.UpdatePermissionsInRole(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
                 context.SaveChanges();
-
+            }
+            using (var context = new ExtraAuthorizeDbContext(options))
+            {
                 //VERIFY
                 context.RolesToPermissions.Single().PermissionsInRole
                     .ShouldEqual(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });

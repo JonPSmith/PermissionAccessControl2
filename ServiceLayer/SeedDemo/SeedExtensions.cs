@@ -48,8 +48,7 @@ namespace ServiceLayer.SeedDemo
         {
             var pathCompanyData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, CompanyDataFilename));
             var context = services.GetRequiredService<AppDbContext>();
-            var foundCompanies = context.Tenants.IgnoreQueryFilters().Cast<Company>().ToList();
-            if (!foundCompanies.Any())
+            if (!context.Tenants.IgnoreQueryFilters().Any())
             {
                 //No companies 
                 var lines = File.ReadAllLines(pathCompanyData);
