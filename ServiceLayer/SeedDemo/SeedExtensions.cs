@@ -24,7 +24,13 @@ namespace ServiceLayer.SeedDemo
         private const string RolesFilename = "Roles.txt";
         private const string UsersFilename = "Users.json";
 
-        public static async Task SeedDataAndUserAsync(this IServiceProvider serviceProvider)
+        /// <summary>
+        /// This will check if tenants and users need to be added to the database,
+        /// i.e. it will only add tenants and users if they are not already in the database
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
+        public static async Task CheckSeedDataAndUserAsync(this IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {

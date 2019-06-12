@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAuthorize;
+using FeatureAuthorize.PolicyCode;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -13,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using PermissionAccessControl2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ServiceLayer.CodeCalledInStartup;
 
 namespace PermissionAccessControl2
 {
@@ -42,7 +46,16 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            //This enables Cookies for authentication and adds the feature and data claims to the user
+            services.ConfigureCookiesForExtraAuth(true);
+
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
+            //Register the Permission policy handlers
+            services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
+            //This is needed to implement the data authorize code 
+            services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

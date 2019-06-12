@@ -18,7 +18,8 @@ namespace ServiceLayer.SeedDemo
         private const string SuperAdminRoleName = "SuperAdmin";
 
         /// <summary>
-        /// This ensures there is a SuperAdmin user in the system
+        /// This ensures there is a SuperAdmin user in the system.
+        /// It gets the SuperAdmin's email and password from the "SuperAdmin" section of the appsettings.json file
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>

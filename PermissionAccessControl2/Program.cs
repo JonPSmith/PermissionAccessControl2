@@ -4,6 +4,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
+using ServiceLayer.SeedDemo;
 
 namespace PermissionAccessControl2
 {
@@ -23,8 +24,9 @@ namespace PermissionAccessControl2
             //Because I am using in-memory databases I need to make sure they are created 
             //before my startup code tries to use them
             SetupDatabases(webHost);
-            //await webHost.Services.SetupSuperAdminUser();
-            //await webHost.Services.AddUsersAndExtraAuthAsync();
+            //Now I run the code to 
+            await webHost.Services.CheckAddSuperAdminAsync();
+            await webHost.Services.CheckSeedDataAndUserAsync();
             return webHost;
         }
 
@@ -37,7 +39,7 @@ namespace PermissionAccessControl2
                 {
                     context.Database.EnsureCreated();
                 }
-                using (var context = services.GetRequiredService<ExtraAuthorizeDbContext>())
+                using (var context = services.GetRequiredService<CombinedDbContext>())
                 {
                     context.Database.EnsureCreated();
                 }

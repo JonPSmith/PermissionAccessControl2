@@ -4,7 +4,7 @@
 using System;
 using DataAuthorize;
 
-namespace Test.FakesAndMocks
+namespace ServiceLayer.CodeCalledInStartup
 {
     public class FakeGetClaimsProvider : IGetClaimsProvider
     {

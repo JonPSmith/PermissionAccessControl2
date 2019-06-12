@@ -2,16 +2,17 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Claims;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
 using PermissionParts;
 
-namespace FeatureAuthorize
+[assembly: InternalsVisibleTo("Test")]
+
+namespace ServiceLayer.CodeCalledInStartup
 {
     public class CalcAllowedPermissions : IDisposable
     {
@@ -37,22 +38,19 @@ namespace FeatureAuthorize
         /// <summary>
         /// This is called if the Permissions that a user needs calculating.
         /// </summary>
-        /// <param name="claims"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> CalcPermissionsForUser(IEnumerable<Claim> claims)
+        public async Task<string> CalcPermissionsForUser(string userId)
         {
-            var usersRoles = claims.Where(x => x.Type == ClaimTypes.Role).Select(x => x.Value)
-                .ToList();
-
             var dbContext = GetContext();
             //This gets all the permissions, with a distinct to remove duplicates
-            var permissionsForUser = await dbContext.RolesToPermissions.Where(x => usersRoles.Contains(x.RoleName))
-                .SelectMany(x => x.PermissionsInRole)
+            var permissionsForUser = await dbContext.UserToRoles.Where(x => x.UserId == userId)
+                .SelectMany(x => x.Role.PermissionsInRole)
                 .Distinct()
                 .ToListAsync();
             //we get the modules this user is allowed to see
             var userModules =
-                dbContext.ModulesForUsers.Find(claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value)
+                dbContext.ModulesForUsers.Find(userId)
                     ?.AllowedPaidForModules ?? PaidForModules.None;
             //Now we remove permissions that are linked to modules that the user has no access to
             var filteredPermissions =

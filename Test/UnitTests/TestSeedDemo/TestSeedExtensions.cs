@@ -71,7 +71,7 @@ namespace Test.UnitTests.TestSeedDemo
             //SETUP
 
             //ATTEMPT
-            await _serviceProvider.SeedDataAndUserAsync();
+            await _serviceProvider.CheckSeedDataAndUserAsync();
 
             //VERIFY
             var appContext = _serviceProvider.GetRequiredService<AppDbContext>();
@@ -101,8 +101,8 @@ namespace Test.UnitTests.TestSeedDemo
             //SETUP
 
             //ATTEMPT
-            await _serviceProvider.SeedDataAndUserAsync();
-            await _serviceProvider.SeedDataAndUserAsync();
+            await _serviceProvider.CheckSeedDataAndUserAsync();
+            await _serviceProvider.CheckSeedDataAndUserAsync();
 
             //VERIFY
             var appContext = _serviceProvider.GetRequiredService<AppDbContext>();
@@ -132,7 +132,7 @@ namespace Test.UnitTests.TestSeedDemo
             //SETUP
 
             //ATTEMPT
-            await _serviceProvider.SeedDataAndUserAsync();
+            await _serviceProvider.CheckSeedDataAndUserAsync();
 
             //VERIFY
             var extraContext = _serviceProvider.GetRequiredService<ExtraAuthorizeDbContext>();
@@ -159,8 +159,8 @@ namespace Test.UnitTests.TestSeedDemo
             //SETUP
 
             //ATTEMPT
-            await _serviceProvider.SeedDataAndUserAsync();
-            await _serviceProvider.SeedDataAndUserAsync();
+            await _serviceProvider.CheckSeedDataAndUserAsync();
+            await _serviceProvider.CheckSeedDataAndUserAsync();
 
             //VERIFY
             var extraContext = _serviceProvider.GetRequiredService<ExtraAuthorizeDbContext>();
