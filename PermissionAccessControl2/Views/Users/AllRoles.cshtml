@@ -1,0 +1,37 @@
+﻿@model System.Collections.Generic.List<DataLayer.ExtraAuthClasses.RoleToPermissions>
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>All Roles</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Role Name
+        </th>
+        <th>
+            Permissions
+        </th>
+        @*<th></th>*@
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td>
+                @string.Join(", ", item.PermissionsInRole.Select(x => x.ToString()))
+            </td>
+            @*<td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>*@
+        </tr>
+    }
+    </tbody>
+</table>

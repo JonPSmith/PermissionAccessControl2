@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using DataAuthorize;
+using DataLayer.EfCode;
 using FeatureAuthorize.PolicyCode;
+using GenericServices.Setup;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.AppStart;
 using ServiceLayer.CodeCalledInStartup;
+using ServiceLayer.UserServices;
 
 namespace PermissionAccessControl2
 {
@@ -40,7 +44,7 @@ namespace PermissionAccessControl2
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            //This registers the ASP.NET ApplicationDbContext and the various databases that the application uses
+            //This registers the various databases, either as in-memory or via SQL Server (see appsetting.json for connection strings)
             services.RegisterDatabases(Configuration);
 
             services.AddDefaultIdentity<IdentityUser>()
@@ -58,6 +62,10 @@ namespace PermissionAccessControl2
             //This is needed to implement the data authorize code 
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.ConfigureGenericServicesEntities(typeof(ExtraAuthorizeDbContext), typeof(AppDbContext))
+                .ScanAssemblesForDtos(Assembly.GetAssembly(typeof(ListUsersDto)))
+                .RegisterGenericServices();
 
             //This registers the services into DI
             services.ServiceLayerStartup(Configuration);

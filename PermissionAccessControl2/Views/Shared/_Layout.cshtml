@@ -33,7 +33,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Your claims</a>
+                            <div class="dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" role="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Users
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Your claims</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="UserPermissions">Your permissions</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="AllRoles">All Roles</a>
+                                </div>
+                            </div>
+                            
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

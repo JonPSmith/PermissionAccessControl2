@@ -1,0 +1,21 @@
+﻿@model PermissionParts.Permissions[]
+@{
+    ViewData["Title"] = "User";
+}
+
+<p>Current logged in user Permissions.</p>
+
+@if (User?.Identity.IsAuthenticated == true)
+{
+    <h4>User '@User.Identity.Name'</h4>
+    <ul>
+        @foreach (var claim in @Model)
+        {
+            <li>@claim.ToString()</li>
+        }
+    </ul>
+}
+else
+{
+    <h4>No user is logged in.</h4>
+}

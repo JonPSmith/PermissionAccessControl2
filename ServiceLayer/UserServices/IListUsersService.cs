@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace ServiceLayer.UserServices.Concrete
+namespace ServiceLayer.UserServices
 {
     public interface IListUsersService
     {
