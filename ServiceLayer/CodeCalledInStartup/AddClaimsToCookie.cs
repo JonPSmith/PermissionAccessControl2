@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
+using CommonCache;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,10 +25,12 @@ namespace ServiceLayer.CodeCalledInStartup
             {
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
+                var simpleCache = sp.GetRequiredService<ISimpleTimeCache>();
 
                 //TODO add update on feature change to AuthCookieValidate
                 var authCookieValidate = new AuthCookieValidate(
-                    new CalcAllowedPermissions(extraAuthContextOptions), new CalcDataKey(extraAuthContextOptions));
+                    new CalcAllowedPermissions(extraAuthContextOptions), 
+                    new CalcDataKey(extraAuthContextOptions), simpleCache);
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
                 services.ConfigureApplicationCookie(options =>

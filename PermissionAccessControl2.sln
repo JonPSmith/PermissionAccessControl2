@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PermissionAccessControl2", "PermissionAccessControl2\PermissionAccessControl2.csproj", "{9FC0371B-45D7-43AB-9271-B040B116A874}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PermissionAccessControl2", "PermissionAccessControl2\PermissionAccessControl2.csproj", "{9FC0371B-45D7-43AB-9271-B040B116A874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLayer", "ServiceLayer\ServiceLayer.csproj", "{D85609C3-6489-46A9-B07D-2D63B19C9F6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceLayer", "ServiceLayer\ServiceLayer.csproj", "{D85609C3-6489-46A9-B07D-2D63B19C9F6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{2261C426-F9C8-4672-A5B0-F507D5FD6920}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{2261C426-F9C8-4672-A5B0-F507D5FD6920}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PermissionParts", "PermissionParts\PermissionParts.csproj", "{AF1622E9-4154-48F8-B0C6-1AD959A0EE85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PermissionParts", "PermissionParts\PermissionParts.csproj", "{AF1622E9-4154-48F8-B0C6-1AD959A0EE85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAuthorize", "DataAuthorize\DataAuthorize.csproj", "{685A164D-41BE-4BF5-BF6F-DEC0EBB78E54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAuthorize", "DataAuthorize\DataAuthorize.csproj", "{685A164D-41BE-4BF5-BF6F-DEC0EBB78E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{EA35E935-8CAC-4249-BE78-34FFD009BE70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{EA35E935-8CAC-4249-BE78-34FFD009BE70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureAuthorize", "FeatureAuthorize\FeatureAuthorize.csproj", "{255486A5-790B-47BC-B95C-572889F004CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureAuthorize", "FeatureAuthorize\FeatureAuthorize.csproj", "{255486A5-790B-47BC-B95C-572889F004CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonCache", "CommonCache\CommonCache.csproj", "{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{255486A5-790B-47BC-B95C-572889F004CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{255486A5-790B-47BC-B95C-572889F004CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{255486A5-790B-47BC-B95C-572889F004CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
