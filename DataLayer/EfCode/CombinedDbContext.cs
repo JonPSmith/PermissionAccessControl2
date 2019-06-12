@@ -12,21 +12,21 @@ namespace DataLayer.EfCode
     /// <summary>
     /// This only exists to create one database that covers both ExtraAuthorizeDbContext and AppDbContext
     /// </summary>
-    public class BothDbContexts : DbContext
+    public class CombinedDbContext : DbContext
     {
         //ExtraAuthorizeDbContext
         public DbSet<UserToRole> UserToRoles { get; set; }
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
-        public DbSet<UserDataAccessBase> DataAccess { get; set; }
         public DbSet<ModulesForUser> ModulesForUsers { get; set; }
+        public DbSet<UserDataHierarchical> DataAccess { get; set; }
 
         //AppDbContext
         public DbSet<GeneralNote> GeneralNotes { get; set; }
         public DbSet<PersonalData> PersonalDatas { get; set; }
-        public DbSet<TenantBase> TenantItems { get; set; }
+        public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<ShopStock> ShopStocks { get; set; }
 
-        public BothDbContexts(DbContextOptions<BothDbContexts> options)
+        public CombinedDbContext(DbContextOptions<CombinedDbContext> options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

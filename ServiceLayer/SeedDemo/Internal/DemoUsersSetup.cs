@@ -20,18 +20,20 @@ namespace ServiceLayer.SeedDemo.Internal
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly AppDbContext _appContext;
+        private readonly ExtraAuthorizeDbContext _extraContext;
         private readonly SetupExtraAuthUsers _extraService;
 
         public DemoUsersSetup(UserManager<IdentityUser> userManager, ExtraAuthorizeDbContext extraContext, AppDbContext appContext)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _extraContext = extraContext ?? throw new ArgumentNullException(nameof(extraContext));
             _extraService = new SetupExtraAuthUsers(extraContext);
             _appContext = appContext;
         }
 
         public async Task CheckAddDemoUsersAsync(string usersJson)
         {
-            var allOutlets = _appContext.TenantItems.IgnoreQueryFilters().Cast<RetailOutlet>().ToList();
+            var allOutlets = _appContext.Tenants.IgnoreQueryFilters().OfType<RetailOutlet>().ToList();
             foreach (var userSpec in JsonConvert.DeserializeObject<List<UserJson>>(usersJson))
             {
                 if (userSpec.LinkedTenant.StartsWith("*"))
@@ -45,13 +47,15 @@ namespace ServiceLayer.SeedDemo.Internal
                 }
                 else
                 {
-                    var foundTenant = _appContext.TenantItems.IgnoreQueryFilters()
+                    var foundTenant = _appContext.Tenants.IgnoreQueryFilters()
                         .SingleOrDefault(x => x.Name == userSpec.LinkedTenant);
                     if (foundTenant == null)
                         throw new ApplicationException($"Could not find a tenant named {userSpec.LinkedTenant}.");
                     await CheckAddUser(userSpec.Email, userSpec.RolesCommaDelimited, foundTenant);
                 }
             }
+
+            _extraContext.SaveChanges();
         }
 
         private async Task CheckAddUser(string email, string rolesCommaDelimited, TenantBase linkedTenant)

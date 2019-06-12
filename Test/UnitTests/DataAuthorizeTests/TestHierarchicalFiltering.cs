@@ -36,7 +36,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 context.AddCompanyAndChildrenInDatabase();
 
                 //ATTEMPT
-                var tenants = context.TenantItems.ToList();
+                var tenants = context.Tenants.ToList();
 
                 //VERIFY
                 //foreach (var line in tenants)

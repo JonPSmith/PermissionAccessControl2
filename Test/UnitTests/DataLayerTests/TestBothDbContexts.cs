@@ -24,8 +24,8 @@ namespace Test.UnitTests.DataLayerTests
         public void TestCreateValidDatabaseOk()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<BothDbContexts>();
-            using (var context = new BothDbContexts(options))
+            var options = SqliteInMemory.CreateOptions<CombinedDbContext>();
+            using (var context = new CombinedDbContext(options))
             {
                 //ATTEMPT
                 context.Database.EnsureCreated();

@@ -38,7 +38,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 context.AddCompanyAndChildrenInDatabase();
 
                 //VERIFY
-                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -73,7 +73,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                     "Company1|Area|Shop1", "Company1|Area|Shop2", "Company2|Area|Shop3");
 
                 //VERIFY
-                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -134,7 +134,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 context.SaveChanges();
 
                 //VERIFY
-                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -175,7 +175,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 context.SaveChanges();
 
                 //VERIFY
-                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -214,7 +214,7 @@ namespace Test.UnitTests.DataAuthorizeTests
 
 
                 //VERIFY
-                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -253,7 +253,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 service.AddNewTenant(new SubGroup("Seattle", westCoast));
 
                 //VERIFY
-                var display = context.TenantItems.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");

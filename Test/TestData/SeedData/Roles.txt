@@ -1,0 +1,5 @@
+﻿Director: EmployeeRead
+AreaManager: StockRead
+SalesAssistant: StockRead, StockSell
+StoreManager: StockRead, StockSell, StockReturn, StockAddNew, StockRemove
+UserAdmin: UserRead, UserChange, RoleRead

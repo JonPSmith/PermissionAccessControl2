@@ -22,7 +22,7 @@ namespace ServiceLayer.SeedDemo
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        public static async Task CheckAddSuperAdmin(this IServiceProvider serviceProvider)
+        public static async Task CheckAddSuperAdminAsync(this IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {
@@ -44,6 +44,7 @@ namespace ServiceLayer.SeedDemo
                     var extraService = new SetupExtraAuthUsers(context);
                     extraService.CheckAddNewRole(SuperAdminRoleName, new List<Permissions>{ Permissions.AccessAll});
                     extraService.CheckAddRoleToUser(superUser.Id, SuperAdminRoleName);
+                    context.SaveChanges();
                 }
             }
         }

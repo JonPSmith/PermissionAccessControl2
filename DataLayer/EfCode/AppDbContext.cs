@@ -18,7 +18,7 @@ namespace DataLayer.EfCode
 
         public DbSet<GeneralNote> GeneralNotes { get; set; }
         public DbSet<PersonalData> PersonalDatas { get; set; }
-        public DbSet<TenantBase> TenantItems { get; set; }
+        public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<ShopStock> ShopStocks { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options, IGetClaimsProvider claimsProvider)

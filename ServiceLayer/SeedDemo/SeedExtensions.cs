@@ -24,7 +24,7 @@ namespace ServiceLayer.SeedDemo
         private const string RolesFilename = "Roles.txt";
         private const string UsersFilename = "Users.json";
 
-        public static async Task SeedDataAndUser(this IServiceProvider serviceProvider)
+        public static async Task SeedDataAndUserAsync(this IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {
@@ -35,49 +35,46 @@ namespace ServiceLayer.SeedDemo
                 CheckAddRoles(env, services);
 
                 var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-                using (var extraContext = services.GetRequiredService<ExtraAuthorizeDbContext>())
-                using (var appContext = services.GetRequiredService<AppDbContext>())
-                {
-                    var pathUserJson = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, UsersFilename));
-                    var userJson = File.ReadAllText(pathUserJson);
-                    var userSetup = new DemoUsersSetup(userManager, extraContext, appContext);
-                    await userSetup.CheckAddDemoUsersAsync(userJson);
-                }
+                var extraContext = services.GetRequiredService<ExtraAuthorizeDbContext>();
+                var appContext = services.GetRequiredService<AppDbContext>();
+                var pathUserJson = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, UsersFilename));
+                var userJson = File.ReadAllText(pathUserJson);
+                var userSetup = new DemoUsersSetup(userManager, extraContext, appContext);
+                await userSetup.CheckAddDemoUsersAsync(userJson);
             }
         }
 
         private static void CheckAddCompanies(IHostingEnvironment env, IServiceProvider services)
         {
             var pathCompanyData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, CompanyDataFilename));
-            using (var context = services.GetRequiredService<AppDbContext>())
+            var context = services.GetRequiredService<AppDbContext>();
+            var foundCompanies = context.Tenants.IgnoreQueryFilters().Cast<Company>().ToList();
+            if (!foundCompanies.Any())
             {
-                var foundCompanies = context.TenantItems.IgnoreQueryFilters().Cast<Company>().ToList();
-                if (!foundCompanies.Any())
-                {
-                    //No companies 
-                    var lines = File.ReadAllLines(pathCompanyData);
-                    context.AddCompanyAndChildrenInDatabase(lines);
-                }
+                //No companies 
+                var lines = File.ReadAllLines(pathCompanyData);
+                context.AddCompanyAndChildrenInDatabase(lines);
             }
         }
 
         private static void CheckAddRoles(IHostingEnvironment env, IServiceProvider services)
         {
             var pathRolesData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, RolesFilename));
-            using (var context = services.GetRequiredService<ExtraAuthorizeDbContext>())
+            var context = services.GetRequiredService<ExtraAuthorizeDbContext>();
+            
+            var extraService = new SetupExtraAuthUsers(context);
+            var lines = File.ReadAllLines(pathRolesData);
+            foreach (var line in lines)
             {
-                var extraService = new SetupExtraAuthUsers(context);
-                var lines = File.ReadAllLines(pathRolesData);
-                foreach (var line in lines)
-                {
-                    var colonIndex = line.IndexOf(':');
-                    var roleName = line.Substring(0, colonIndex);
-                    var permissions = line.Substring(colonIndex + 1).Split(',')
-                        .Select(x => Enum.Parse(typeof(Permissions), x.Trim(), true))
-                        .Cast<Permissions>().ToList();
-                    extraService.CheckAddNewRole(roleName, permissions);
-                }
+                var colonIndex = line.IndexOf(':');
+                var roleName = line.Substring(0, colonIndex);
+                var permissions = line.Substring(colonIndex + 1).Split(',')
+                    .Select(x => Enum.Parse(typeof(Permissions), x.Trim(), true))
+                    .Cast<Permissions>().ToList();
+                extraService.CheckAddNewRole(roleName, permissions);
             }
+
+            context.SaveChanges();
         }
     }
 }

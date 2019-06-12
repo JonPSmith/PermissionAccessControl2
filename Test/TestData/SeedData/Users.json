@@ -1,0 +1,38 @@
+[
+  {
+    "Email": "dir@4U.com",
+    "RolesCommaDelimited": "Director",
+    "LinkedTenant": "4U Inc."
+  },
+  {
+    "Email": "westCoast@4U.com",
+    "RolesCommaDelimited": "AreaManager",
+    "LinkedTenant": "West Coast"
+  },
+  {
+    "Email": "eastCoast@4U.com",
+    "RolesCommaDelimited": "AreaManager",
+    "LinkedTenant": "East Coast"
+  },
+  {
+    "Email": "*Boss@4U.com",
+    "RolesCommaDelimited": "StoreManager",
+    "LinkedTenant": "*4U"
+  },
+  {
+    "Email": "*Sales@4U.com",
+    "RolesCommaDelimited": "SalesAssistant",
+    "LinkedTenant": "*4U"
+  },
+  //Pets2
+  {
+    "Email": "dir@Pets2.com",
+    "RolesCommaDelimited": "Director",
+    "LinkedTenant": "Pets2 Ltd."
+  },
+  {
+    "Email": "*Sales@Pets2.com",
+    "RolesCommaDelimited": "SalesAssistant",
+    "LinkedTenant": "*Place"
+  }
+]

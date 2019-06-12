@@ -1,0 +1,7 @@
+{
+  "SuperAdmin": //This holds the information on the superuser. You must have one SuperUser setup otherwise you can't manage users
+  {
+    "Email": "Super@g1.com",
+    "Password": "Super@g1.com"
+  }
+}
