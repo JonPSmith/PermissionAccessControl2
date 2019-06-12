@@ -24,7 +24,8 @@ namespace DataLayer.EfCode.Configurations
             modelBuilder.Entity<UserToRole>().HasKey(x => new { x.UserId, x.RoleName });
 
             modelBuilder.Entity<RoleToPermissions>()
-                .Property("_permissionsInRole");
+                .Property("_permissionsInRole")
+                .HasColumnName("PermissionsInRole");
         }
 
         public static void AppConfig(this ModelBuilder modelBuilder, AppDbContext context)
