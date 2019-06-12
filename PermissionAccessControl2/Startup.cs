@@ -39,15 +39,16 @@ namespace PermissionAccessControl2
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            //This registers the ASP.NET ApplicationDbContext and the various databases that the application uses
+            services.RegisterDatabases(Configuration);
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            var demoSetupConfig = Configuration.GetSection("DemoSetup");
             //This enables Cookies for authentication and adds the feature and data claims to the user
-            services.ConfigureCookiesForExtraAuth(true);
+            services.ConfigureCookiesForExtraAuth(demoSetupConfig["UpdateCookieOnChange"] == "true");
 
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
             //Register the Permission policy handlers
@@ -57,6 +58,8 @@ namespace PermissionAccessControl2
             //This is needed to implement the data authorize code 
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

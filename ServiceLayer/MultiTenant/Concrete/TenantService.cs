@@ -2,12 +2,9 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
-using GenericServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLayer.MultiTenant.Concrete
@@ -22,9 +19,10 @@ namespace ServiceLayer.MultiTenant.Concrete
         }
 
         /// <summary>
-        /// This takes a Company and a series of children and adds it to the database. (Useful for adding all the ten
+        /// This adds a Company to the database. If it has any children then they will be added as well.
         /// It does this in two stages inside a transaction:
         /// 1) it saves the hierarchy of tenants to the database to get the primary keys
+        /// 2) It then sets up the DataKeys in the whole hierarchy
         /// </summary>
         /// <param name="rootCompany"></param>
         public void SetupCompany(Company rootCompany)

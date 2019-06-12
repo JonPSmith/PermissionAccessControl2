@@ -18,11 +18,13 @@ namespace ServiceLayer.CodeCalledInStartup
         /// </summary>
         private readonly CalcAllowedPermissions _rtoPCalcer;
 
-        public AuthCookieValidate(CalcAllowedPermissions rtoPCalcer)
+        private readonly CalcDataKey _dataKeyCalcer;
+
+        public AuthCookieValidate(CalcAllowedPermissions rtoPCalcer, CalcDataKey dataKeyCalcer)
         {
             _rtoPCalcer = rtoPCalcer;
+            _dataKeyCalcer = dataKeyCalcer;
         }
-
 
         public async Task ValidateAsync(CookieValidatePrincipalContext context)
         {
@@ -37,7 +39,7 @@ namespace ServiceLayer.CodeCalledInStartup
             if (context.Principal.Claims.All(x => x.Type != DataAuthConstants.HierarchicalKeyClaimName))
             {
                 var userId = context.Principal.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-                newClaims.AddRange(await BuildDataClaimsAsync(userId));
+                newClaims.AddRange(BuildDataClaims(userId));
             }
 
             if (newClaims.Any())
@@ -63,11 +65,11 @@ namespace ServiceLayer.CodeCalledInStartup
             return claims;
         }
 
-        private async Task<List<Claim>> BuildDataClaimsAsync(string userId)
+        private List<Claim> BuildDataClaims(string userId)
         {
             var claims = new List<Claim>
             {
-                new Claim(DataAuthConstants.HierarchicalKeyClaimName,await _rtoPCalcer.CalcPermissionsForUser(userId))
+                new Claim(DataAuthConstants.HierarchicalKeyClaimName, _dataKeyCalcer.CalcDataKeyForUser(userId))
             };
             return claims;
         }

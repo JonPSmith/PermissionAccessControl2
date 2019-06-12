@@ -4,6 +4,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DataAuthorize;
 using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Identity;
@@ -27,8 +28,9 @@ namespace ServiceLayer.CodeCalledInStartup
             var identity = await base.GenerateClaimsAsync(user);
             var userId = identity.Claims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
             var rtoPCalcer = new CalcAllowedPermissions(_extraAuthDbContext);
-            identity.AddClaim(new Claim(PermissionConstants.PackedPermissionClaimType,
-                await rtoPCalcer.CalcPermissionsForUser(userId)));
+            identity.AddClaim(new Claim(PermissionConstants.PackedPermissionClaimType,await rtoPCalcer.CalcPermissionsForUser(userId)));
+            var dataKeyCalcer = new CalcDataKey(_extraAuthDbContext);
+            identity.AddClaim(new Claim(DataAuthConstants.HierarchicalKeyClaimName, dataKeyCalcer.CalcDataKeyForUser(userId)));
             return identity;
         }
     }

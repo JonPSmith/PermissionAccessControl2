@@ -24,10 +24,10 @@ namespace ServiceLayer.CodeCalledInStartup
             {
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
-                var appDbContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
-                var authCookieValidate = new AuthCookieValidate(new CalcAllowedPermissions(extraAuthContextOptions));
 
-
+                //TODO add update on feature change to AuthCookieValidate
+                var authCookieValidate = new AuthCookieValidate(
+                    new CalcAllowedPermissions(extraAuthContextOptions), new CalcDataKey(extraAuthContextOptions));
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
                 services.ConfigureApplicationCookie(options =>
@@ -37,7 +37,7 @@ namespace ServiceLayer.CodeCalledInStartup
             }
             else
             {
-                //Simple verion - see https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
+                //Simple version - see https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
                 services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, AddPermissionsToUserClaims>();
             }
         }
