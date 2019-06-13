@@ -20,14 +20,14 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options))
+            using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 context.Database.EnsureCreated();
 
                 //ATTEMPT
                 context.SeedUserWithTwoRoles();
             }
-            using (var context = new ExtraAuthorizeDbContext(options))
+            using (var context = new ExtraAuthorizeDbContext(options, null))
             { 
                 //VERIFY
                 context.UserToRoles.Select(x => x.RoleName).ToArray().ShouldEqual(new[] { "TestRole1", "TestRole2" });
@@ -39,7 +39,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options))
+            using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 context.Database.EnsureCreated();
 
@@ -50,7 +50,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.Add(createStatus.Result);
                 context.SaveChanges();
             }
-            using (var context = new ExtraAuthorizeDbContext(options))
+            using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 //VERIFY
                 context.RolesToPermissions.Single().PermissionsInRole.ShouldEqual(new List<Permissions> { Permissions.StockAddNew });
@@ -62,7 +62,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options))
+            using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 context.Database.EnsureCreated();
 
@@ -77,7 +77,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 roleToUpdate.UpdatePermissionsInRole(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
                 context.SaveChanges();
             }
-            using (var context = new ExtraAuthorizeDbContext(options))
+            using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 //VERIFY
                 context.RolesToPermissions.Single().PermissionsInRole
@@ -90,7 +90,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         {
             //SETUP
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options))
+            using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 context.Database.EnsureCreated();
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(

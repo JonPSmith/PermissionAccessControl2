@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DataLayer.EfCode;
+using DataLayer.ExtraAuthClasses.Support;
 using GenericServices;
 using PermissionParts;
 
@@ -14,7 +15,7 @@ namespace DataLayer.ExtraAuthClasses
     /// <summary>
     /// This holds each Roles, which are mapped to Permissions
     /// </summary>
-    public class RoleToPermissions
+    public class RoleToPermissions : IChangeEffectsUser
     {
         [Required(AllowEmptyStrings = false)] //A role must have at least one role in it
         private string _permissionsInRole;

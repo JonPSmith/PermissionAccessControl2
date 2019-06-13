@@ -3,6 +3,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using DataLayer.ExtraAuthClasses.Support;
 using PermissionParts;
 
 namespace DataLayer.ExtraAuthClasses
@@ -10,7 +11,7 @@ namespace DataLayer.ExtraAuthClasses
     /// <summary>
     /// This holds what modules a user or tenant has
     /// </summary>
-    public class ModulesForUser
+    public class ModulesForUser : IChangeEffectsUser, IAddRemoveEffectsUser
     {
         public ModulesForUser(string moduleKey, PaidForModules allowedPaidForModules)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using CommonCache;
 using DataAuthorize;
 using DataLayer.EfCode;
 using FeatureAuthorize.PolicyCode;
@@ -51,8 +52,10 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            //Need to register before ConfigureCookiesForExtraAuth 
+            services.AddSingleton<ISimpleTimeCache>(new SimpleTimeCache());
             //This enables Cookies for authentication and adds the feature and data claims to the user
-            services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "true");
+            services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "True");
 
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
             //Register the Permission policy handlers

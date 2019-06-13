@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
 using ServiceLayer.SeedDemo;
-using Test.StartupHelpers;
+using Test.DiConfigHelpers;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Extensions.AssertExtensions;

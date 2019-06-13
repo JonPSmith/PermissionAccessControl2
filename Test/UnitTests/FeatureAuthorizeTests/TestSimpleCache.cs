@@ -27,9 +27,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         }
 
         [Theory]
-        [InlineData("test", "123", false)]
-        [InlineData("test", "1234", true)]
-        [InlineData("test", null, true)]
+        [InlineData("test", "123", true)]
+        [InlineData("test", "1234", false)]
+        [InlineData("test", null, false)]
         [InlineData("badkey", "1234", false)]
 
         public void TestGivenTicksIsHigherThanCachedTicks(string key, string ticksToTry, bool expectedResult )
@@ -40,7 +40,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             cache.AddOrUpdate("test", 200);
 
             //ATTEMPT
-            var isHigher = cache.GivenTicksIsHigherThanCachedTicks(key, ticksToTry);
+            var isHigher = cache.GivenTicksIsLowerThanCachedTicks(key, ticksToTry);
 
             //VERIFY
             isHigher.ShouldEqual(expectedResult);

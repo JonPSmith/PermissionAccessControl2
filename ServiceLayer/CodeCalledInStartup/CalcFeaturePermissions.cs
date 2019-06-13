@@ -62,7 +62,7 @@ namespace ServiceLayer.CodeCalledInStartup
 
         private ExtraAuthorizeDbContext GetContext()
         {
-            return _context ?? new ExtraAuthorizeDbContext(_extraAuthDbContextOptions);
+            return _context ?? new ExtraAuthorizeDbContext(_extraAuthDbContextOptions, null);
         }
     }
 }

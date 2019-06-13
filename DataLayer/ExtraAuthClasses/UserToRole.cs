@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataLayer.EfCode;
+using DataLayer.ExtraAuthClasses.Support;
 using GenericServices;
 
 namespace DataLayer.ExtraAuthClasses
@@ -12,7 +13,7 @@ namespace DataLayer.ExtraAuthClasses
     /// <summary>
     /// This is a one-to-many relationship between the User (represented by the UserId) and their Roles (represented by RoleToPermissions)
     /// </summary>
-    public class UserToRole
+    public class UserToRole : IAddRemoveEffectsUser
     {
         private UserToRole() { } //needed by EF Core
 

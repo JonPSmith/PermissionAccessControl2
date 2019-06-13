@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Reflection;
+using CommonCache;
 using DataAuthorize;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +16,7 @@ using PermissionAccessControl2.Data;
 using ServiceLayer.CodeCalledInStartup;
 using TestSupport.Helpers;
 
-namespace Test.StartupHelpers
+namespace Test.DiConfigHelpers
 {
     public class ConfigureServices
     {
@@ -42,6 +43,7 @@ namespace Test.StartupHelpers
 
             var startupConfig = AppSettings.GetConfiguration((Assembly)null, "demosettings.json");
             services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
+            services.AddSingleton<ISimpleTimeCache>(new SimpleTimeCache());
             services.AddSingleton<IConfiguration>(startupConfig);
             services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider("userId", ""));
 

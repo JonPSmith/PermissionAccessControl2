@@ -4,9 +4,9 @@ namespace CommonCache
 {
     public interface ISimpleTimeCache
     {
-        bool GivenTicksIsHigherThanCachedTicks(object cacheKey, string ticksToCompareString);
-        bool GivenTicksIsHigherThanCachedTicks(object cacheKey, long ticksToCompare);
-        bool GetValueOrUseDefault(object cacheKey, int defaultValue, out int cachedValue);
-        void AddOrUpdate(object cacheKey, int cachedValue);
+        bool GivenTicksIsLowerThanCachedTicks(object cacheKey, string ticksToCompareString);
+        bool GivenTicksIsLowerThanCachedTicks(object cacheKey, long ticksToCompare);
+        bool GetValueOrUseDefault(object cacheKey, long defaultValue, out long cachedValue);
+        void AddOrUpdate(object cacheKey, long cachedValue);
     }
 }
