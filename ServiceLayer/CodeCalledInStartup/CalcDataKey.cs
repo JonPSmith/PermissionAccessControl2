@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
+using System.Linq;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using Microsoft.EntityFrameworkCore;
@@ -38,14 +39,8 @@ namespace ServiceLayer.CodeCalledInStartup
         public string CalcDataKeyForUser(string userId)
         {
             var extraContext = GetExtraAuthContext();
-            var tenantInfo = extraContext.Find<UserDataHierarchical>(userId);
-            if (tenantInfo != null)
-            {
-                var foundTenant = extraContext.Tenants.Find(tenantInfo.LinkedTenantId);
-                return foundTenant?.DataKey ?? string.Empty;
-            }
-
-            return string.Empty;
+            return extraContext.DataAccess.Where(x => x.UserId == userId)
+                .Select(x => x.LinkedTenant.DataKey).SingleOrDefault() ?? string.Empty;
         }
 
         private ExtraAuthorizeDbContext GetExtraAuthContext()

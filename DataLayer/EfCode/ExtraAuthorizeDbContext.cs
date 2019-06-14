@@ -31,6 +31,7 @@ namespace DataLayer.EfCode
         {
             var changed = this.UserPermissionsMayHaveChanged();
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
+            //We log this after the SaveChange was successful
             if (changed)
                 _cache?.AddOrUpdate(SimpleTimeCache.FeatureCacheKey, DateTime.UtcNow.Ticks);
             return result;
@@ -40,6 +41,7 @@ namespace DataLayer.EfCode
         {
             var changed = this.UserPermissionsMayHaveChanged();
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            //We log this after the SaveChange was successful
             if (changed)
                 _cache?.AddOrUpdate(SimpleTimeCache.FeatureCacheKey, DateTime.UtcNow.Ticks);
             return result;

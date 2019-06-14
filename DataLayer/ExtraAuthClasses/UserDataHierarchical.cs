@@ -11,14 +11,24 @@ namespace DataLayer.ExtraAuthClasses
     /// </summary>
     public class UserDataHierarchical : UserDataAccessBase 
     {
-        public UserDataHierarchical(string userId, int linkedTenantId) : base(userId)
+        //THis is needed by EF Core
+        private UserDataHierarchical(string userId, int linkedTenantId, TenantBase linkedTenant) : base(userId)
         {
             LinkedTenantId = linkedTenantId;
+            LinkedTenant = linkedTenant;
+        }
+
+        public UserDataHierarchical(string userId, TenantBase linkedTenant) : base(userId)
+        {
+            LinkedTenant = linkedTenant;
         }
 
         /// <summary>
         /// This holds the primary key of the Tenant the user is linked to
         /// </summary>
         public int LinkedTenantId { get; private set; }
+
+        [ForeignKey(nameof(LinkedTenantId))]
+        public TenantBase LinkedTenant { get; private set; }
     }
 }
