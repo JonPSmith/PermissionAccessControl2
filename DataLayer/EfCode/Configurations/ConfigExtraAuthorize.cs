@@ -19,6 +19,16 @@ namespace DataLayer.EfCode.Configurations
     /// </summary>
     public static class ConfigExtensions
     {
+        public static void TenantBaseConfig(this ModelBuilder modelBuilder)
+        {
+            //for some reason ExtraAuthorizeConfig doesn't config this properly so I need to add this
+            modelBuilder.Entity<TenantBase>()
+                .HasDiscriminator<string>("TenantType")
+                .HasValue<Company>(nameof(Company))
+                .HasValue<SubGroup>(nameof(SubGroup))
+                .HasValue<RetailOutlet>(nameof(RetailOutlet));
+        }
+
         public static void ExtraAuthorizeConfig(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserToRole>().HasKey(x => new { x.UserId, x.RoleName });
@@ -33,20 +43,6 @@ namespace DataLayer.EfCode.Configurations
             AddUserIdQueryFilter(modelBuilder.Entity<PersonalData>(), context);
             AddHierarchicalQueryFilter(modelBuilder.Entity<TenantBase>(), context);
             AddHierarchicalQueryFilter(modelBuilder.Entity<ShopStock>(), context);
-        }
-
-        /// <summary>
-        /// This applies the correct query filter to the entity based on its interface type
-        /// NOTE: OnModelCreating is only run once and the results cached so you can't dynamically change filters.
-        ///       If you need dynamic query filters you need to build it into the lambda 
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="filter"></param>
-        private static void AddQueryFilterAndIndex<T>(EntityTypeBuilder<T> builder, Expression<Func<T, bool>> filter) where T : class, IDataKey
-        {
-            builder.HasQueryFilter(filter);
-            //add an index to make the filter quicker
-            builder.HasIndex(nameof(IDataKey.DataKey));
         }
 
         private static void AddUserIdQueryFilter<T>(EntityTypeBuilder<T> builder, AppDbContext context) where T : class, IDataKey

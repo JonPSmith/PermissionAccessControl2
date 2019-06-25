@@ -40,12 +40,9 @@ namespace ServiceLayer.SeedDemo
                 CheckAddCompanies(env, services);
                 CheckAddRoles(env, services);
 
-                var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-                var extraContext = services.GetRequiredService<ExtraAuthorizeDbContext>();
-                var appContext = services.GetRequiredService<AppDbContext>();
                 var pathUserJson = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, UsersFilename));
                 var userJson = File.ReadAllText(pathUserJson);
-                var userSetup = new DemoUsersSetup(userManager, extraContext, appContext);
+                var userSetup = new DemoUsersSetup(services);
                 await userSetup.CheckAddDemoUsersAsync(userJson);
             }
         }

@@ -7,6 +7,8 @@ namespace DataLayer.AppClasses.MultiTenantParts
 {
     public class RetailOutlet : TenantBase
     {
+        private RetailOutlet(string name) : base(name) { } //Needed by EF Core
+
         public RetailOutlet(string name, TenantBase parent) : base(name, parent)
         {
         }

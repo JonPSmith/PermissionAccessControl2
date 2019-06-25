@@ -12,6 +12,8 @@ namespace DataLayer.AppClasses.MultiTenantParts
     /// </summary>
     public class Company : TenantBase
     {
+        private Company(string name) : base(name) { } //Needed by EF Core
+
         public Company(string name, PaidForModules allowedPaidForModules) : base(name, null)
         {
             AllowedPaidForModules = allowedPaidForModules;

@@ -10,6 +10,7 @@ using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 [assembly: InternalsVisibleTo("Test")]
@@ -19,21 +20,19 @@ namespace ServiceLayer.SeedDemo.Internal
     internal class DemoUsersSetup
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly AppDbContext _appContext;
         private readonly ExtraAuthorizeDbContext _extraContext;
         private readonly SetupExtraAuthUsers _extraService;
 
-        public DemoUsersSetup(UserManager<IdentityUser> userManager, ExtraAuthorizeDbContext extraContext, AppDbContext appContext)
+        public DemoUsersSetup(IServiceProvider services)
         {
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _extraContext = extraContext ?? throw new ArgumentNullException(nameof(extraContext));
-            _extraService = new SetupExtraAuthUsers(extraContext);
-            _appContext = appContext;
+            _userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+            _extraContext = services.GetRequiredService<ExtraAuthorizeDbContext>();
+            _extraService = new SetupExtraAuthUsers(_extraContext);
         }
 
         public async Task CheckAddDemoUsersAsync(string usersJson)
         {
-            var allOutlets = _appContext.Tenants.IgnoreQueryFilters().OfType<RetailOutlet>().ToList();
+            var allOutlets = _extraContext.Tenants.IgnoreQueryFilters().OfType<RetailOutlet>().ToList();
             foreach (var userSpec in JsonConvert.DeserializeObject<List<UserJson>>(usersJson))
             {
                 if (userSpec.LinkedTenant.StartsWith("*"))
@@ -47,7 +46,7 @@ namespace ServiceLayer.SeedDemo.Internal
                 }
                 else
                 {
-                    var foundTenant = _appContext.Tenants.IgnoreQueryFilters()
+                    var foundTenant = _extraContext.Tenants.IgnoreQueryFilters()
                         .SingleOrDefault(x => x.Name == userSpec.LinkedTenant);
                     if (foundTenant == null)
                         throw new ApplicationException($"Could not find a tenant named {userSpec.LinkedTenant}.");

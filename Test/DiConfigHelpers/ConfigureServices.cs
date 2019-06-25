@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.ExpressionTranslators.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
@@ -18,23 +19,12 @@ using TestSupport.Helpers;
 
 namespace Test.DiConfigHelpers
 {
-    public class ConfigureServices
+    public static class ConfigureServices
     {
-        public ServiceProvider ServiceProvider { get; private set; }
-
-        public ConfigureServices()
+        public static ServiceProvider SetupServices(this object callingClass, bool useSqlDbs = false)
         {
             var services = new ServiceCollection();
-            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
-            var identityConnection = new SqliteConnection(connectionStringBuilder.ToString());
-            identityConnection.Open();
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(identityConnection));
-
-            var authAndAppConnection = new SqliteConnection(connectionStringBuilder.ToString());
-            authAndAppConnection.Open();
-            services.AddDbContext<AppDbContext>(options => { options.UseSqlite(authAndAppConnection); });
-            services.AddDbContext<ExtraAuthorizeDbContext>(options => { options.UseSqlite(authAndAppConnection); });
-            services.AddDbContext<CombinedDbContext>(options => { options.UseSqlite(authAndAppConnection); });
+            services.RegisterDatabases(callingClass, useSqlDbs);
 
             //Wanted to use the line below but just couldn't get the right package for it
             //services.AddDefaultIdentity<IdentityUser>()
@@ -47,11 +37,46 @@ namespace Test.DiConfigHelpers
             services.AddSingleton<IConfiguration>(startupConfig);
             services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider("userId", ""));
 
-            ServiceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
 
-            //make sure the in-memory databases are created
-            ServiceProvider.GetService<ApplicationDbContext>().Database.EnsureCreated();
-            ServiceProvider.GetService<CombinedDbContext>().Database.EnsureCreated();
+            //make sure the  databases are created
+            serviceProvider.GetRequiredService<ApplicationDbContext>().Database.EnsureCreated();
+            serviceProvider.GetRequiredService<CombinedDbContext>().Database.EnsureCreated();
+
+            return serviceProvider;
+        }
+
+        private static void RegisterDatabases(this ServiceCollection services, object callingClass, bool useSqlDbs)
+        {
+            if (useSqlDbs)
+            {
+                var aspNetConnectionString = callingClass.GetUniqueDatabaseConnectionString("AspNet");
+                services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(aspNetConnectionString));
+
+                var appConnectionString = callingClass.GetUniqueDatabaseConnectionString("AppData");
+                services.AddDbContext<AppDbContext>(options => options.UseSqlServer(appConnectionString));
+                services.AddDbContext<ExtraAuthorizeDbContext>(options => options.UseSqlServer(appConnectionString));
+                services.AddDbContext<CombinedDbContext>(options => options.UseSqlServer(appConnectionString));
+            }
+            else
+            {
+
+                var aspNetAuthConnection = SetupSqliteInMemoryConnection();
+                services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(aspNetAuthConnection));
+                var appExtraConnection = SetupSqliteInMemoryConnection();
+                services.AddDbContext<AppDbContext>(options => options.UseSqlite(appExtraConnection));
+                services.AddDbContext<ExtraAuthorizeDbContext>(options => options.UseSqlite(appExtraConnection));
+                services.AddDbContext<CombinedDbContext>(options => options.UseSqlite(appExtraConnection));
+            }
+        }
+
+        private static SqliteConnection SetupSqliteInMemoryConnection()
+        {
+            var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
+            var connectionString = connectionStringBuilder.ToString();
+            var connection = new SqliteConnection(connectionString);
+            connection.Open();  //see https://github.com/aspnet/EntityFramework/issues/6968
+            return connection;
         }
     }
 }

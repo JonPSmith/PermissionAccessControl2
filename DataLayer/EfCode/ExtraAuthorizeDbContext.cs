@@ -55,6 +55,7 @@ namespace DataLayer.EfCode
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.TenantBaseConfig();
             modelBuilder.ExtraAuthorizeConfig();
         }
     }

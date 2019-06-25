@@ -19,13 +19,13 @@ namespace Test.UnitTests.TestSeedDemo
 {
     public class TestSeedExtensions
     {
-        private ITestOutputHelper _output;
+        private readonly ITestOutputHelper _output;
         private readonly ServiceProvider _serviceProvider;
 
         public TestSeedExtensions(ITestOutputHelper output)
         {
             _output = output;
-            _serviceProvider = new ConfigureServices().ServiceProvider;
+            _serviceProvider = this.SetupServices();
         }
 
         [Fact]
@@ -83,14 +83,14 @@ namespace Test.UnitTests.TestSeedDemo
                 }
                 display.ShouldEqual(new List<string>
                 {
-                    "TenantBase: Name = 4U Inc., DataKey = 1|",
-                    "TenantBase: Name = West Coast, DataKey = 1|2|",
-                    "TenantBase: Name = East Coast, DataKey = 1|3|",
-                    "TenantBase: Name = LA Tie4U, DataKey = 1|2|4*",
-                    "TenantBase: Name = NY Dress4U, DataKey = 1|3|5*",
-                    "TenantBase: Name = Pets2 Ltd., DataKey = 6|",
-                    "TenantBase: Name = Cats Place, DataKey = 6|7*",
-                    "TenantBase: Name = Kitten Place, DataKey = 6|8*",
+                    "Company: Name = 4U Inc., DataKey = 1|",
+                    "SubGroup: Name = West Coast, DataKey = 1|2|",
+                    "SubGroup: Name = East Coast, DataKey = 1|3|",
+                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|4*",
+                    "RetailOutlet: Name = NY Dress4U, DataKey = 1|3|5*",
+                    "Company: Name = Pets2 Ltd., DataKey = 6|",
+                    "RetailOutlet: Name = Cats Place, DataKey = 6|7*",
+                    "RetailOutlet: Name = Kitten Place, DataKey = 6|8*",
                 });
             }
         }
@@ -114,14 +114,14 @@ namespace Test.UnitTests.TestSeedDemo
                 }
                 display.ShouldEqual(new List<string>
                 {
-                    "TenantBase: Name = 4U Inc., DataKey = 1|",
-                    "TenantBase: Name = West Coast, DataKey = 1|2|",
-                    "TenantBase: Name = East Coast, DataKey = 1|3|",
-                    "TenantBase: Name = LA Tie4U, DataKey = 1|2|4*",
-                    "TenantBase: Name = NY Dress4U, DataKey = 1|3|5*",
-                    "TenantBase: Name = Pets2 Ltd., DataKey = 6|",
-                    "TenantBase: Name = Cats Place, DataKey = 6|7*",
-                    "TenantBase: Name = Kitten Place, DataKey = 6|8*",
+                    "Company: Name = 4U Inc., DataKey = 1|",
+                    "SubGroup: Name = West Coast, DataKey = 1|2|",
+                    "SubGroup: Name = East Coast, DataKey = 1|3|",
+                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|4*",
+                    "RetailOutlet: Name = NY Dress4U, DataKey = 1|3|5*",
+                    "Company: Name = Pets2 Ltd., DataKey = 6|",
+                    "RetailOutlet: Name = Cats Place, DataKey = 6|7*",
+                    "RetailOutlet: Name = Kitten Place, DataKey = 6|8*",
                 });
             }
         }

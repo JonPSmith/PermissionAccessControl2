@@ -18,9 +18,12 @@ namespace DataLayer.AppClasses.MultiTenantParts
     /// <summary>
     /// This contains the class that all the hierarchical tenant classes inherit from
     /// </summary>
-    public class TenantBase : IDataKey
+    public abstract class TenantBase : IDataKey
     {
-        private TenantBase(){} // needed by EF Core
+        protected TenantBase(string name) // needed by EF Core
+        {
+            Name = name;
+        } 
 
         protected TenantBase(string name, TenantBase parent)
         {
