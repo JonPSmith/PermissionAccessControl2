@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataLayer.AppClasses.MultiTenantParts;
 
@@ -11,15 +12,16 @@ namespace DataLayer.ExtraAuthClasses
     /// </summary>
     public class UserDataHierarchical : UserDataAccessBase 
     {
-        //THis is needed by EF Core
-        private UserDataHierarchical(string userId, int linkedTenantId, TenantBase linkedTenant) : base(userId)
+        //This is needed by EF Core
+        private UserDataHierarchical(string userId, int linkedTenantId) : base(userId)
         {
             LinkedTenantId = linkedTenantId;
-            LinkedTenant = linkedTenant;
         }
 
         public UserDataHierarchical(string userId, TenantBase linkedTenant) : base(userId)
         {
+            if (linkedTenant.TenantItemId == 0)
+                throw new ApplicationException("The linkedTenant must be already in the database.");
             LinkedTenant = linkedTenant;
         }
 
