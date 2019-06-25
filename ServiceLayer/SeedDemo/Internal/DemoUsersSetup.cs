@@ -65,6 +65,7 @@ namespace ServiceLayer.SeedDemo.Internal
                 _extraService.CheckAddRoleToUser(user.Id, roleName);
             }
             _extraService.CheckAddDataAccessHierarchical(user.Id, linkedTenant);
+            _extraService.CheckAddModules(user.Id, linkedTenant);
         }
 
 

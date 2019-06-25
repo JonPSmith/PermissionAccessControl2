@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
+using PermissionParts;
 using ServiceLayer.SeedDemo;
 using Test.DiConfigHelpers;
 using Xunit;
@@ -179,6 +180,21 @@ namespace Test.UnitTests.TestSeedDemo
             userEmails.ShouldEqual("dir@4U.com, westCoast@4U.com, eastCoast@4U.com, " +
                                    "LA-Tie4UBoss@4U.com, NY-Dress4UBoss@4U.com, LA-Tie4USales@4U.com, NY-Dress4USales@4U.com, " +
                                    "dir@Pets2.com, Cats-PlaceSales@Pets2.com, Kitten-PlaceSales@Pets2.com");
+        }
+
+        [Fact]
+        public async Task TestSeedDatAddModulesToUser()
+        {
+            //SETUP
+
+            //ATTEMPT
+            await _serviceProvider.CheckSeedDataAndUserAsync();
+
+            //VERIFY
+            var extraContext = _serviceProvider.GetRequiredService<ExtraAuthorizeDbContext>();
+            var numUsers = _serviceProvider.GetRequiredService<UserManager<IdentityUser>>().Users.Count();
+            extraContext.ModulesForUsers.Count().ShouldEqual(numUsers);
+            extraContext.ModulesForUsers.All(x => x.AllowedPaidForModules == PaidForModules.None).ShouldBeTrue();
         }
     }
 }
