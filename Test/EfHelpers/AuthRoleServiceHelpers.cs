@@ -14,11 +14,11 @@ namespace Test.EfHelpers
         public static void SeedUserWithTwoRoles(this ExtraAuthorizeDbContext context, string userId = "userId")
         {
             var userStatus = RoleToPermissions.CreateRoleWithPermissions(
-                "TestRole1", new List<Permissions> { Permissions.StockRead}, context);
+                "TestRole1", "TestRole1", new List<Permissions> { Permissions.StockRead}, context);
             userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
             context.Add(userStatus.Result);
             userStatus = RoleToPermissions.CreateRoleWithPermissions(
-                "TestRole2", new List<Permissions> { Permissions.StockSell}, context);
+                "TestRole2", "TestRole1", new List<Permissions> { Permissions.StockSell}, context);
             userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
             context.Add(userStatus.Result);
 

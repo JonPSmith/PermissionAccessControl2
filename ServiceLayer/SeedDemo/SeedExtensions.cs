@@ -73,7 +73,7 @@ namespace ServiceLayer.SeedDemo
                 var permissions = line.Substring(colonIndex + 1).Split(',')
                     .Select(x => Enum.Parse(typeof(Permissions), x.Trim(), true))
                     .Cast<Permissions>().ToList();
-                extraService.CheckAddNewRole(roleName, permissions);
+                extraService.CheckAddNewRole(roleName, roleName, permissions);
             }
 
             context.SaveChanges();

@@ -27,9 +27,10 @@ namespace DataLayer.ExtraAuthClasses
         /// </summary>
         /// <param name="roleName"></param>
         /// <param name="permissions"></param>
-        private RoleToPermissions(string roleName, ICollection<Permissions> permissions)
+        private RoleToPermissions(string roleName, string description, ICollection<Permissions> permissions)
         {
             RoleName = roleName;
+            Description = description;
             UpdatePermissionsInRole(permissions);
         }
 
@@ -42,11 +43,17 @@ namespace DataLayer.ExtraAuthClasses
         public string RoleName { get; private set; }
 
         /// <summary>
+        /// A human-friendly description of what the Role does
+        /// </summary>
+        [Required(AllowEmptyStrings = false)]
+        public string Description { get; private set; }
+
+        /// <summary>
         /// This returns the list of permissions in this role
         /// </summary>
         public IEnumerable<Permissions> PermissionsInRole => _permissionsInRole.UnpackPermissionsFromString();
 
-        public static IStatusGeneric<RoleToPermissions> CreateRoleWithPermissions(string roleName, ICollection<Permissions> permissionInRole,
+        public static IStatusGeneric<RoleToPermissions> CreateRoleWithPermissions(string roleName, string description, ICollection<Permissions> permissionInRole,
             ExtraAuthorizeDbContext context)
         {
             var status = new StatusGenericHandler<RoleToPermissions>();
@@ -56,7 +63,7 @@ namespace DataLayer.ExtraAuthClasses
                 return status;
             }
 
-            return status.SetResult(new RoleToPermissions(roleName, permissionInRole));
+            return status.SetResult(new RoleToPermissions(roleName, description, permissionInRole));
         }
 
         public void UpdatePermissionsInRole(ICollection<Permissions> permissions)
@@ -65,6 +72,11 @@ namespace DataLayer.ExtraAuthClasses
                 throw new InvalidOperationException("There should be at least one permission associated with a role.");
 
             _permissionsInRole = permissions.PackPermissionsIntoString();
+        }
+
+        public void UpdateDescription(string description)
+        {
+            Description = description;
         }
 
         public IStatusGeneric DeleteRole(string roleName, bool removeFromUsers,

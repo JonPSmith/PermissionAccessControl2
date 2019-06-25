@@ -26,9 +26,9 @@ namespace ServiceLayer.SeedDemo.Internal
             _context = context;
         }
 
-        public void CheckAddNewRole(string roleName, ICollection<Permissions> permissions)
+        public void CheckAddNewRole(string roleName, string description, ICollection<Permissions> permissions)
         {
-            var status = RoleToPermissions.CreateRoleWithPermissions(roleName, permissions, _context);
+            var status = RoleToPermissions.CreateRoleWithPermissions(roleName, description, permissions, _context);
             if (status.IsValid)
                 //Note that CreateRoleWithPermissions will return a invalid status if the role is already present.
                 _context.Add(status.Result);

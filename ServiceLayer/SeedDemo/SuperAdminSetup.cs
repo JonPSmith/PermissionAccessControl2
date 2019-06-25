@@ -43,7 +43,7 @@ namespace ServiceLayer.SeedDemo
                 using (var context = services.GetRequiredService<ExtraAuthorizeDbContext>())
                 {
                     var extraService = new SetupExtraAuthUsers(context);
-                    extraService.CheckAddNewRole(SuperAdminRoleName, new List<Permissions>{ Permissions.AccessAll});
+                    extraService.CheckAddNewRole(SuperAdminRoleName, "SuperAdmin Role", new List<Permissions>{ Permissions.AccessAll});
                     extraService.CheckAddRoleToUser(superUser.Id, SuperAdminRoleName);
                     context.SaveChanges();
                 }

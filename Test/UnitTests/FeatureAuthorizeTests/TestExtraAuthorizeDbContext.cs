@@ -45,7 +45,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 
                 //ATTEMPT
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                    "test", new List<Permissions> {Permissions.StockAddNew}, context);
+                    "test", "test", new List<Permissions> {Permissions.StockAddNew}, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();
@@ -67,7 +67,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.Database.EnsureCreated();
 
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                        "test", new List<Permissions> { Permissions.StockRead }, context);
+                        "test", "test", new List<Permissions> { Permissions.StockRead }, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();
@@ -94,7 +94,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 context.Database.EnsureCreated();
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                    "test", new List<Permissions> { Permissions.StockSell }, context);
+                    "test", "test", new List<Permissions> { Permissions.StockSell }, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();

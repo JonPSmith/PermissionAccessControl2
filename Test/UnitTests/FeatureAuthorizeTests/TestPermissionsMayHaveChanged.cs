@@ -28,7 +28,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 
                 //ATTEMPT
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
-                    ("test", new List<Permissions> { Permissions.AccessAll }, context).Result;
+                    ("test", "test", new List<Permissions> { Permissions.AccessAll }, context).Result;
                 context.Add(rolToPer);
                 context.SaveChanges();
 
@@ -48,7 +48,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
-                    ("test", new List<Permissions> { Permissions.AccessAll }, context).Result;
+                    ("test", "test", new List<Permissions> { Permissions.AccessAll }, context).Result;
                 context.Add(rolToPer);
                 context.SaveChanges();
 
@@ -72,7 +72,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
-                    ("test", new List<Permissions> { Permissions.AccessAll }, context).Result;
+                    ("test", "test", new List<Permissions> { Permissions.AccessAll }, context).Result;
                 context.Add(rolToPer);
                 context.SaveChanges();
                 fakeCache.Clear();
