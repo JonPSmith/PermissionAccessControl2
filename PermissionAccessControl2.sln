@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureAuthorize", "FeatureAuthorize\FeatureAuthorize.csproj", "{255486A5-790B-47BC-B95C-572889F004CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonCache", "CommonCache\CommonCache.csproj", "{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonCache", "CommonCache\CommonCache.csproj", "{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{08C37F40-167A-4D8B-86FC-B42980808BDB}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
