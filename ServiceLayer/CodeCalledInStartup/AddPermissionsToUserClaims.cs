@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace ServiceLayer.CodeCalledInStartup
 {
+    // Thanks to https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
     public class AddPermissionsToUserClaims : UserClaimsPrincipalFactory<IdentityUser>
     {
         private readonly ExtraAuthorizeDbContext _extraAuthDbContext;
