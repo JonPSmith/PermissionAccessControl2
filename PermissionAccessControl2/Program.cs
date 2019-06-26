@@ -21,10 +21,9 @@ namespace PermissionAccessControl2
                 .UseStartup<Startup>()
                 .Build();
 
-            //Because I am using in-memory databases I need to make sure they are created 
+            //Because I might be using in-memory databases I need to make sure they are created 
             //before my startup code tries to use them
             SetupDatabases(webHost);
-            //Now I run the code to 
             await webHost.Services.CheckAddSuperAdminAsync();
             await webHost.Services.CheckSeedDataAndUserAsync();
             return webHost;

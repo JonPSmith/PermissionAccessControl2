@@ -34,7 +34,7 @@ namespace PermissionParts
         /// <returns></returns>
         public static bool UserHasThisPermission(this Permissions[] usersPermissions, Permissions permissionToCheck)
         {
-            return usersPermissions.Contains(Permissions.AccessAll) || usersPermissions.Contains(permissionToCheck);
+            return usersPermissions.Contains(permissionToCheck) || usersPermissions.Contains(Permissions.AccessAll);
         }
     }
 }
