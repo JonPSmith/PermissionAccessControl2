@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,7 @@ namespace ServiceLayer.SeedDemo
         /// <summary>
         /// This ensures there is a SuperAdmin user in the system.
         /// It gets the SuperAdmin's email and password from the "SuperAdmin" section of the appsettings.json file
+        /// NOTE: fro security reasons I only allows one user with the RoleName of <see cref="SuperAdminRoleName"/> 
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
@@ -28,6 +30,11 @@ namespace ServiceLayer.SeedDemo
             using (var scope = serviceProvider.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var extraContext = services.GetRequiredService<ExtraAuthorizeDbContext>();
+                if (extraContext.UserToRoles.Any(x => x.RoleName == SuperAdminRoleName))
+                    //For security reasons there can only be one user with the SuperAdminRoleName
+                    return;
+
                 var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
                 var config = services.GetRequiredService<IConfiguration>();
