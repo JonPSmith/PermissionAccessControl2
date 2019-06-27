@@ -77,5 +77,29 @@ namespace Test.UnitTests.DataAuthorizeTests
                 salesNotFiltered.First().DataKey.ShouldEqual("accessKey*");
             }
         }
+
+        [Fact]
+        public void TestDataKeyNotSetIfProvidedKeyIsNull()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(null)))
+            {
+                context.Database.EnsureCreated();
+                var stock = new ShopStock {Name = "dress"};
+                stock.SetHierarchicalDataKey("accessKey*");
+                context.Add(stock);
+                context.SaveChanges();
+
+            }
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
+            {
+                //ATTEMPT
+                var stocksFiltered = context.ShopStocks.ToList();
+
+                //VERIFY
+                stocksFiltered.Count.ShouldEqual(1);
+            }
+        }
     }
 }

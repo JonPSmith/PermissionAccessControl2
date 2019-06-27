@@ -20,6 +20,7 @@ namespace ServiceLayer.SeedDemo
     {
         private const string SeedDataDir = "SeedData";
         private const string CompanyDataFilename = "Companies.txt";
+        private const string ShopStockFilename = "ShopStock.txt";
         private const string RolesFilename = "Roles.txt";
         private const string UsersFilename = "Users.json";
 
@@ -48,13 +49,18 @@ namespace ServiceLayer.SeedDemo
 
         private static void CheckAddCompanies(IHostingEnvironment env, IServiceProvider services)
         {
-            var pathCompanyData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, CompanyDataFilename));
             var context = services.GetRequiredService<CompanyDbContext>();
             if (!context.Tenants.IgnoreQueryFilters().Any())
             {
-                //No companies 
-                var lines = File.ReadAllLines(pathCompanyData);
-                context.AddCompanyAndChildrenInDatabase(lines);
+                //No companies so add them and the shop data 
+                var pathCompanyData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, CompanyDataFilename));
+                var companyData = File.ReadAllLines(pathCompanyData);
+                context.AddCompanyAndChildrenInDatabase(companyData);
+
+                var pathShopData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, ShopStockFilename));
+                var stockData = File.ReadAllLines(pathShopData);
+                context.AddStockToShops(stockData);
+                context.SaveChanges();
             }
         }
 

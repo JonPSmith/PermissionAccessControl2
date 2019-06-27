@@ -14,5 +14,10 @@ namespace DataLayer.MultiTenantClasses
         public string Name { get; set; }
         public decimal RetailPrice { get; set; }
         public int NumInStock { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(Name)}: {Name}, {nameof(RetailPrice)}: {RetailPrice}, {nameof(NumInStock)}: {NumInStock}";
+        }
     }
 }

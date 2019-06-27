@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Remove="TestData\Companies.txt" />
     <None Remove="TestData\Roles.txt" />
+    <None Remove="TestData\SeedData\ShopStock.txt" />
     <None Remove="TestData\Users.json" />
   </ItemGroup>
 
@@ -17,6 +18,9 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="TestData\SeedData\Roles.txt">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="TestData\SeedData\ShopStock.txt">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="TestData\SeedData\Users.json">

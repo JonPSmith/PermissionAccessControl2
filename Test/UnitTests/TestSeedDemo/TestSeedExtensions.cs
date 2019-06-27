@@ -128,6 +128,38 @@ namespace Test.UnitTests.TestSeedDemo
         }
 
         [Fact]
+        public async Task TestSeedShopStock()
+        {
+            //SETUP
+
+            //ATTEMPT
+            await _serviceProvider.CheckSeedDataAndUserAsync();
+
+            //VERIFY
+            var companyContext = _serviceProvider.GetRequiredService<CompanyDbContext>();
+            {
+                var display = companyContext.ShopStocks.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                foreach (var line in display)
+                {
+                    _output.WriteLine($"\"{line}\",");
+                }
+                display.ShouldEqual(new List<string>
+                {
+                    "Name: Blue tie, RetailPrice: 15.0, NumInStock: 5",
+                    "Name: Red tie, RetailPrice: 20.0, NumInStock: 5",
+                    "Name: Green tie, RetailPrice: 10.0, NumInStock: 5",
+                    "Name: Modern dress, RetailPrice: 65.0, NumInStock: 5",
+                    "Name: Nice dress, RetailPrice: 30.0, NumInStock: 5",
+                    "Name: Cat food (large), RetailPrice: 40.0, NumInStock: 5",
+                    "Name: Cat food (small), RetailPrice: 10.0, NumInStock: 5",
+                    "Name: Scratch pole, RetailPrice: 60.0, NumInStock: 5",
+                    "Name: Play mouse, RetailPrice: 5.0, NumInStock: 5",
+                    "Name: Cat food (small), RetailPrice: 12.0, NumInStock: 5",
+                });
+            }
+        }
+
+        [Fact]
         public async Task TestSeedDataAndUserCheckUsers()
         {
             //SETUP

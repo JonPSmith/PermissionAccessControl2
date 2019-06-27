@@ -1,0 +1,4 @@
+﻿LA Tie4U: Blue tie|15, Red tie|20, Green tie|10
+NY Dress4U: Modern dress|65, Nice dress|30 
+Cats Place: Cat food (large)|40, Cat food (small)|10  
+Kitten Place: Scratch pole|60, Play mouse|5, Cat food (small)|12
