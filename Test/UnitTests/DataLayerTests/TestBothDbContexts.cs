@@ -44,6 +44,7 @@ namespace Test.UnitTests.DataLayerTests
                     "DataLayer.ExtraAuthClasses.UserToRole",
                     "DataLayer.MultiTenantClasses.Company",
                     "DataLayer.MultiTenantClasses.RetailOutlet",
+                    "DataLayer.MultiTenantClasses.ShopSale",
                     "DataLayer.MultiTenantClasses.ShopStock",
                     "DataLayer.MultiTenantClasses.SubGroup",
                     "DataLayer.MultiTenantClasses.TenantBase",

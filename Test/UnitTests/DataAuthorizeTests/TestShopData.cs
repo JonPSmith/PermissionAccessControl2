@@ -5,6 +5,7 @@ using System.Linq;
 using DataLayer.EfCode;
 using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
+using PermissionParts;
 using ServiceLayer.CodeCalledInStartup;
 using TestSupport.EfHelpers;
 using Xunit;
@@ -36,7 +37,8 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
-                context.Add(new ShopStock { Name = "dress" });
+                var shop = new RetailOutlet("TestShop", new Company("TestCompany", PaidForModules.None));
+                context.Add(new ShopStock { Name = "dress", Shop = shop});
                 context.SaveChanges();
 
             }
@@ -61,7 +63,8 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
-                context.Add(new ShopSale{ NumSoldReturned = 1, StockItem = new ShopStock { Name = "dress" }});
+                var shop = new RetailOutlet("TestShop", new Company("TestCompany", PaidForModules.None));
+                context.Add(new ShopSale{ NumSoldReturned = 1, Shop = shop, StockItem = new ShopStock { Name = "dress", Shop = shop}});
                 context.SaveChanges();
 
             }
@@ -86,7 +89,8 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(null)))
             {
                 context.Database.EnsureCreated();
-                var stock = new ShopStock {Name = "dress"};
+                var shop = new RetailOutlet("TestShop", new Company("TestCompany", PaidForModules.None));
+                var stock = new ShopStock {Name = "dress", Shop = shop};
                 stock.SetHierarchicalDataKey("accessKey*");
                 context.Add(stock);
                 context.SaveChanges();

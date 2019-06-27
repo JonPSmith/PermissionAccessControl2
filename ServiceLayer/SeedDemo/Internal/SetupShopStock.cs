@@ -17,9 +17,9 @@ namespace ServiceLayer.SeedDemo.Internal
             {
                 var colonIndex = line.IndexOf(':');
                 var shopName = line.Substring(0, colonIndex);
-                var shopDataKey = context.Tenants.IgnoreQueryFilters().OfType<RetailOutlet>()
-                    .SingleOrDefault(x => x.Name == shopName)?.DataKey;
-                if (shopDataKey == null)
+                var shop = context.Tenants.IgnoreQueryFilters().OfType<RetailOutlet>()
+                    .SingleOrDefault(x => x.Name == shopName);
+                if (shop == null)
                     throw new ApplicationException($"Could not find a shop of name '{shopName}'");
 
                 var eachStock = from stockAndPrice in line.Substring(colonIndex + 1).Split(',')
@@ -27,8 +27,8 @@ namespace ServiceLayer.SeedDemo.Internal
                     select new {Name = parts[0], Price = decimal.Parse(parts[1])};
                 foreach (var stock in eachStock)
                 {
-                    var newStock = new ShopStock {Name = stock.Name, NumInStock = 5, RetailPrice = stock.Price};
-                    newStock.SetHierarchicalDataKey(shopDataKey);
+                    var newStock = new ShopStock {Name = stock.Name, NumInStock = 5, RetailPrice = stock.Price, Shop = shop};
+                    newStock.SetHierarchicalDataKey(shop.DataKey);
                     context.Add(newStock);
                 }
             }

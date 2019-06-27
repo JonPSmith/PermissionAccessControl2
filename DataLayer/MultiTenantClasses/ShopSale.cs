@@ -23,6 +23,12 @@ namespace DataLayer.MultiTenantClasses
 
         //------------------------------------------
         //relationships
+
+        public int TenantItemId { get; set; }
+
+        [ForeignKey(nameof(TenantItemId))]
+        public RetailOutlet Shop { get; set; }
+
         public int ShopStockId { get; set; }
 
         [ForeignKey(nameof(ShopStockId))]

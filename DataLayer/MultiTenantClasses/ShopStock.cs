@@ -1,7 +1,9 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System.ComponentModel.DataAnnotations.Schema;
 using DataAuthorize;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace DataLayer.MultiTenantClasses
 {
@@ -14,6 +16,14 @@ namespace DataLayer.MultiTenantClasses
         public string Name { get; set; }
         public decimal RetailPrice { get; set; }
         public int NumInStock { get; set; }
+
+        //------------------------------------------
+        //relationships
+
+        public int TenantItemId { get; set; }
+
+        [ForeignKey(nameof(TenantItemId))]
+        public RetailOutlet Shop { get; set; }
 
         public override string ToString()
         {
