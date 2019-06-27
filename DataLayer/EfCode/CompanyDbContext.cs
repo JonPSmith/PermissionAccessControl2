@@ -2,49 +2,45 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using DataAuthorize;
-using DataLayer.AppClasses;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode.Configurations;
+using DataLayer.MultiTenantClasses;
 
 namespace DataLayer.EfCode
 {
-    public class AppDbContext : DbContext
+    public class CompanyDbContext : DbContext
     {
-        internal readonly string UserId;
         internal readonly string DataKey;
 
-        public DbSet<GeneralNote> GeneralNotes { get; set; }
-        public DbSet<PersonalData> PersonalDatas { get; set; }
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<ShopStock> ShopStocks { get; set; }
+        public DbSet<ShopSale> ShopSales { get; set; }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options, IGetClaimsProvider claimsProvider)
+        public CompanyDbContext(DbContextOptions<CompanyDbContext> options, IGetClaimsProvider claimsProvider)
             : base(options)
         {
-            UserId = claimsProvider.UserId;
             DataKey = claimsProvider.DataKey;
         }
 
         //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            this.MarkWithDataKeyIfNeeded(UserId, DataKey);
+            this.MarkWithDataKeyIfNeeded(DataKey);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
         {
-            this.MarkWithDataKeyIfNeeded(UserId, DataKey);
+            this.MarkWithDataKeyIfNeeded(DataKey);
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.TenantBaseConfig();
-            modelBuilder.AppConfig(this);
+            modelBuilder.CompanyDbConfig(this);
         }
     }
 }

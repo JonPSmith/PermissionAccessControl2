@@ -10,41 +10,17 @@ namespace DataAuthorize
     {
         /// <summary>
         /// This is called in the overridden SaveChanges in the application's DbContext
-        /// Its job is to see if a entity has a IUserId and set the appropriate key 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="userId"></param>
-        public static void MarkWithUserIdIfNeeded(this DbContext context, string userId)
-        {
-            foreach (var entityEntry in context.ChangeTracker.Entries()
-                .Where(e => e.State == EntityState.Added))
-            {
-                if (entityEntry.Entity is IUserId hasUserId)
-                    hasUserId.SetDataKey(userId);
-            }
-        }
-
-        /// <summary>
-        /// This is called in the overridden SaveChanges in the application's DbContext
         /// Its job is to see if a entity has a IUserId or ITenantKey and set the appropriate key 
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="userId"></param>
         /// <param name="accessKey"></param>
-        public static void MarkWithDataKeyIfNeeded(this DbContext context, string userId, string accessKey)
+        public static void MarkWithDataKeyIfNeeded(this DbContext context, string accessKey)
         {
             foreach (var entityEntry in context.ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Added))
             {
-                switch (entityEntry.Entity)
-                {
-                    case IUserId hasUserId:
-                        hasUserId.SetDataKey(userId);
-                        break;
-                    case IHierarchicalKey hasAccessKey:
-                        hasAccessKey.SetHierarchicalDataKey(accessKey);
-                        break;
-                }
+                if (entityEntry.Entity is IHierarchicalKey hasHierarchicalKey)
+                    hasHierarchicalKey.SetHierarchicalDataKey(accessKey);
             }
         }
     }

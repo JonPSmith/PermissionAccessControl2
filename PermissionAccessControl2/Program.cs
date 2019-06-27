@@ -38,7 +38,7 @@ namespace PermissionAccessControl2
                 {
                     context.Database.EnsureCreated();
                 }
-                //This creates a database which is a combination of both the ExtraAuthorizeDbContext and AppDbContext
+                //This creates a database which is a combination of both the ExtraAuthorizeDbContext and CompanyDbContext
                 using (var context = services.GetRequiredService<CombinedDbContext>())
                 {
                     context.Database.EnsureCreated();

@@ -8,13 +8,11 @@ namespace ServiceLayer.CodeCalledInStartup
 {
     public class FakeGetClaimsProvider : IGetClaimsProvider
     {
-        public FakeGetClaimsProvider(string userId, string dataKey)
+        public FakeGetClaimsProvider(string dataKey)
         {
-            UserId = userId ?? throw new ArgumentNullException(nameof(userId));
             DataKey = dataKey;
         }
 
-        public string UserId { get; }
         public string DataKey { get; }
     }
 }

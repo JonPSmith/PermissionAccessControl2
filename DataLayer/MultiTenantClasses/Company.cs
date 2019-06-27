@@ -1,11 +1,9 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
-using DataAuthorize;
 using PermissionParts;
 
-namespace DataLayer.AppClasses.MultiTenantParts
+namespace DataLayer.MultiTenantClasses
 {
     /// <summary>
     /// This is the root entry for a multi-tenant entry. There should be only one Company per multi-tenant

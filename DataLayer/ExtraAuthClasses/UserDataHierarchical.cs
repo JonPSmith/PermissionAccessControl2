@@ -3,7 +3,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using DataLayer.AppClasses.MultiTenantParts;
+using DataLayer.MultiTenantClasses;
 
 namespace DataLayer.ExtraAuthClasses
 {

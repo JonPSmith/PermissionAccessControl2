@@ -3,8 +3,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
+using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
 using ServiceLayer.CodeCalledInStartup;
 using ServiceLayer.MultiTenant.Concrete;
@@ -29,8 +29,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestAddCompanyAndChildrenInDatabaseOk()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
             {
                 context.Database.EnsureCreated();
 
@@ -63,8 +63,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestAddCompanyAndChildrenInDatabaseTwoCompaniesOk()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
             {
                 context.Database.EnsureCreated();
 
@@ -95,8 +95,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestExtractCompanyId()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "123*")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("123*")))
             {
                 context.Database.EnsureCreated();
                 var rootCompanies = context.AddCompanyAndChildrenInDatabase();
@@ -119,8 +119,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestMoveToNewParentSimple()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "123*")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("123*")))
             {
                 context.Database.EnsureCreated();
                 var rootCompanies = context.AddCompanyAndChildrenInDatabase();
@@ -160,8 +160,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestMoveToNewParentGroup()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "123*")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("123*")))
             {
                 context.Database.EnsureCreated();
                 var rootCompanies = context.AddCompanyAndChildrenInDatabase();
@@ -200,8 +200,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestAddTenantRetailOutletOk()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
             {
                 context.Database.EnsureCreated();
                 var rootCompanies = context.AddCompanyAndChildrenInDatabase();
@@ -240,8 +240,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestAddTenantSubGroupOk()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", "accessKey")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
             {
                 context.Database.EnsureCreated();
                 var rootCompanies = context.AddCompanyAndChildrenInDatabase();

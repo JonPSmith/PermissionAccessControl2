@@ -35,7 +35,7 @@ namespace Test.DiConfigHelpers
             services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
             services.AddSingleton<ISimpleTimeCache>(new SimpleTimeCache());
             services.AddSingleton<IConfiguration>(startupConfig);
-            services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider("userId", ""));
+            services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(""));
 
             var serviceProvider = services.BuildServiceProvider();
 
@@ -54,7 +54,7 @@ namespace Test.DiConfigHelpers
                 services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(aspNetConnectionString));
 
                 var appConnectionString = callingClass.GetUniqueDatabaseConnectionString("AppData");
-                services.AddDbContext<AppDbContext>(options => options.UseSqlServer(appConnectionString));
+                services.AddDbContext<CompanyDbContext>(options => options.UseSqlServer(appConnectionString));
                 services.AddDbContext<ExtraAuthorizeDbContext>(options => options.UseSqlServer(appConnectionString));
                 services.AddDbContext<CombinedDbContext>(options => options.UseSqlServer(appConnectionString));
             }
@@ -64,7 +64,7 @@ namespace Test.DiConfigHelpers
                 var aspNetAuthConnection = SetupSqliteInMemoryConnection();
                 services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(aspNetAuthConnection));
                 var appExtraConnection = SetupSqliteInMemoryConnection();
-                services.AddDbContext<AppDbContext>(options => options.UseSqlite(appExtraConnection));
+                services.AddDbContext<CompanyDbContext>(options => options.UseSqlite(appExtraConnection));
                 services.AddDbContext<ExtraAuthorizeDbContext>(options => options.UseSqlite(appExtraConnection));
                 services.AddDbContext<CombinedDbContext>(options => options.UseSqlite(appExtraConnection));
             }

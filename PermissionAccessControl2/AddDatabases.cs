@@ -26,7 +26,7 @@ namespace PermissionAccessControl2
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-                services.AddDbContext<AppDbContext>(options =>
+                services.AddDbContext<CompanyDbContext>(options =>
                     options.UseSqlServer(configuration.GetConnectionString("DemoDatabaseConnection")));
                 services.AddDbContext<ExtraAuthorizeDbContext>(options =>
                     options.UseSqlServer(configuration.GetConnectionString("DemoDatabaseConnection")));
@@ -40,7 +40,7 @@ namespace PermissionAccessControl2
                 var aspNetAuthConnection = SetupSqliteInMemoryConnection();
                 services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(aspNetAuthConnection));
                 var appExtraConnection = SetupSqliteInMemoryConnection();
-                services.AddDbContext<AppDbContext>(options => options.UseSqlite(appExtraConnection));
+                services.AddDbContext<CompanyDbContext>(options => options.UseSqlite(appExtraConnection));
                 services.AddDbContext<ExtraAuthorizeDbContext>(options => options.UseSqlite(appExtraConnection));
                 services.AddDbContext<CombinedDbContext>(options => options.UseSqlite(appExtraConnection));
             }

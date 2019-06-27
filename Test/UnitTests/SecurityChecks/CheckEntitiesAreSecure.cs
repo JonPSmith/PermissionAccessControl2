@@ -17,8 +17,8 @@ namespace Test.UnitTests.SecurityChecks
         public void CheckQueryFiltersAreAppliedToEntityClassesOk()
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("user-id", "accessKey")))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
             {
                 var entities = context.Model.GetEntityTypes().ToList();
 

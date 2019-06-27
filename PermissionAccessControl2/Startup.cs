@@ -68,7 +68,7 @@ namespace PermissionAccessControl2
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.ConfigureGenericServicesEntities(typeof(ExtraAuthorizeDbContext), typeof(AppDbContext))
+            services.ConfigureGenericServicesEntities(typeof(ExtraAuthorizeDbContext), typeof(CompanyDbContext))
                 .ScanAssemblesForDtos(Assembly.GetAssembly(typeof(ListUsersDto)))
                 .RegisterGenericServices();
 

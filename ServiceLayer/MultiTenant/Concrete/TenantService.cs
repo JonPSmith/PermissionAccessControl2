@@ -3,17 +3,17 @@
 
 using System;
 using System.Linq;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
+using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLayer.MultiTenant.Concrete
 {
     public class TenantService
     {
-        private readonly AppDbContext _context;
+        private readonly CompanyDbContext _context;
 
-        public TenantService(AppDbContext context)
+        public TenantService(CompanyDbContext context)
         {
             _context = context;
         }

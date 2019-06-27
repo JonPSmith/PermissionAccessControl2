@@ -16,6 +16,20 @@ namespace Test.UnitTests.DataAuthorizeTests
     {
         private readonly ITestOutputHelper _output;
 
+        [Fact]
+        public void TestCreateValidDatabaseOk()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
+            {
+                //ATTEMPT
+                context.Database.EnsureCreated();
+
+                //VERIFY
+            }
+        }
+
         public TestHierarchicalFiltering(ITestOutputHelper output)
         {
             _output = output;
@@ -29,8 +43,8 @@ namespace Test.UnitTests.DataAuthorizeTests
         public void TestFilterTenantsOk(string dataKey, int expectedCount)
         {
             //SETUP
-            var options = SqliteInMemory.CreateOptions<AppDbContext>();
-            using (var context = new AppDbContext(options, new FakeGetClaimsProvider("userId", dataKey)))
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(dataKey)))
             {
                 context.Database.EnsureCreated();
                 context.AddCompanyAndChildrenInDatabase();

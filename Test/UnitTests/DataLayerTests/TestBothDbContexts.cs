@@ -38,17 +38,15 @@ namespace Test.UnitTests.DataLayerTests
                 }
                 classNames.ShouldEqual(new List<string>
                 {
-                    "DataLayer.AppClasses.GeneralNote",
-                    "DataLayer.AppClasses.MultiTenantParts.Company",
-                    "DataLayer.AppClasses.MultiTenantParts.RetailOutlet",
-                    "DataLayer.AppClasses.MultiTenantParts.ShopStock",
-                    "DataLayer.AppClasses.MultiTenantParts.SubGroup",
-                    "DataLayer.AppClasses.MultiTenantParts.TenantBase",
-                    "DataLayer.AppClasses.PersonalData",
                     "DataLayer.ExtraAuthClasses.ModulesForUser",
                     "DataLayer.ExtraAuthClasses.RoleToPermissions",
                     "DataLayer.ExtraAuthClasses.UserDataHierarchical",
                     "DataLayer.ExtraAuthClasses.UserToRole",
+                    "DataLayer.MultiTenantClasses.Company",
+                    "DataLayer.MultiTenantClasses.RetailOutlet",
+                    "DataLayer.MultiTenantClasses.ShopStock",
+                    "DataLayer.MultiTenantClasses.SubGroup",
+                    "DataLayer.MultiTenantClasses.TenantBase",
                 });
             }
         }

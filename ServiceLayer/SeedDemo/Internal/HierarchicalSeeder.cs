@@ -4,8 +4,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
+using DataLayer.MultiTenantClasses;
 using PermissionParts;
 using ServiceLayer.MultiTenant.Concrete;
 
@@ -16,7 +16,7 @@ namespace ServiceLayer.SeedDemo.Internal
     public static class HierarchicalSeeder
     {
 
-        public static List<Company> AddCompanyAndChildrenInDatabase(this AppDbContext context, params string[] companyDefinitions)
+        public static List<Company> AddCompanyAndChildrenInDatabase(this CompanyDbContext context, params string[] companyDefinitions)
         {
             var rootCompanies = context.CreateCompanyAndChildren(companyDefinitions);
             var service = new TenantService(context);
@@ -24,7 +24,7 @@ namespace ServiceLayer.SeedDemo.Internal
             return rootCompanies;
         }
 
-        private static List<Company> CreateCompanyAndChildren(this AppDbContext context, params string[] companyDefinitions)
+        private static List<Company> CreateCompanyAndChildren(this CompanyDbContext context, params string[] companyDefinitions)
         {
             if (!companyDefinitions.Any())
                 companyDefinitions = new[]

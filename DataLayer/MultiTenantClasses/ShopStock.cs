@@ -3,7 +3,7 @@
 
 using DataAuthorize;
 
-namespace DataLayer.AppClasses.MultiTenantParts
+namespace DataLayer.MultiTenantClasses
 {
     /// <summary>
     /// This contains an item stocked in the shop, and how many they have
@@ -12,6 +12,7 @@ namespace DataLayer.AppClasses.MultiTenantParts
     {
         public int ShopStockId { get; set; }
         public string Name { get; set; }
+        public decimal RetailPrice { get; set; }
         public int NumInStock { get; set; }
     }
 }

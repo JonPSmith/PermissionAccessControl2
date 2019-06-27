@@ -5,18 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
 using System.Globalization;
 using DataAuthorize;
-using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace DataLayer.AppClasses.MultiTenantParts
+namespace DataLayer.MultiTenantClasses
 {
 
     /// <summary>
     /// This contains the class that all the hierarchical tenant classes inherit from
+    /// NOTE: The DataKey is created by the business logic when a new entry is created, or updated if moved
     /// </summary>
     public abstract class TenantBase : IDataKey
     {

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonCache;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode.Configurations;
 using DataLayer.ExtraAuthClasses;
 using DataLayer.ExtraAuthClasses.Support;
+using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.EfCode
@@ -22,7 +22,7 @@ namespace DataLayer.EfCode
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
         public DbSet<ModulesForUser> ModulesForUsers { get; set; }
         
-        //Now links to two classes in the AppDbContext that hold data used to set up the user's modules and data access rights
+        //Now links to two classes in the CompanyDbContext that hold data used to set up the user's modules and data access rights
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<UserDataHierarchical> DataAccess { get; set; }
 

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -50,7 +49,7 @@ namespace ServiceLayer.SeedDemo
         private static void CheckAddCompanies(IHostingEnvironment env, IServiceProvider services)
         {
             var pathCompanyData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, CompanyDataFilename));
-            var context = services.GetRequiredService<AppDbContext>();
+            var context = services.GetRequiredService<CompanyDbContext>();
             if (!context.Tenants.IgnoreQueryFilters().Any())
             {
                 //No companies 

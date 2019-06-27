@@ -1,12 +1,9 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using System;
-using System.Linq.Expressions;
 using DataAuthorize;
-using DataLayer.AppClasses;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.ExtraAuthClasses;
+using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -38,20 +35,14 @@ namespace DataLayer.EfCode.Configurations
                 .HasColumnName("PermissionsInRole");
         }
 
-        public static void AppConfig(this ModelBuilder modelBuilder, AppDbContext context)
+        public static void CompanyDbConfig(this ModelBuilder modelBuilder, CompanyDbContext context)
         {
-            AddUserIdQueryFilter(modelBuilder.Entity<PersonalData>(), context);
             AddHierarchicalQueryFilter(modelBuilder.Entity<TenantBase>(), context);
             AddHierarchicalQueryFilter(modelBuilder.Entity<ShopStock>(), context);
+            AddHierarchicalQueryFilter(modelBuilder.Entity<ShopSale>(), context);
         }
 
-        private static void AddUserIdQueryFilter<T>(EntityTypeBuilder<T> builder, AppDbContext context) where T : class, IDataKey
-        {
-            builder.HasQueryFilter(x => x.DataKey == context.UserId);
-            builder.HasIndex(x => x.DataKey);
-        }
-
-        private static void AddHierarchicalQueryFilter<T>(EntityTypeBuilder<T> builder, AppDbContext context) where T : class, IDataKey
+        private static void AddHierarchicalQueryFilter<T>(EntityTypeBuilder<T> builder, CompanyDbContext context) where T : class, IDataKey
         {
             builder.HasQueryFilter(x => x.DataKey.StartsWith(context.DataKey));
             builder.HasIndex(x => x.DataKey);

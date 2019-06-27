@@ -3,9 +3,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
+using DataLayer.MultiTenantClasses;
 using Microsoft.AspNetCore.Identity;
 
 namespace ServiceLayer.UserServices.Concrete

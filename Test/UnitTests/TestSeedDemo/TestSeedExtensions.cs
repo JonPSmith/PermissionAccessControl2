@@ -75,9 +75,9 @@ namespace Test.UnitTests.TestSeedDemo
             await _serviceProvider.CheckSeedDataAndUserAsync();
 
             //VERIFY
-            var appContext = _serviceProvider.GetRequiredService<AppDbContext>();
+            var companyContext = _serviceProvider.GetRequiredService<CompanyDbContext>();
             {
-                var display = appContext.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = companyContext.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -106,9 +106,9 @@ namespace Test.UnitTests.TestSeedDemo
             await _serviceProvider.CheckSeedDataAndUserAsync();
 
             //VERIFY
-            var appContext = _serviceProvider.GetRequiredService<AppDbContext>();
+            var companyContext = _serviceProvider.GetRequiredService<CompanyDbContext>();
             {
-                var display = appContext.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var display = companyContext.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");
@@ -137,14 +137,14 @@ namespace Test.UnitTests.TestSeedDemo
 
             //VERIFY
             var extraContext = _serviceProvider.GetRequiredService<ExtraAuthorizeDbContext>();
-            var appContext = _serviceProvider.GetRequiredService<AppDbContext>();
+            var companyContext = _serviceProvider.GetRequiredService<CompanyDbContext>();
             {
                 extraContext.RolesToPermissions.Select(x => x.RoleName).ToArray()
                     .ShouldEqual(new []
                 {
                     "AreaManager", "Director", "SalesAssistant", "StoreManager", "UserAdmin"
                 });
-                appContext.Tenants.IgnoreQueryFilters().Count().ShouldEqual(8);
+                companyContext.Tenants.IgnoreQueryFilters().Count().ShouldEqual(8);
             }
             var userContext = _serviceProvider.GetRequiredService<ApplicationDbContext>();
             var userEmails = string.Join(", ", userContext.Users.Select(x => x.Email));
@@ -165,14 +165,14 @@ namespace Test.UnitTests.TestSeedDemo
 
             //VERIFY
             var extraContext = _serviceProvider.GetRequiredService<ExtraAuthorizeDbContext>();
-            var appContext = _serviceProvider.GetRequiredService<AppDbContext>();
+            var companyContext = _serviceProvider.GetRequiredService<CompanyDbContext>();
             {
                 extraContext.RolesToPermissions.Select(x => x.RoleName).ToArray()
                     .ShouldEqual(new[]
                     {
                         "AreaManager", "Director", "SalesAssistant", "StoreManager", "UserAdmin"
                     });
-                appContext.Tenants.IgnoreQueryFilters().Count().ShouldEqual(8);
+                companyContext.Tenants.IgnoreQueryFilters().Count().ShouldEqual(8);
             }
             var userContext = _serviceProvider.GetRequiredService<ApplicationDbContext>();
             var userEmails = string.Join(", ", userContext.Users.Select(x => x.Email));

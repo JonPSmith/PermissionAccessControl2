@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using DataLayer.AppClasses.MultiTenantParts;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
+using DataLayer.MultiTenantClasses;
 using PermissionParts;
 
 [assembly: InternalsVisibleTo("Test")]
