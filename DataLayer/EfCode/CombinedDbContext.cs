@@ -22,6 +22,7 @@ namespace DataLayer.EfCode
         //CompanyDbContext
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<ShopStock> ShopStocks { get; set; }
+        public DbSet<ShopSale> ShopSales { get; set; }
 
         public CombinedDbContext(DbContextOptions<CombinedDbContext> options)
             : base(options) { }
