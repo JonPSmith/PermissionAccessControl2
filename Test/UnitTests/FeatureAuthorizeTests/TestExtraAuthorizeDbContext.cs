@@ -94,7 +94,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 context.Database.EnsureCreated();
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(
-                    "test", "test", new List<Permissions> { Permissions.StockSell }, context);
+                    "test", "test", new List<Permissions> { Permissions.StockRead }, context);
                 createStatus.IsValid.ShouldBeTrue(createStatus.GetAllErrors());
                 context.Add(createStatus.Result);
                 context.SaveChanges();

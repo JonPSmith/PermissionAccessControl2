@@ -4,7 +4,7 @@
 using DataLayer.MultiTenantClasses;
 using GenericServices;
 
-namespace ServiceLayer.Stock
+namespace ServiceLayer.Shop
 {
     public class ListStockDto : ILinkToEntity<ShopStock>
     {

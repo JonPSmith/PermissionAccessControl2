@@ -57,6 +57,64 @@ namespace Test.UnitTests.DataAuthorizeTests
         }
 
         [Fact]
+        public void TestShopSaleCreatedProperly()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
+            {
+                context.Database.EnsureCreated();
+                var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
+                var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
+                var shopStock = new ShopStock { Name = "dress", RetailPrice = 12, NumInStock = 2, Shop = shop };
+                context.Add(shopStock);
+                context.SaveChanges();
+
+                //ATTEMPT
+                var status = ShopSale.CreateSellAndUpdateStock(1, shop.TenantItemId, shopStock.ShopStockId, context);
+                status.IsValid.ShouldBeTrue(status.GetAllErrors());
+                context.Add(status.Result);
+                context.SaveChanges();
+
+                //VERIFY
+                context.ShopSales.Count().ShouldEqual(1);
+                context.ShopStocks.First().NumInStock.ShouldEqual(1);
+            }
+        }
+
+        [Fact]
+        public void TestShopSaleReadProperly()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
+            {
+                context.Database.EnsureCreated();
+                var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
+                var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
+                var shopStock = new ShopStock { Name = "dress", RetailPrice = 12, NumInStock = 2, Shop = shop };
+                context.Add(shopStock);
+                context.SaveChanges();
+
+                //ATTEMPT
+                var status = ShopSale.CreateSellAndUpdateStock(1, shop.TenantItemId, shopStock.ShopStockId, context);
+                status.IsValid.ShouldBeTrue(status.GetAllErrors());
+                context.Add(status.Result);
+                context.SaveChanges();
+
+                //VERIFY
+                var salesNotFiltered = context.ShopSales.IgnoreQueryFilters()
+                    .Include(x => x.Shop)
+                    .Include(x => x.StockItem)
+                    .ToList();
+
+                salesNotFiltered.Count.ShouldEqual(1);
+                salesNotFiltered.First().Shop.ShouldNotBeNull();
+                salesNotFiltered.First().StockItem.ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
         public void TestQueryFilterWorksOnShopSale()
         {
             //SETUP
@@ -66,7 +124,12 @@ namespace Test.UnitTests.DataAuthorizeTests
                 context.Database.EnsureCreated();
                 var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
                 var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
-                context.Add(new ShopSale{ NumSoldReturned = 1, Shop = shop, StockItem = new ShopStock { Name = "dress", Shop = shop}});
+                var shopStock = new ShopStock { Name = "dress", RetailPrice = 12, NumInStock = 2, Shop = shop };
+                context.Add(shopStock);
+                context.SaveChanges();
+                var status = ShopSale.CreateSellAndUpdateStock(1, shop.TenantItemId, shopStock.ShopStockId, context);
+                status.IsValid.ShouldBeTrue(status.GetAllErrors());
+                context.Add(status.Result);
                 context.SaveChanges();
 
             }

@@ -18,7 +18,7 @@ namespace Test.EfHelpers
             userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
             context.Add(userStatus.Result);
             userStatus = RoleToPermissions.CreateRoleWithPermissions(
-                "TestRole2", "TestRole1", new List<Permissions> { Permissions.StockSell}, context);
+                "TestRole2", "TestRole1", new List<Permissions> { Permissions.SalesSell}, context);
             userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
             context.Add(userStatus.Result);
 
