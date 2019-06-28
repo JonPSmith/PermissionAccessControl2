@@ -4,26 +4,48 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to </h1>
-    <p>This is a demo of a web application using a feature and data authorization system described in the following articles.</p>
+    <h1 class="display-4">Welcome to example authorization app, version 2</h1>    
 </div>
+<p>
+    This is a demo of a web application using a feature and data authorization system.
+    It is a Multi-tenant service for retail outlets which holds the stock and sales for each shop.
+    It also allows managers to see what is happening in every shop that they are managing.
+</p>
+<p>This list of articles below describe how it works.</p>
+<ul>
+    <li><a href="#">Part 3: A better way to handle authorization – six months on</a></li>
+    <li><a href="#">Part 4: Handling hierarchical data authorization - six months on</a></li>
+    <li><a href="#">Part 5: A better way to handle authorization – refreshing users claims</a></li>
+</ul>
 
-<h3>List of users <small>so you can log in</small> </h3>
-<p>NOTE: The Email address is also the Password!</p>
+<h2>How to use use this application</h2>
+<p>
+    <ol>
+        <li>
+            Log in using one of the demo users <a asp-area="" asp-controller="Users" asp-action="Users">found here</a>.
+            <ul>
+                <li>Pick a user that has a StoreManager or SalesAssistant role if you want to sell something. </li>
+                <li>Pick a user that has a AreaManger or Director if you want to see data for all shops. </li>
+            </ul>
+        </li>
+        <li>If you are a SalesAssistant, then you can see the stock and sell something.</li>
+        <li>If you are a StoreManager, then you can see the stock and sales, plus and sell or refund a customer.</li>
+        <li>If you are a AreaManger or Director, then you can see the stock and sales for all the shops you manage.</li>
+    </ol>
+</p>
+
 <table class="table">
+
     <tr>
-        <th>User Email</th>
-        <th>User roles</th>
-        <th>Company</th>
-        <th>Linked tenant</th>
+        <td>Name</td>
     </tr>
-    @foreach (var user in @Model)
-    {
-        <tr>
-            <td>@user.Email</td>
-            <td>@user.RoleNames</td>
-            <td>@user.CompanyName</td>
-            <td>@user.LinkedTenantName</td>
-        </tr>
-    }
+    <tr>
+        <td></td>
+        <td>Name</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Name</td>
+    </tr>
 </table>

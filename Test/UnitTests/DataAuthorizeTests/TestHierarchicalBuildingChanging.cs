@@ -60,6 +60,31 @@ namespace Test.UnitTests.DataAuthorizeTests
         }
 
         [Fact]
+        public void TestIncludeIsAffectedByQueryFilterOk()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            string dataKey;
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
+            {
+                context.Database.EnsureCreated();
+                var companies = context.AddCompanyAndChildrenInDatabase();
+                dataKey = companies.First().Children.First().Children.First().DataKey;
+            }
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(dataKey)))
+            {
+                //ATTEMPT
+                var tenant = context.Tenants
+                    .Include(p => p.Parent)
+                    .Include(x => x.Children).First();
+
+                //VERIFY
+                tenant.Parent.ShouldBeNull();
+                tenant.Children.Any().ShouldBeTrue();
+            }
+        }
+
+        [Fact]
         public void TestAddCompanyAndChildrenInDatabaseTwoCompaniesOk()
         {
             //SETUP

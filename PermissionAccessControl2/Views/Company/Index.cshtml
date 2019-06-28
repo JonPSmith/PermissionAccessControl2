@@ -1,0 +1,15 @@
+﻿@model List<Microsoft.AspNetCore.Html.HtmlString>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Show tenant hierarchy</h2>
+
+@foreach (var html in @Model)
+{
+
+        @html
+    <p>&nbsp;</p><p> </p>
+}
+
+

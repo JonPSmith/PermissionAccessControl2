@@ -1,0 +1,24 @@
+﻿@model List<ServiceLayer.UserServices.ListUsersDto>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h3>List of demo users <small>so you can log in to try the app</small> </h3>
+<p>NOTE: The Email address is also the Password!</p>
+<table class="table">
+    <tr>
+        <th>User Email</th>
+        <th>User roles</th>
+        <th>Company</th>
+        <th>Linked tenant</th>
+    </tr>
+    @foreach (var user in @Model)
+    {
+    <tr>
+        <td>@user.Email</td>
+        <td>@user.RoleNames</td>
+        <td>@user.CompanyName</td>
+        <td>@user.LinkedTenantName</td>
+    </tr>
+    }
+</table>

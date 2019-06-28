@@ -8,6 +8,7 @@ using FeatureAuthorize;
 using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using PermissionParts;
+using ServiceLayer.UserServices;
 
 namespace PermissionAccessControl2.Controllers
 {
@@ -17,6 +18,11 @@ namespace PermissionAccessControl2.Controllers
         public IActionResult Index()
         {
             return View(HttpContext.User);
+        }
+
+        public IActionResult Users([FromServices] IListUsersService service)
+        {
+            return View(service.ListUserWithRolesAndDataTenant());
         }
 
         public IActionResult AllRoles([FromServices] ICrudServices<ExtraAuthorizeDbContext> services)
