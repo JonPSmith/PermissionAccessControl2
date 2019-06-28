@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Linq;
+using AutoMapper.Configuration.Conventions;
 using DataAuthorize;
+using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
@@ -19,6 +22,8 @@ namespace DataLayer.MultiTenantClasses
     /// </summary>
     public abstract class TenantBase : IDataKey
     {
+        private HashSet<TenantBase> _children;
+
         protected TenantBase(string name) // needed by EF Core
         {
             Name = name;
@@ -28,7 +33,38 @@ namespace DataLayer.MultiTenantClasses
         {
             Name = name;
             Parent = parent;
-            Children = new List<TenantBase>(); //NOTE: This is not used by EF Core. Only used when creating manually 
+            _children = new HashSet<TenantBase>();  //Used when creating a new version - not used by EF Core
+        }
+
+        protected static void AddTenantToDatabaseWithSaveChanges(TenantBase newTenant, CompanyDbContext context)
+        {
+            if (newTenant == null) throw new ArgumentNullException(nameof(newTenant));
+
+            if (!(newTenant is Company))
+            {
+                if (newTenant.Parent == null)
+                    throw new ApplicationException($"The parent cannot be null in type {newTenant.GetType().Name}.");
+                if (newTenant.Parent.ParentItemId == 0)
+                    throw new ApplicationException($"The parent {newTenant.Parent.Name} must be already in the database.");             
+            }
+            if (context.Entry(newTenant).State != EntityState.Detached)
+                throw new ApplicationException($"You can't use this method to add a tenant that is already in the database.");
+
+            //We have to do this request using a transaction to make sure the DataKey is set properly
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                //set up the backward link (if Parent isn't null)
+                newTenant.Parent?._children.Add(newTenant);
+                context.Add(newTenant);  //also need to add it in case its the company
+                // Add this to get primary key set
+                context.SaveChanges();
+
+                //Now we can set the DataKey
+                newTenant.SetDataKeyFromHierarchy();
+                context.SaveChanges();
+
+                transaction.Commit();
+            }
         }
 
         /// <summary>
@@ -65,7 +101,7 @@ namespace DataLayer.MultiTenantClasses
         /// <summary>
         /// This holds the tenants one level below 
         /// </summary>
-        public ICollection<TenantBase> Children { get; private set; }
+        public IEnumerable<TenantBase> Children => _children?.ToList();
 
         public override string ToString()
         {
@@ -87,7 +123,7 @@ namespace DataLayer.MultiTenantClasses
         /// This sets the DataKey to create the hierarchical DataAccess key.
         /// See <see cref="DataKey"/> for more on the format of the hierarchical DataAccess key.
         /// </summary>
-        public void SetDataKeyFromHierarchy()
+        private void SetDataKeyFromHierarchy()
         {
             if (!(this is Company) && Parent == null)
                 throw new ApplicationException($"The parent cannot be null if this tenant isn't a {nameof(Company)}.");
@@ -104,6 +140,8 @@ namespace DataLayer.MultiTenantClasses
             }
         }
 
+
+
         public void MoveToNewParent(TenantBase newParent, DbContext context)
         {
             void SetKeyExistingHierarchy(TenantBase existingTenant)
@@ -112,9 +150,9 @@ namespace DataLayer.MultiTenantClasses
                 if (existingTenant.Children == null)
                     context.Entry(existingTenant).Collection(x => x.Children).Load();
 
-                if (!existingTenant.Children.Any())
+                if (!existingTenant._children.Any())
                     return;
-                foreach (var tenant in existingTenant.Children)
+                foreach (var tenant in existingTenant._children)
                 {                   
                     SetKeyExistingHierarchy(tenant);
                 }
@@ -133,7 +171,7 @@ namespace DataLayer.MultiTenantClasses
             if (context.Entry(newParent).State == EntityState.Detached)
                 throw new ApplicationException($"The parent must already be in the database.");
 
-            Parent.Children?.Remove(this);
+            Parent._children?.Remove(this);
             Parent = newParent;
             //Now change the data key for all the hierarchy from this entry down
             SetKeyExistingHierarchy(this);

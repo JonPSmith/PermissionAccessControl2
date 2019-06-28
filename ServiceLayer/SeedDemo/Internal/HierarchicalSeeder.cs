@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using DataLayer.EfCode;
 using DataLayer.MultiTenantClasses;
 using PermissionParts;
-using ServiceLayer.MultiTenant.Concrete;
 
 [assembly: InternalsVisibleTo("Test")]
 
@@ -15,16 +14,7 @@ namespace ServiceLayer.SeedDemo.Internal
 {
     public static class HierarchicalSeeder
     {
-
         public static List<Company> AddCompanyAndChildrenInDatabase(this CompanyDbContext context, params string[] companyDefinitions)
-        {
-            var rootCompanies = context.CreateCompanyAndChildren(companyDefinitions);
-            var service = new TenantService(context);
-            rootCompanies.ForEach(x => service.SetupCompany(x));
-            return rootCompanies;
-        }
-
-        private static List<Company> CreateCompanyAndChildren(this CompanyDbContext context, params string[] companyDefinitions)
         {
             if (!companyDefinitions.Any())
                 companyDefinitions = new[]
@@ -40,7 +30,8 @@ namespace ServiceLayer.SeedDemo.Internal
                 var hierarchyNames = companyDefinition.Split('|');
                 if (!companyDict.ContainsKey(hierarchyNames[0]))
                 {
-                    companyDict[hierarchyNames[0]] = new Company(hierarchyNames[0], PaidForModules.None);
+                    companyDict[hierarchyNames[0]] = Company.AddTenantToDatabaseWithSaveChanges(
+                        hierarchyNames[0], PaidForModules.None, context);
                     subGroupsDict.Clear();
                 }
 
@@ -58,7 +49,7 @@ namespace ServiceLayer.SeedDemo.Internal
                         var shopNames = hierarchyNames[i].Split(',').Select(x => x.Trim());
                         foreach (var shopName in shopNames)
                         {
-                            parent.Children.Add(new RetailOutlet(shopName, parent));
+                            RetailOutlet.AddTenantToDatabaseWithSaveChanges(shopName, parent, context);
                         }
                     }
                     else
@@ -71,9 +62,8 @@ namespace ServiceLayer.SeedDemo.Internal
                         }
                         else
                         {
-                            subGroup = new SubGroup(hierarchyNames[i], parent);
+                            subGroup = SubGroup.AddTenantToDatabaseWithSaveChanges(hierarchyNames[i], parent, context);
                             subGroupsDict[i].Add(subGroup);
-                            parent.Children.Add(subGroup);
                         }
                         parent = subGroup;
                     }

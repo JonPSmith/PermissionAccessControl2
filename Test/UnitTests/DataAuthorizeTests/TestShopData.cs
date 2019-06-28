@@ -37,7 +37,8 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
-                var shop = new RetailOutlet("TestShop", new Company("TestCompany", PaidForModules.None));
+                var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
+                var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
                 context.Add(new ShopStock { Name = "dress", Shop = shop});
                 context.SaveChanges();
 
@@ -63,7 +64,8 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey*")))
             {
                 context.Database.EnsureCreated();
-                var shop = new RetailOutlet("TestShop", new Company("TestCompany", PaidForModules.None));
+                var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
+                var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
                 context.Add(new ShopSale{ NumSoldReturned = 1, Shop = shop, StockItem = new ShopStock { Name = "dress", Shop = shop}});
                 context.SaveChanges();
 
@@ -89,7 +91,8 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(null)))
             {
                 context.Database.EnsureCreated();
-                var shop = new RetailOutlet("TestShop", new Company("TestCompany", PaidForModules.None));
+                var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
+                var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
                 var stock = new ShopStock {Name = "dress", Shop = shop};
                 stock.SetHierarchicalDataKey("accessKey*");
                 context.Add(stock);

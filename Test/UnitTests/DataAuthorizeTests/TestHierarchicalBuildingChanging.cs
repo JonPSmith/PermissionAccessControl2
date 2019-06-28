@@ -6,8 +6,8 @@ using System.Linq;
 using DataLayer.EfCode;
 using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
+using PermissionParts;
 using ServiceLayer.CodeCalledInStartup;
-using ServiceLayer.MultiTenant.Concrete;
 using ServiceLayer.SeedDemo.Internal;
 using TestSupport.EfHelpers;
 using Xunit;
@@ -23,6 +23,41 @@ namespace Test.UnitTests.DataAuthorizeTests
         public TestHierarchicalBuildingChanging(ITestOutputHelper output)
         {
             _output = output;
+        }
+
+        [Fact]
+        public void TestCreateCompany()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(null)))
+            {
+                context.Database.EnsureCreated();
+
+                //ATTEMPT
+                var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
+
+                //VERIFY
+                company.DataKey.ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
+        public void TestCreateCompanyAndChild()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(null)))
+            {
+                context.Database.EnsureCreated();
+                var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
+
+                //ATTEMPT
+                var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
+
+                //VERIFY
+                shop.DataKey.ShouldNotBeNull();
+            }
         }
 
         [Fact]
@@ -48,13 +83,13 @@ namespace Test.UnitTests.DataAuthorizeTests
                     "Company: Name = 4U Inc., DataKey = 1|",
                     "SubGroup: Name = West Coast, DataKey = 1|2|",
                     "SubGroup: Name = San Fran, DataKey = 1|2|3|",
-                    "SubGroup: Name = LA, DataKey = 1|2|4|",
-                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|3|5*",
-                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|6*",
-                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|7*",
-                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|4|8*",
-                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|4|9*",
-                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|4|a*",
+                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|3|4*",
+                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|5*",
+                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|6*",
+                    "SubGroup: Name = LA, DataKey = 1|2|7|",
+                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|7|8*",
+                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|7|9*",
+                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|7|a*",
                 });
             }
         }
@@ -74,7 +109,7 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(dataKey)))
             {
                 //ATTEMPT
-                var tenant = context.Tenants
+                var tenant = context.Tenants.IgnoreQueryFilters()
                     .Include(p => p.Parent)
                     .Include(x => x.Children).First();
 
@@ -169,13 +204,13 @@ namespace Test.UnitTests.DataAuthorizeTests
                     "Company: Name = 4U Inc., DataKey = 1|",
                     "SubGroup: Name = West Coast, DataKey = 1|2|",
                     "SubGroup: Name = San Fran, DataKey = 1|2|3|",
-                    "SubGroup: Name = LA, DataKey = 1|2|4|",
-                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|5*",
-                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|6*",
-                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|7*",
-                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|4|8*",
-                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|4|9*",
-                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|4|a*",
+                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|4*",
+                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|5*",
+                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|6*",
+                    "SubGroup: Name = LA, DataKey = 1|2|7|",
+                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|7|8*",
+                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|7|9*",
+                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|7|a*",
                 });
 
             }
@@ -209,14 +244,14 @@ namespace Test.UnitTests.DataAuthorizeTests
                 {
                     "Company: Name = 4U Inc., DataKey = 1|",
                     "SubGroup: Name = West Coast, DataKey = 1|2|",
-                    "SubGroup: Name = San Fran, DataKey = 1|2|4|3|",
-                    "SubGroup: Name = LA, DataKey = 1|2|4|",
-                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|4|3|5*",
-                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|4|3|6*",
-                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|4|3|7*",
-                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|4|8*",
-                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|4|9*",
-                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|4|a*",
+                    "SubGroup: Name = San Fran, DataKey = 1|2|7|3|",
+                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|7|3|4*",
+                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|7|3|5*",
+                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|7|3|6*",
+                    "SubGroup: Name = LA, DataKey = 1|2|7|",
+                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|7|8*",
+                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|7|9*",
+                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|7|a*",
                 });
             }
         }
@@ -232,11 +267,9 @@ namespace Test.UnitTests.DataAuthorizeTests
                 var rootCompanies = context.AddCompanyAndChildrenInDatabase();
                 //                   -- West Coast --|--- San Fran ---
                 var sanFran = rootCompanies.First().Children.Single().Children.First();
-                var service = new TenantService(context);
 
                 //ATTEMPT
-                service.AddNewTenant(new RetailOutlet("New shop", sanFran));
-
+                RetailOutlet.AddTenantToDatabaseWithSaveChanges("New shop", sanFran, context);
 
                 //VERIFY
                 var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
@@ -249,13 +282,13 @@ namespace Test.UnitTests.DataAuthorizeTests
                     "Company: Name = 4U Inc., DataKey = 1|",
                     "SubGroup: Name = West Coast, DataKey = 1|2|",
                     "SubGroup: Name = San Fran, DataKey = 1|2|3|",
-                    "SubGroup: Name = LA, DataKey = 1|2|4|",
-                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|3|5*",
-                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|6*",
-                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|7*",
-                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|4|8*",
-                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|4|9*",
-                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|4|a*",
+                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|3|4*",
+                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|5*",
+                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|6*",
+                    "SubGroup: Name = LA, DataKey = 1|2|7|",
+                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|7|8*",
+                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|7|9*",
+                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|7|a*",
                     "RetailOutlet: Name = New shop, DataKey = 1|2|3|b*",
                 });
             }
@@ -272,10 +305,9 @@ namespace Test.UnitTests.DataAuthorizeTests
                 var rootCompanies = context.AddCompanyAndChildrenInDatabase();
                 //                          - West Coast --
                 var westCoast = rootCompanies.First().Children.Single();
-                var service = new TenantService(context);
 
                 //ATTEMPT
-                service.AddNewTenant(new SubGroup("Seattle", westCoast));
+                SubGroup.AddTenantToDatabaseWithSaveChanges("Seattle", westCoast, context);
 
                 //VERIFY
                 var display = context.Tenants.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
@@ -288,13 +320,13 @@ namespace Test.UnitTests.DataAuthorizeTests
                     "Company: Name = 4U Inc., DataKey = 1|",
                     "SubGroup: Name = West Coast, DataKey = 1|2|",
                     "SubGroup: Name = San Fran, DataKey = 1|2|3|",
-                    "SubGroup: Name = LA, DataKey = 1|2|4|",
-                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|3|5*",
-                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|6*",
-                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|7*",
-                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|4|8*",
-                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|4|9*",
-                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|4|a*",
+                    "RetailOutlet: Name = SF Dress4U, DataKey = 1|2|3|4*",
+                    "RetailOutlet: Name = SF Tie4U, DataKey = 1|2|3|5*",
+                    "RetailOutlet: Name = SF Shirt4U, DataKey = 1|2|3|6*",
+                    "SubGroup: Name = LA, DataKey = 1|2|7|",
+                    "RetailOutlet: Name = LA Dress4U, DataKey = 1|2|7|8*",
+                    "RetailOutlet: Name = LA Tie4U, DataKey = 1|2|7|9*",
+                    "RetailOutlet: Name = LA Shirt4U, DataKey = 1|2|7|a*",
                     "SubGroup: Name = Seattle, DataKey = 1|2|b|",
                 });
             }
