@@ -109,12 +109,39 @@ namespace Test.UnitTests.DataAuthorizeTests
             using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(dataKey)))
             {
                 //ATTEMPT
-                var tenant = context.Tenants.IgnoreQueryFilters()
+                var tenant = context.Tenants
                     .Include(p => p.Parent)
                     .Include(x => x.Children).First();
 
                 //VERIFY
+                tenant.DataKey.ShouldEqual(dataKey);
                 tenant.Parent.ShouldBeNull();
+                tenant.Children.Any().ShouldBeTrue();
+            }
+        }
+
+        [Fact]
+        public void TestIncludeWithNoQueryFilterOk()
+        {
+            //SETUP
+            var options = SqliteInMemory.CreateOptions<CompanyDbContext>();
+            string dataKey;
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider("accessKey")))
+            {
+                context.Database.EnsureCreated();
+                var companies = context.AddCompanyAndChildrenInDatabase();
+                dataKey = companies.First().Children.First().Children.First().DataKey;
+            }
+            using (var context = new CompanyDbContext(options, new FakeGetClaimsProvider(dataKey)))
+            {
+                //ATTEMPT
+                var tenant = context.Tenants.IgnoreQueryFilters()
+                    .Include(p => p.Parent)
+                    .Include(x => x.Children).Single(x => x.DataKey == dataKey);
+
+                //VERIFY
+                tenant.DataKey.ShouldEqual(dataKey);
+                tenant.Parent.ShouldNotBeNull();
                 tenant.Children.Any().ShouldBeTrue();
             }
         }
