@@ -21,9 +21,9 @@ namespace PermissionParts
         [Display(GroupName = "Sales", Name = "Read", Description = "Can delete a stock item")]
         SalesRead = 20,
         [Display(GroupName = "Sales", Name = "Sell", Description = "Can sell items from stock")]
-        SalesSell = 20,
+        SalesSell = 21,
         [Display(GroupName = "Sales", Name = "Return", Description = "Can return an item to stock")]
-        SalesReturn = 12,
+        SalesReturn = 22,
 
         [Display(GroupName = "Employees", Name = "Read", Description = "Can read company employees")]
         EmployeeRead = 30,
