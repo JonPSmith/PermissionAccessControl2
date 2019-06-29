@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using DataAuthorize;
 using DataLayer.EfCode;
 using GenericServices;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 
 namespace DataLayer.MultiTenantClasses
@@ -58,14 +59,14 @@ namespace DataLayer.MultiTenantClasses
         /// <summary>
         /// This creates a Sale entry, and also update the ShopStock number in stock
         /// </summary>
-        /// <param name="numSold"></param>
+        /// <param name="numBought"></param>
         /// <param name="tenantItemId"></param>
         /// <param name="shopStockId"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static IStatusGeneric<ShopSale> CreateSellAndUpdateStock(int numSold, int tenantItemId, int shopStockId, CompanyDbContext context)
+        public static IStatusGeneric<ShopSale> CreateSellAndUpdateStock(int numBought, int tenantItemId, int shopStockId, DbContext context)
         {
-            if (numSold < 0) throw new ArgumentException("must be positive", nameof(numSold));
+            if (numBought < 0) throw new ArgumentException("must be positive", nameof(numBought));
             var status = new StatusGenericHandler<ShopSale>();
 
             var stock = context.Find<ShopStock>(shopStockId);
@@ -74,13 +75,13 @@ namespace DataLayer.MultiTenantClasses
                 status.AddError("Could not find the stock item you requested.");
                 return status;
             }
-            stock.NumInStock = stock.NumInStock - numSold;
+            stock.NumInStock = stock.NumInStock - numBought;
             if (stock.NumInStock < 0)
             {
                 status.AddError("There are not enough items of that product to sell.");
                 return status;
             }
-            var sale = new ShopSale(numSold, null, tenantItemId, shopStockId);
+            var sale = new ShopSale(numBought, null, tenantItemId, shopStockId);
             return status.SetResult(sale);
         }
     }

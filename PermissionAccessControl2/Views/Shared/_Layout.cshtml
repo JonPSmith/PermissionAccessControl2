@@ -42,6 +42,7 @@
                                         Shop
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdown1MenuButton">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Till">Till</a>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Stock">Stock</a>
                                         @if (User.UserHasThisPermission(Permissions.SalesRead))
                                         {
