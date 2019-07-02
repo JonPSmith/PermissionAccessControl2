@@ -14,7 +14,7 @@ namespace ServiceLayer.Shop
 
         public int ShopStockId { get; set; }
 
-        public int NumBought { get; set; } = 1
+        public int NumBought { get; set; } = 1;
 
         public int TenantItemId { get; set; }
 

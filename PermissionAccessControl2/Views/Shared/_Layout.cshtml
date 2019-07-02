@@ -34,7 +34,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (User.UserHasThisPermission(Permissions.SalesRead) || User.UserHasThisPermission(Permissions.StockRead))
+                        @if (User.UserHasThisPermission(Permissions.SalesRead))
                         {
                             <li class="nav-item">
                                 <div class="dropdown">
@@ -42,7 +42,10 @@
                                         Shop
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdown1MenuButton">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Till">Till</a>
+                                        @if (User.UserHasThisPermission(Permissions.SalesSell))
+                                        {
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Till">Till</a>
+                                        }
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Stock">Stock</a>
                                         @if (User.UserHasThisPermission(Permissions.SalesRead))
                                         {
