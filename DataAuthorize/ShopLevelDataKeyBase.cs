@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAuthorize
 {
-    public class HierarchicalKeyBase : IHierarchicalKey
+    public class ShopLevelDataKeyBase : IShopLevelDataKey
     {
         [Required] //This means SQL will throw an error if we don't fill it in
         [MaxLength(DataAuthConstants.HierarchicalKeySize)]

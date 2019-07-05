@@ -11,7 +11,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace DataLayer.MultiTenantClasses
 {
-    public class ShopSale : HierarchicalKeyBase
+    public class ShopSale : ShopLevelDataKeyBase
     {
         private ShopSale() { } //needed by EF Core
 

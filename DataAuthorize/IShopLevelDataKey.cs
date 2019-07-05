@@ -3,7 +3,7 @@
 
 namespace DataAuthorize
 {
-    public interface IHierarchicalKey : IDataKey
+    public interface IShopLevelDataKey : IDataKey
     {
         //This method is used to set the shop-level classes' DataKey - the TenantBase classes set the property directly. 
         void SetShopLevelDataKey(string tenantKey);
