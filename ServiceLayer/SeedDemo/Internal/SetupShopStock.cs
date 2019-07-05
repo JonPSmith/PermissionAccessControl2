@@ -28,7 +28,7 @@ namespace ServiceLayer.SeedDemo.Internal
                 foreach (var stock in eachStock)
                 {
                     var newStock = new ShopStock {Name = stock.Name, NumInStock = 5, RetailPrice = stock.Price, Shop = shop};
-                    newStock.SetHierarchicalDataKey(shop.DataKey);
+                    newStock.SetShopLevelDataKey(shop.DataKey);
                     context.Add(newStock);
                 }
             }

@@ -138,7 +138,8 @@ namespace Test.UnitTests.TestSeedDemo
             //VERIFY
             var companyContext = _serviceProvider.GetRequiredService<CompanyDbContext>();
             {
-                var display = companyContext.ShopStocks.IgnoreQueryFilters().Select(x => x.ToString()).ToList();
+                var shopshocks = companyContext.ShopStocks.IgnoreQueryFilters().ToList();
+                var display = shopshocks.Select(x => x.ToString()).ToList();
                 foreach (var line in display)
                 {
                     _output.WriteLine($"\"{line}\",");

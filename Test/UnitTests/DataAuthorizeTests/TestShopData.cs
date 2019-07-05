@@ -157,7 +157,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 var company = Company.AddTenantToDatabaseWithSaveChanges("TestCompany", PaidForModules.None, context);
                 var shop = RetailOutlet.AddTenantToDatabaseWithSaveChanges("TestShop", company, context);
                 var stock = new ShopStock {Name = "dress", Shop = shop};
-                stock.SetHierarchicalDataKey("accessKey*");
+                stock.SetShopLevelDataKey("accessKey*");
                 context.Add(stock);
                 context.SaveChanges();
 

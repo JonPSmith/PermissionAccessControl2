@@ -24,7 +24,7 @@ namespace DataAuthorize
                 .Where(e => e.State == EntityState.Added))
             {
                 if (entityEntry.Entity is IHierarchicalKey hasHierarchicalKey)
-                    hasHierarchicalKey.SetHierarchicalDataKey(accessKey);
+                    hasHierarchicalKey.SetShopLevelDataKey(accessKey);
             }
         }
     }

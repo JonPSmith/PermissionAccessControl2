@@ -35,7 +35,7 @@ namespace Test.DiConfigHelpers
             services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
             services.AddSingleton<ISimpleTimeCache>(new SimpleTimeCache());
             services.AddSingleton<IConfiguration>(startupConfig);
-            services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(""));
+            services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(null));
 
             var serviceProvider = services.BuildServiceProvider();
 

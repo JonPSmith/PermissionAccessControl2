@@ -128,14 +128,14 @@ namespace DataLayer.MultiTenantClasses
             if (!(this is Company) && Parent == null)
                 throw new ApplicationException($"The parent cannot be null if this tenant isn't a {nameof(Company)}.");
             if (TenantItemId == 0)
-                throw new ApplicationException("This class must have a primary key set before calling SetHierarchicalDataKey.");
+                throw new ApplicationException("This class must have a primary key set before calling this method.");
 
             var ending = this is RetailOutlet ? "*" : "|";
             DataKey = $"{TenantItemId:x}{ending}";
             if (Parent != null)
             {
                 if (Parent.TenantItemId == 0)
-                    throw new ApplicationException("The parent class must have a primary key set before calling SetHierarchicalDataKey.");
+                    throw new ApplicationException("The parent class must have a primary key set before calling this method.");
                 DataKey = Parent.DataKey + DataKey;
             }
         }
