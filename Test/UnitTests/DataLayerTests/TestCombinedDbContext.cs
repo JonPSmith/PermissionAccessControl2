@@ -60,6 +60,7 @@ namespace Test.UnitTests.DataLayerTests
             using (var context = new CombinedDbContext(options))
             {
                 //ATTEMPT
+                context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
                 //VERIFY
