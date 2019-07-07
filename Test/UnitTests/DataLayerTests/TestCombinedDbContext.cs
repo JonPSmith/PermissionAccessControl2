@@ -11,11 +11,11 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.DataLayerTests
 {
-    public class TestBothDbContexts
+    public class TestCombinedDbContext
     {
         private readonly ITestOutputHelper _output;
 
-        public TestBothDbContexts(ITestOutputHelper output)
+        public TestCombinedDbContext(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -52,6 +52,38 @@ namespace Test.UnitTests.DataLayerTests
             }
         }
 
-        
+        [Fact]
+        public void TestCreateValidDatabaseSqlServerOk()
+        {
+            //SETUP
+            var options = this.CreateUniqueClassOptions<CombinedDbContext>();
+            using (var context = new CombinedDbContext(options))
+            {
+                //ATTEMPT
+                context.Database.EnsureCreated();
+
+                //VERIFY
+                var classNames = context.Model.GetEntityTypes().Select(x => x.Name).ToList();
+                foreach (var className in classNames)
+                {
+                    _output.WriteLine($"\"{className}\",");
+                }
+                classNames.ShouldEqual(new List<string>
+                {
+                    "DataLayer.ExtraAuthClasses.ModulesForUser",
+                    "DataLayer.ExtraAuthClasses.RoleToPermissions",
+                    "DataLayer.ExtraAuthClasses.UserDataHierarchical",
+                    "DataLayer.ExtraAuthClasses.UserToRole",
+                    "DataLayer.MultiTenantClasses.Company",
+                    "DataLayer.MultiTenantClasses.RetailOutlet",
+                    "DataLayer.MultiTenantClasses.ShopSale",
+                    "DataLayer.MultiTenantClasses.ShopStock",
+                    "DataLayer.MultiTenantClasses.SubGroup",
+                    "DataLayer.MultiTenantClasses.TenantBase",
+                });
+            }
+        }
+
+
     }
 }

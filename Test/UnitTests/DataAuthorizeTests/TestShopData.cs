@@ -71,7 +71,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 context.SaveChanges();
 
                 //ATTEMPT
-                var status = ShopSale.CreateSellAndUpdateStock(1, shop.TenantItemId, shopStock.ShopStockId, context);
+                var status = ShopSale.CreateSellAndUpdateStock(1, shopStock.ShopStockId, context);
                 status.IsValid.ShouldBeTrue(status.GetAllErrors());
                 context.Add(status.Result);
                 context.SaveChanges();
@@ -97,20 +97,19 @@ namespace Test.UnitTests.DataAuthorizeTests
                 context.SaveChanges();
 
                 //ATTEMPT
-                var status = ShopSale.CreateSellAndUpdateStock(1, shop.TenantItemId, shopStock.ShopStockId, context);
+                var status = ShopSale.CreateSellAndUpdateStock(1, shopStock.ShopStockId, context);
                 status.IsValid.ShouldBeTrue(status.GetAllErrors());
                 context.Add(status.Result);
                 context.SaveChanges();
 
                 //VERIFY
                 var salesNotFiltered = context.ShopSales.IgnoreQueryFilters()
-                    .Include(x => x.Shop)
-                    .Include(x => x.StockItem)
+                    .Include(x => x.StockItem).ThenInclude(x => x.Shop)
                     .ToList();
 
                 salesNotFiltered.Count.ShouldEqual(1);
-                salesNotFiltered.First().Shop.ShouldNotBeNull();
                 salesNotFiltered.First().StockItem.ShouldNotBeNull();
+                salesNotFiltered.First().StockItem.Shop.ShouldNotBeNull();
             }
         }
 
@@ -127,7 +126,7 @@ namespace Test.UnitTests.DataAuthorizeTests
                 var shopStock = new ShopStock { Name = "dress", RetailPrice = 12, NumInStock = 2, Shop = shop };
                 context.Add(shopStock);
                 context.SaveChanges();
-                var status = ShopSale.CreateSellAndUpdateStock(1, shop.TenantItemId, shopStock.ShopStockId, context);
+                var status = ShopSale.CreateSellAndUpdateStock(1, shopStock.ShopStockId, context);
                 status.IsValid.ShouldBeTrue(status.GetAllErrors());
                 context.Add(status.Result);
                 context.SaveChanges();

@@ -24,6 +24,6 @@ namespace ServiceLayer.Shop
         /// </summary>
         public string ReturnReason { get; set; }
 
-        public string ShopName { get; set; }
+        public string StockItemShopName { get; set; }
     }
 }

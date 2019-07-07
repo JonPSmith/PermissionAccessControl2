@@ -15,16 +15,14 @@ namespace DataLayer.MultiTenantClasses
     {
         private ShopSale() { } //needed by EF Core
 
-        private ShopSale(int numSoldReturned, string returnReason, int tenantItemId, int shopStockId)
+        private ShopSale(int numSoldReturned, string returnReason, int shopStockId)
         {
             if (numSoldReturned == 0) throw new ArgumentException("cannot be zero", nameof(numSoldReturned));
             if (numSoldReturned < 0 && returnReason == null) throw new ArgumentException("cannot be null if its a return", nameof(returnReason));
-            if (tenantItemId == 0) throw new ArgumentException("cannot be zero", nameof(tenantItemId));
             if (shopStockId == 0) throw new ArgumentException("cannot be zero", nameof(shopStockId));
 
             NumSoldReturned = numSoldReturned;
             ReturnReason = returnReason;
-            TenantItemId = tenantItemId;
             ShopStockId = shopStockId;
         }
 
@@ -43,11 +41,6 @@ namespace DataLayer.MultiTenantClasses
         //------------------------------------------
         //relationships
 
-        public int TenantItemId { get; private set; }
-
-        [ForeignKey(nameof(TenantItemId))]
-        public RetailOutlet Shop { get; private set; }
-
         public int ShopStockId { get; private set; }
 
         [ForeignKey(nameof(ShopStockId))]
@@ -60,11 +53,11 @@ namespace DataLayer.MultiTenantClasses
         /// This creates a Sale entry, and also update the ShopStock number in stock
         /// </summary>
         /// <param name="numBought"></param>
-        /// <param name="tenantItemId"></param>
         /// <param name="shopStockId"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static IStatusGeneric<ShopSale> CreateSellAndUpdateStock(int numBought, int tenantItemId, int shopStockId, DbContext context)
+        public static IStatusGeneric<ShopSale> CreateSellAndUpdateStock(int numBought, int shopStockId,
+            DbContext context)
         {
             if (numBought < 0) throw new ArgumentException("must be positive", nameof(numBought));
             var status = new StatusGenericHandler<ShopSale>();
@@ -81,7 +74,7 @@ namespace DataLayer.MultiTenantClasses
                 status.AddError("There are not enough items of that product to sell.");
                 return status;
             }
-            var sale = new ShopSale(numBought, null, tenantItemId, shopStockId);
+            var sale = new ShopSale(numBought, null, shopStockId);
             return status.SetResult(sale);
         }
     }

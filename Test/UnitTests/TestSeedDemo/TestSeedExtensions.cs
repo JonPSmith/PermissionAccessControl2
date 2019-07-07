@@ -26,7 +26,7 @@ namespace Test.UnitTests.TestSeedDemo
         public TestSeedExtensions(ITestOutputHelper output)
         {
             _output = output;
-            _serviceProvider = this.SetupServices();
+            _serviceProvider = this.SetupServicesForTest();
         }
 
         [Fact]

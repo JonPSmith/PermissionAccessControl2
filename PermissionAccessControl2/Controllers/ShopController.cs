@@ -61,7 +61,7 @@ namespace PermissionAccessControl2.Controllers
         public IActionResult Sales([FromServices] ICrudServices<CompanyDbContext> service)
         {
             var allSales = service.ReadManyNoTracked<ListSalesDto>().ToList();
-            var allTheSameShop = allSales.Any() && allSales.All(x => x.ShopName == allSales.First().ShopName);
+            var allTheSameShop = allSales.Any() && allSales.All(x => x.StockItemShopName == allSales.First().StockItemShopName);
             return View(new Tuple<List<ListSalesDto>, bool>(allSales, allTheSameShop));
         }
     }

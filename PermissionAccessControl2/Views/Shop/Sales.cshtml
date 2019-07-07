@@ -9,7 +9,7 @@
 }
 else
 {
-    var displayThis = Model.Item2 ? "for shop" + Model.Item1.First().ShopName : "(by shop)";
+    var displayThis = Model.Item2 ? "for shop" + Model.Item1.First().StockItemShopName : "(by shop)";
 
 <h3>List Stock @displayThis</h3>
 <table class="table">
@@ -27,7 +27,7 @@ else
     <tr>
         @if (!Model.Item2)
                 {
-        <td>@stock.ShopName</td>
+        <td>@stock.StockItemShopName</td>
                 }
         <td>@stock.StockItemName</td>
         <td>@stock.NumSoldReturned</td>

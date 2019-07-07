@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.ExpressionTranslators.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
@@ -21,7 +20,7 @@ namespace Test.DiConfigHelpers
 {
     public static class ConfigureServices
     {
-        public static ServiceProvider SetupServices(this object callingClass, bool useSqlDbs = false)
+        public static ServiceProvider SetupServicesForTest(this object callingClass, bool useSqlDbs = false)
         {
             var services = new ServiceCollection();
             services.RegisterDatabases(callingClass, useSqlDbs);
