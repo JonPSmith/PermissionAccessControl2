@@ -23,8 +23,8 @@ namespace DataAuthorize
             foreach (var entityEntry in context.ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Added))
             {
-                if (entityEntry.Entity is IShopLevelDataKey hasHierarchicalKey)
-                    hasHierarchicalKey.SetShopLevelDataKey(accessKey);
+                if (entityEntry.Entity is IShopLevelDataKey hasDataKey)
+                    hasDataKey.SetShopLevelDataKey(accessKey);
             }
         }
     }
