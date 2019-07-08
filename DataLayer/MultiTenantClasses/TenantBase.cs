@@ -117,30 +117,7 @@ namespace DataLayer.MultiTenantClasses
         }
 
         //----------------------------------------------------
-        // methods
-
-        /// <summary>
-        /// This sets the DataKey to create the hierarchical DataAccess key.
-        /// See <see cref="DataKey"/> for more on the format of the hierarchical DataAccess key.
-        /// </summary>
-        private void SetDataKeyFromHierarchy()
-        {
-            if (!(this is Company) && Parent == null)
-                throw new ApplicationException($"The parent cannot be null if this tenant isn't a {nameof(Company)}.");
-            if (TenantItemId == 0)
-                throw new ApplicationException("This class must have a primary key set before calling this method.");
-
-            var ending = this is RetailOutlet ? "*" : "|";
-            DataKey = $"{TenantItemId:x}{ending}";
-            if (Parent != null)
-            {
-                if (Parent.TenantItemId == 0)
-                    throw new ApplicationException("The parent class must have a primary key set before calling this method.");
-                DataKey = Parent.DataKey + DataKey;
-            }
-        }
-
-
+        // public methods
 
         public void MoveToNewParent(TenantBase newParent, DbContext context)
         {
@@ -181,6 +158,30 @@ namespace DataLayer.MultiTenantClasses
         {
             var parent = context.Find<TenantBase>(parentId);
             MoveToNewParent(parent, context);
+        }
+
+        //---------------------------------
+        //private methods
+
+        /// <summary>
+        /// This sets the DataKey to create the hierarchical DataAccess key.
+        /// See <see cref="DataKey"/> for more on the format of the hierarchical DataAccess key.
+        /// </summary>
+        private void SetDataKeyFromHierarchy()
+        {
+            if (!(this is Company) && Parent == null)
+                throw new ApplicationException($"The parent cannot be null if this tenant isn't a {nameof(Company)}.");
+            if (TenantItemId == 0)
+                throw new ApplicationException("This class must have a primary key set before calling this method.");
+
+            var ending = this is RetailOutlet ? "*" : "|";
+            DataKey = $"{TenantItemId:x}{ending}";
+            if (Parent != null)
+            {
+                if (Parent.TenantItemId == 0)
+                    throw new ApplicationException("The parent class must have a primary key set before calling this method.");
+                DataKey = Parent.DataKey + DataKey;
+            }
         }
 
 
