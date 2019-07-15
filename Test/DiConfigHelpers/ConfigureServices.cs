@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
 using ServiceLayer.CodeCalledInStartup;
+using Test.EfHelpers;
 using TestSupport.Helpers;
 
 namespace Test.DiConfigHelpers
@@ -32,7 +33,7 @@ namespace Test.DiConfigHelpers
 
             var startupConfig = AppSettings.GetConfiguration((Assembly)null, "demosettings.json");
             services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
-            services.AddSingleton<ISimpleTimeCache>(new SimpleTimeCache());
+            services.AddSingleton<IAuthChanges>(new AuthChanges(new FakeDistributedCache()));
             services.AddSingleton<IConfiguration>(startupConfig);
             services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(null));
 

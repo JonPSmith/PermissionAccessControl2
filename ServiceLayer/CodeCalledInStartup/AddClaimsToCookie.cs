@@ -25,7 +25,7 @@ namespace ServiceLayer.CodeCalledInStartup
             {
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
-                var simpleCache = sp.GetRequiredService<ISimpleTimeCache>();
+                var simpleCache = sp.GetRequiredService<IAuthChanges>();
 
                 //TODO add update on feature change to AuthCookieValidate
                 var authCookieValidate = new AuthCookieValidate(

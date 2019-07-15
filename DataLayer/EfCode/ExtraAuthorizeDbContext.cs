@@ -16,7 +16,7 @@ namespace DataLayer.EfCode
 {
     public class ExtraAuthorizeDbContext : DbContext
     {
-        private ISimpleTimeCache _cache;
+        private IAuthChanges _cache;
 
         public DbSet<UserToRole> UserToRoles { get; set; }
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
@@ -33,7 +33,7 @@ namespace DataLayer.EfCode
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
             //We log this after the SaveChange was successful
             if (changed)
-                _cache?.AddOrUpdate(SimpleTimeCache.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                _cache?.AddOrUpdate(AuthChanges.FeatureCacheKey, DateTime.UtcNow.Ticks);
             return result;
         }
 
@@ -43,11 +43,11 @@ namespace DataLayer.EfCode
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
             //We log this after the SaveChange was successful
             if (changed)
-                _cache?.AddOrUpdate(SimpleTimeCache.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                _cache?.AddOrUpdate(AuthChanges.FeatureCacheKey, DateTime.UtcNow.Ticks);
             return result;
         }
 
-        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, ISimpleTimeCache cache)
+        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChanges cache)
             : base(options)
         {
             _cache = cache;

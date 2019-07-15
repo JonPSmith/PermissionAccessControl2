@@ -5,27 +5,22 @@ using CommonCache;
 
 namespace Test.EfHelpers
 {
-    public class FakeSimpleCache : ISimpleTimeCache
+    public class FakeAuthChanges : IAuthChanges
     {
         public long CachedValue { get; private set; } = -1;
         public bool AddOrUpdateCalled => CachedValue != -1;
 
-        public bool GivenTicksIsLowerThanCachedTicks(object cacheKey, string ticksToCompareString)
+        public bool IsLowerThan(string cacheKey, string ticksToCompareString)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool GivenTicksIsLowerThanCachedTicks(object cacheKey, long ticksToCompare)
+        public bool IsLowerThan(string cacheKey, long ticksToCompare)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool GetValueOrUseDefault(object cacheKey, long defaultValue, out long cachedValue)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void AddOrUpdate(object cacheKey, long cachedValue)
+        public void AddOrUpdate(string cacheKey, long cachedValue)
         {
             CachedValue = cachedValue;
         }

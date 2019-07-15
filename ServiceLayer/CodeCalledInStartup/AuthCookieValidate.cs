@@ -22,9 +22,9 @@ namespace ServiceLayer.CodeCalledInStartup
 
         private readonly CalcDataKey _dataKeyCalcer;
 
-        private readonly ISimpleTimeCache _cache;
+        private readonly IAuthChanges _cache;
 
-        public AuthCookieValidate(CalcAllowedPermissions rtoPCalcer, CalcDataKey dataKeyCalcer, ISimpleTimeCache cache)
+        public AuthCookieValidate(CalcAllowedPermissions rtoPCalcer, CalcDataKey dataKeyCalcer, IAuthChanges cache)
         {
             _rtoPCalcer = rtoPCalcer;
             _dataKeyCalcer = dataKeyCalcer;
@@ -36,7 +36,7 @@ namespace ServiceLayer.CodeCalledInStartup
             var newClaims = new List<Claim>();
             var originalClaims = context.Principal.Claims.ToList();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
-                _cache.GivenTicksIsLowerThanCachedTicks(SimpleTimeCache.FeatureCacheKey, 
+                _cache.IsLowerThan(AuthChanges.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value))
             {
                 //Handle the feature permissions
