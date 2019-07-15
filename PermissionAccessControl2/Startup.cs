@@ -55,8 +55,7 @@ namespace PermissionAccessControl2
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             //Need to register before ConfigureCookiesForExtraAuth 
-            services.AddMemoryCache();
-            services.AddSingleton<IAuthChanges, AuthChanges>();
+
             //This enables Cookies for authentication and adds the feature and data claims to the user
             services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "True");
 

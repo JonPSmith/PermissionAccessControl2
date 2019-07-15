@@ -8,13 +8,18 @@ namespace CommonCache
 {
     public class AuthChanges : IAuthChanges
     {
-        public const string FeatureCacheKey = "8FA8E7A8-0ADD-433C-B063-3BD725254C9B";
+        private readonly IDistributedCache _cache;
+        private readonly ITimeStore _databaseAccess;
 
-        private IDistributedCache _cache;
-
-        public AuthChanges(IDistributedCache cache)
+        private AuthChanges(IDistributedCache cache, ITimeStore databaseAccess)
         {
             _cache = cache;
+            _databaseAccess = databaseAccess;
+        }
+
+        public static AuthChanges AuthChangesFactory(IDistributedCache cache, ITimeStore databaseAccess)
+        {
+            return new AuthChanges(cache, databaseAccess);
         }
 
         /// <summary>

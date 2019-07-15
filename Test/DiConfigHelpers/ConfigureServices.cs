@@ -33,11 +33,12 @@ namespace Test.DiConfigHelpers
 
             var startupConfig = AppSettings.GetConfiguration((Assembly)null, "demosettings.json");
             services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
-            services.AddSingleton<IAuthChanges>(new AuthChanges(new FakeDistributedCache()));
             services.AddSingleton<IConfiguration>(startupConfig);
             services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(null));
 
             var serviceProvider = services.BuildServiceProvider();
+
+            services.AddSingleton<IAuthChanges>(AuthChanges.AuthChangesFactory(new FakeDistributedCache(), new FakeTimeStore()));
 
             //make sure the  databases are created
             serviceProvider.GetRequiredService<ApplicationDbContext>().Database.EnsureCreated();

@@ -24,6 +24,9 @@ namespace DataLayer.EfCode
         public DbSet<ShopStock> ShopStocks { get; set; }
         public DbSet<ShopSale> ShopSales { get; set; }
 
+        //TimeStore data
+        public DbSet<TimeStore> TimeStores { get; set; }
+
         public CombinedDbContext(DbContextOptions<CombinedDbContext> options)
             : base(options) { }
 

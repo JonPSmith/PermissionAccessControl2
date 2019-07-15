@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,14 +15,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.EfCode
 {
-    public class ExtraAuthorizeDbContext : DbContext
+    public class ExtraAuthorizeDbContext : DbContext, ITimeStore
     {
-        private IAuthChanges _cache;
+        private readonly IAuthChanges _cache;
 
         public DbSet<UserToRole> UserToRoles { get; set; }
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
         public DbSet<ModulesForUser> ModulesForUsers { get; set; }
-        
+
+        public DbSet<TimeStore> TimeStores { get; set; }
+
         //Now links to two classes in the CompanyDbContext that hold data used to set up the user's modules and data access rights
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<UserDataHierarchical> DataAccess { get; set; }
@@ -33,7 +36,7 @@ namespace DataLayer.EfCode
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
             //We log this after the SaveChange was successful
             if (changed)
-                _cache?.AddOrUpdate(AuthChanges.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
             return result;
         }
 
@@ -43,11 +46,11 @@ namespace DataLayer.EfCode
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
             //We log this after the SaveChange was successful
             if (changed)
-                _cache?.AddOrUpdate(AuthChanges.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
             return result;
         }
 
-        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChanges cache)
+        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChangesFactory cache)
             : base(options)
         {
             _cache = cache;
@@ -57,6 +60,25 @@ namespace DataLayer.EfCode
         {
             modelBuilder.TenantBaseConfig();
             modelBuilder.ExtraAuthorizeConfig();
+        }
+
+
+        public byte[] GetValueFromStore(string key)
+        {
+            return Find<TimeStore>(key)?.Value;
+        }
+
+        public void AddUpdateValue(string key, byte[] value)
+        {
+            var currentEntry = Find<TimeStore>(key);
+            if (currentEntry != null)
+            {
+                currentEntry.Value = value;
+            }
+            else
+            {
+                Add(new TimeStore {Key = key, Value = value});
+            }
         }
     }
 }

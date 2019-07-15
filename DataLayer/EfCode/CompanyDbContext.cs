@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 using DataLayer.EfCode.Configurations;
+using DataLayer.ExtraAuthClasses;
 using DataLayer.MultiTenantClasses;
 
 namespace DataLayer.EfCode
@@ -17,6 +18,8 @@ namespace DataLayer.EfCode
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<ShopStock> ShopStocks { get; set; }
         public DbSet<ShopSale> ShopSales { get; set; }
+
+        public DbSet<TimeStore> TimeStores { get; set; }
 
         public CompanyDbContext(DbContextOptions<CompanyDbContext> options, IGetClaimsProvider claimsProvider)
             : base(options)

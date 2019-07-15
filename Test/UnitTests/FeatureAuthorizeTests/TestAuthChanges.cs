@@ -18,7 +18,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestIsLowerThan(string key, string ticksToTry, bool expectedResult )
         {
             //SETUP
-            var cache = new AuthChanges(new FakeDistributedCache());
+            var cache = AuthChanges.AuthChangesFactory(new FakeDistributedCache(), new FakeTimeStore());
             cache.AddOrUpdate("test", 200);
 
             //ATTEMPT

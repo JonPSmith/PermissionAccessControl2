@@ -36,17 +36,17 @@ namespace ServiceLayer.CodeCalledInStartup
             var newClaims = new List<Claim>();
             var originalClaims = context.Principal.Claims.ToList();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
-                _cache.IsLowerThan(AuthChanges.FeatureCacheKey, 
+                _cache.IsLowerThan(AuthChangesConsts.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value))
             {
                 //Handle the feature permissions
-                var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+                var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 newClaims.AddRange(await BuildFeatureClaimsAsync(userId));
             }
 
             if (originalClaims.All(x => x.Type != DataAuthConstants.HierarchicalKeyClaimName))
             {
-                var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+                var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 newClaims.AddRange(BuildDataClaims(userId));
             }
 
