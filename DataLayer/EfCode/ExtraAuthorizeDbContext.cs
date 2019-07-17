@@ -50,10 +50,10 @@ namespace DataLayer.EfCode
             return result;
         }
 
-        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChangesFactory cache)
+        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChangesFactory authChangesFactory)
             : base(options)
         {
-            _cache = cache;
+            _cache = authChangesFactory.CreateIAuthChange(this);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

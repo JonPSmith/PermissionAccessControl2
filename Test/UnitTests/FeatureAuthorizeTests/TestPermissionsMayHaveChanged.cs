@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommonCache;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using PermissionParts;
@@ -20,9 +21,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestAddRoleNotTrigger()
         {
             //SETUP
-            var fakeAuthChanges = new FakeAuthChanges();
+            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
             {
                 context.Database.EnsureCreated();
 
@@ -33,7 +34,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.SaveChanges();
 
                 //VERIFY
-                fakeAuthChanges.AddOrUpdateCalled.ShouldBeFalse();
+                fakeAuthChangesFactory.FakeAuthChanges.AddOrUpdateCalled.ShouldBeFalse();
                 context.RolesToPermissions.Count().ShouldEqual(1);
             }
         }
@@ -42,9 +43,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestUpdateRoleTrigger()
         {
             //SETUP
-            var fakeAuthChanges = new FakeAuthChanges();
+            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
@@ -57,7 +58,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.SaveChanges();
 
                 //VERIFY
-                fakeAuthChanges.AddOrUpdateCalled.ShouldBeTrue();
+                fakeAuthChangesFactory.FakeAuthChanges.AddOrUpdateCalled.ShouldBeTrue();
                 context.RolesToPermissions.Count().ShouldEqual(1);
             }
         }
@@ -66,16 +67,16 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public async Task TestAddRoleToUseTrigger()
         {
             //SETUP
-            var fakeAuthChanges = new FakeAuthChanges();
+            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
                     ("test", "test", new List<Permissions> { Permissions.AccessAll }, context).Result;
                 context.Add(rolToPer);
                 context.SaveChanges();
-                fakeAuthChanges.Clear();
+                fakeAuthChangesFactory.FakeAuthChanges.Clear();
 
                 //ATTEMPT
                 var userToRole = new UserToRole("test", rolToPer);
@@ -83,7 +84,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 await context.SaveChangesAsync();
 
                 //VERIFY
-                fakeAuthChanges.AddOrUpdateCalled.ShouldBeTrue();
+                fakeAuthChangesFactory.FakeAuthChanges.AddOrUpdateCalled.ShouldBeTrue();
                 context.UserToRoles.Count().ShouldEqual(1);
             }
         }

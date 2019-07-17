@@ -74,6 +74,7 @@ namespace Test.UnitTests.DataLayerTests
                 {
                     "DataLayer.ExtraAuthClasses.ModulesForUser",
                     "DataLayer.ExtraAuthClasses.RoleToPermissions",
+                    "DataLayer.ExtraAuthClasses.TimeStore",
                     "DataLayer.ExtraAuthClasses.UserDataHierarchical",
                     "DataLayer.ExtraAuthClasses.UserToRole",
                     "DataLayer.MultiTenantClasses.Company",

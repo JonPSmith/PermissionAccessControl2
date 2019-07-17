@@ -24,12 +24,8 @@ namespace ServiceLayer.CodeCalledInStartup
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cacheType), cacheType, null);
             }
-
-            var sp = services.BuildServiceProvider();
-            var cache = sp.GetRequiredService<IDistributedCache>();
-            var extraAuth = sp.GetRequiredService<ExtraAuthorizeDbContext>();
-
-            services.AddSingleton<IAuthChanges>(AuthChanges.AuthChangesFactory(cache, extraAuth));
+            
+            services.AddSingleton<IAuthChangesFactory, AuthChangesFactory>();
         }
     }
 }

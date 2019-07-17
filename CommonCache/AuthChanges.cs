@@ -2,7 +2,10 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Caching.Distributed;
+
+[assembly: InternalsVisibleTo("Test")]
 
 namespace CommonCache
 {
@@ -11,15 +14,10 @@ namespace CommonCache
         private readonly IDistributedCache _cache;
         private readonly ITimeStore _databaseAccess;
 
-        private AuthChanges(IDistributedCache cache, ITimeStore databaseAccess)
+        internal AuthChanges(IDistributedCache cache, ITimeStore databaseAccess)
         {
             _cache = cache;
             _databaseAccess = databaseAccess;
-        }
-
-        public static AuthChanges AuthChangesFactory(IDistributedCache cache, ITimeStore databaseAccess)
-        {
-            return new AuthChanges(cache, databaseAccess);
         }
 
         /// <summary>
@@ -39,7 +37,12 @@ namespace CommonCache
         {
             var bytes = _cache.Get(cacheKey);
             if (bytes == null)
-                throw new ApplicationException("Replace with sql read");
+            {
+                //not in cache, so read from TimeStore in database
+                bytes = _databaseAccess.GetValueFromStore(cacheKey);
+                if (bytes == null)
+                    throw new ApplicationException($"You must seed the database with a cache value for the key {cacheKey}.");
+            }
             var cachedTicks = BitConverter.ToInt64(bytes, 0);
             return ticksToCompare < cachedTicks;
         }
@@ -47,6 +50,7 @@ namespace CommonCache
         public void AddOrUpdate(string cacheKey, long cachedValue)
         {
             var bytes = BitConverter.GetBytes(cachedValue);
+            _databaseAccess.AddUpdateValue(cacheKey, bytes);
             _cache.Set(cacheKey, bytes);
         }
     }
