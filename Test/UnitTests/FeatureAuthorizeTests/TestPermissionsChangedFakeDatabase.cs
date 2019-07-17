@@ -15,7 +15,7 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.FeatureAuthorizeTests
 {
-    public class TestPermissionsMayHaveChangedFakeDatabase
+    public class TestPermissionsChangedFakeDatabase
     {
         [Fact]
         public void TestAddRoleNotTrigger()

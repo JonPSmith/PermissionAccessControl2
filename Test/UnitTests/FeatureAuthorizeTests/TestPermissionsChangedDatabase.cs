@@ -8,7 +8,6 @@ using CommonCache;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PermissionParts;
 using Test.EfHelpers;
 using TestSupport.EfHelpers;
@@ -17,7 +16,7 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.FeatureAuthorizeTests
 {
-    public class TestPermissionsMayHaveChangedDatabase
+    public class TestPermissionsChangedDatabase
     {
         [Fact]
         public void TestAddRoleNotTrigger()
