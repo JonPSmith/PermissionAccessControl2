@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using CommonCache;
 
 namespace Test.EfHelpers
@@ -8,7 +9,7 @@ namespace Test.EfHelpers
     public class FakeAuthChanges : IAuthChanges
     {
         public long CachedValue { get; private set; } = -1;
-        public bool AddOrUpdateCalled => CachedValue != -1;
+        public bool CacheValueSet => CachedValue != -1;
 
         public bool IsLowerThan(string cacheKey, string ticksToCompareString)
         {
@@ -20,9 +21,10 @@ namespace Test.EfHelpers
             throw new System.NotImplementedException();
         }
 
-        public void AddOrUpdate(string cacheKey, long cachedValue)
+        public Action AddOrUpdate(string cacheKey, long cachedValue)
         {
             CachedValue = cachedValue;
+            return () => { };
         }
 
         public void Clear()

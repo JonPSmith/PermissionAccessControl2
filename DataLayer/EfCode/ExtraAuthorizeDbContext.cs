@@ -32,21 +32,23 @@ namespace DataLayer.EfCode
         //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            var changed = this.UserPermissionsMayHaveChanged();
+            Action callOnSuccess = null; 
+            if (this.UserPermissionsMayHaveChanged())
+                callOnSuccess = _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
-            //We log this after the SaveChange was successful
-            if (changed)
-                _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
+            //If SaveChange was successful we call the cache success method
+            callOnSuccess?.Invoke();
             return result;
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
         {
-            var changed = this.UserPermissionsMayHaveChanged();
+            Action callOnSuccess = null;
+            if (this.UserPermissionsMayHaveChanged())
+                callOnSuccess = _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            //We log this after the SaveChange was successful
-            if (changed)
-                _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
+            //If SaveChange was successful we call the cache success method
+            callOnSuccess?.Invoke();
             return result;
         }
 

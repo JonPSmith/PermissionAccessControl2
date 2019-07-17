@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using CommonCache;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PermissionParts;
 using Test.EfHelpers;
 using TestSupport.EfHelpers;
@@ -15,15 +17,15 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests.FeatureAuthorizeTests
 {
-    public class TestPermissionsMayHaveChanged
+    public class TestPermissionsMayHaveChangedDatabase
     {
         [Fact]
         public void TestAddRoleNotTrigger()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChangesFactory(fakeCache)))
             {
                 context.Database.EnsureCreated();
 
@@ -34,7 +36,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.SaveChanges();
 
                 //VERIFY
-                fakeAuthChangesFactory.FakeAuthChanges.AddOrUpdateCalled.ShouldBeFalse();
+                context.TimeStores.Count().ShouldEqual(0);
                 context.RolesToPermissions.Count().ShouldEqual(1);
             }
         }
@@ -43,9 +45,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestUpdateRoleTrigger()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChangesFactory(fakeCache)))
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
@@ -58,7 +60,8 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.SaveChanges();
 
                 //VERIFY
-                fakeAuthChangesFactory.FakeAuthChanges.AddOrUpdateCalled.ShouldBeTrue();
+                fakeCache.CachedKey.ShouldNotBeNull();
+                context.TimeStores.Count().ShouldEqual(1);
                 context.RolesToPermissions.Count().ShouldEqual(1);
             }
         }
@@ -67,29 +70,59 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public async Task TestAddRoleToUseTrigger()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChangesFactory(fakeCache)))
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
                     ("test", "test", new List<Permissions> { Permissions.AccessAll }, context).Result;
                 context.Add(rolToPer);
                 context.SaveChanges();
-                fakeAuthChangesFactory.FakeAuthChanges.Clear();
-
+                
                 //ATTEMPT
                 var userToRole = new UserToRole("test", rolToPer);
                 context.Add(userToRole);
                 await context.SaveChangesAsync();
 
                 //VERIFY
-                fakeAuthChangesFactory.FakeAuthChanges.AddOrUpdateCalled.ShouldBeTrue();
+                fakeCache.CachedKey.ShouldNotBeNull();
+                context.TimeStores.Count().ShouldEqual(1);
                 context.UserToRoles.Count().ShouldEqual(1);
             }
         }
 
+        [Fact]
+        public void TestCacheNotUpdatedOnSaveChangesException()
+        {
+            //SETUP
+            var fakeCache = new FakeDistributedCache();
+            var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChangesFactory(fakeCache)))
+            {
+                context.Database.EnsureCreated();
+                context.Add(new TimeStore{Key = "dup"});
+                context.SaveChanges();
+            }
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChangesFactory(fakeCache)))
+            {
+                context.Database.EnsureCreated();
 
+                var rolToPer = RoleToPermissions.CreateRoleWithPermissions
+                    ("test", "test", new List<Permissions> { Permissions.AccessAll }, context).Result;
+                context.Add(rolToPer);
+                context.SaveChanges();
+                fakeCache.CachedKey = null;
+
+                //ATTEMPT
+                rolToPer.UpdatePermissionsInRole(new List<Permissions> { Permissions.EmployeeRead });
+                context.Add(new TimeStore { Key = "dup" }); //this forces a db exception
+                Assert.Throws<DbUpdateException>(() => context.SaveChanges());
+
+                //VERIFY
+                fakeCache.CachedKey.ShouldBeNull();
+            }
+        }
 
     }
 }

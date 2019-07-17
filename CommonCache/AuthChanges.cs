@@ -47,11 +47,11 @@ namespace CommonCache
             return ticksToCompare < cachedTicks;
         }
 
-        public void AddOrUpdate(string cacheKey, long cachedValue)
+        public Action AddOrUpdate(string cacheKey, long cachedValue)
         {
             var bytes = BitConverter.GetBytes(cachedValue);
             _databaseAccess.AddUpdateValue(cacheKey, bytes);
-            _cache.Set(cacheKey, bytes);
+            return () => _cache.Set(cacheKey, bytes);
         }
     }
 }

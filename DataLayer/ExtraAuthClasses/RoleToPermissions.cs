@@ -26,6 +26,7 @@ namespace DataLayer.ExtraAuthClasses
         /// This creates the Role with its permissions
         /// </summary>
         /// <param name="roleName"></param>
+        /// <param name="description"></param>
         /// <param name="permissions"></param>
         private RoleToPermissions(string roleName, string description, ICollection<Permissions> permissions)
         {
