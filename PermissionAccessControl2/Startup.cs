@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using CommonCache;
 using DataAuthorize;
-using DataLayer.CacheParts;
 using DataLayer.EfCode;
 using FeatureAuthorize.PolicyCode;
 using GenericServices.Setup;

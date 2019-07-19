@@ -15,4 +15,8 @@
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CacheParts\" />
+  </ItemGroup>
+
 </Project>
