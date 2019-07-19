@@ -3,4 +3,4 @@ AreaManager: StockRead, SalesRead
 SalesAssistant: StockRead, SalesSell
 StoreManager: StockRead, StockAddNew, StockRemove, SalesRead, SalesSell, SalesReturn
 UserAdmin: UserRead, UserChange, RoleRead
-UpdateRole: Update1, Update2
+CacheRole: Cache1, Cache2

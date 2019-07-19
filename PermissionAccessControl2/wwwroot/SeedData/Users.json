@@ -1,48 +1,48 @@
 [
   {
     "Email": "dir@4U.com",
-    "RolesCommaDelimited": "Director,UpdateRole",
+    "RolesCommaDelimited": "Director,CacheRole",
     "LinkedTenant": "4U Inc."
   },
   {
     "Email": "westCoast@4U.com",
-    "RolesCommaDelimited": "AreaManager,UpdateRole",
+    "RolesCommaDelimited": "AreaManager,CacheRole",
     "LinkedTenant": "West Coast"
   },
   {
     "Email": "eastCoast@4U.com",
-    "RolesCommaDelimited": "AreaManager,UpdateRole",
+    "RolesCommaDelimited": "AreaManager,CacheRole",
     "LinkedTenant": "East Coast"
   },
   {
     "Email": "*Boss@4U.com",
-    "RolesCommaDelimited": "StoreManager,UpdateRole",
+    "RolesCommaDelimited": "StoreManager,CacheRole",
     "LinkedTenant": "*4U"
   },
   {
     "Email": "*Sales@4U.com",
-    "RolesCommaDelimited": "SalesAssistant,UpdateRole",
+    "RolesCommaDelimited": "SalesAssistant,CacheRole",
     "LinkedTenant": "*4U"
   },
   //Pets2
   {
     "Email": "dir@Pets2.com",
-    "RolesCommaDelimited": "Director,UpdateRole",
+    "RolesCommaDelimited": "Director,CacheRole",
     "LinkedTenant": "Pets2 Ltd."
   },
   {
     "Email": "london@Pets2.com",
-    "RolesCommaDelimited": "AreaManager,UpdateRole",
+    "RolesCommaDelimited": "AreaManager,CacheRole",
     "LinkedTenant": "London"
   },
   {
     "Email": "bristol@Pets2.com",
-    "RolesCommaDelimited": "AreaManager,UpdateRole",
+    "RolesCommaDelimited": "AreaManager,CacheRole",
     "LinkedTenant": "Bristol"
   },
   {
     "Email": "*Sales@Pets2.com",
-    "RolesCommaDelimited": "SalesAssistant,UpdateRole",
+    "RolesCommaDelimited": "SalesAssistant,CacheRole",
     "LinkedTenant": "*Place"
   }
 ]
