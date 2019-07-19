@@ -14,7 +14,7 @@ namespace CommonCache
         private readonly IDistributedCache _cache;
         private readonly ITimeStore _databaseAccess;
 
-        internal AuthChanges(IDistributedCache cache, ITimeStore databaseAccess)
+        public AuthChanges(IDistributedCache cache, ITimeStore databaseAccess)
         {
             _cache = cache;
             _databaseAccess = databaseAccess;

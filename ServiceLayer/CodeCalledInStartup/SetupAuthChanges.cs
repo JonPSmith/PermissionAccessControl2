@@ -1,5 +1,6 @@
 ﻿using System;
 using CommonCache;
+using DataLayer.CacheParts;
 using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -24,8 +25,6 @@ namespace ServiceLayer.CodeCalledInStartup
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cacheType), cacheType, null);
             }
-            
-            services.AddSingleton<IAuthChangesFactory, AuthChangesFactory>();
         }
     }
 }

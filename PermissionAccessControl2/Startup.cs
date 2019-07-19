@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using CommonCache;
 using DataAuthorize;
+using DataLayer.CacheParts;
 using DataLayer.EfCode;
 using FeatureAuthorize.PolicyCode;
 using GenericServices.Setup;
@@ -50,8 +51,6 @@ namespace PermissionAccessControl2
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             //Need to register before ConfigureCookiesForExtraAuth 
-            services.AddScoped<ITimeStore, ExtraAuthorizeDbContext>();
-            services.AddSingleton<IAuthChangesFactory,AuthChangesFactory>();
 
             //This enables Cookies for authentication and adds the feature and data claims to the user
             services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "True");

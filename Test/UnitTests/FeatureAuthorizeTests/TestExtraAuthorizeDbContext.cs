@@ -20,16 +20,16 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestSeedUserWithTwoRoles()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 context.Database.EnsureCreated();
 
                 //ATTEMPT
                 context.SeedUserWithTwoRoles();
             }
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             { 
                 //VERIFY
                 context.UserToRoles.Select(x => x.RoleName).ToArray().ShouldEqual(new[] { "TestRole1", "TestRole2" });
@@ -40,9 +40,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestCreateRoleWithPermissions()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 context.Database.EnsureCreated();
 
@@ -53,7 +53,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.Add(createStatus.Result);
                 context.SaveChanges();
             }
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 //VERIFY
                 context.RolesToPermissions.Single().PermissionsInRole.ShouldEqual(new List<Permissions> { Permissions.StockAddNew });
@@ -64,9 +64,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestUpdatePermissionsInRole()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 context.Database.EnsureCreated();
 
@@ -81,7 +81,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 roleToUpdate.UpdatePermissionsInRole(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
                 context.SaveChanges();
             }
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 //VERIFY
                 context.RolesToPermissions.Single().PermissionsInRole
@@ -93,9 +93,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestDeleteRole()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 context.Database.EnsureCreated();
                 var createStatus = RoleToPermissions.CreateRoleWithPermissions(

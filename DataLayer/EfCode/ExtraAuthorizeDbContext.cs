@@ -2,22 +2,22 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
-using System.ComponentModel.Design;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommonCache;
+using DataLayer.CacheParts;
 using DataLayer.EfCode.Configurations;
 using DataLayer.ExtraAuthClasses;
 using DataLayer.ExtraAuthClasses.Support;
 using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace DataLayer.EfCode
 {
     public class ExtraAuthorizeDbContext : DbContext, ITimeStore
     {
-        private readonly IAuthChanges _cache;
+        private readonly Lazy<IAuthChanges> _authChange;
 
         public DbSet<UserToRole> UserToRoles { get; set; }
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
@@ -34,7 +34,7 @@ namespace DataLayer.EfCode
         {
             Action callOnSuccess = null; 
             if (this.UserPermissionsMayHaveChanged())
-                callOnSuccess = _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                callOnSuccess = _authChange?.Value.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
             //If SaveChange was successful we call the cache success method
             callOnSuccess?.Invoke();
@@ -45,17 +45,18 @@ namespace DataLayer.EfCode
         {
             Action callOnSuccess = null;
             if (this.UserPermissionsMayHaveChanged())
-                callOnSuccess = _cache?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                callOnSuccess = _authChange?.Value.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
             //If SaveChange was successful we call the cache success method
             callOnSuccess?.Invoke();
             return result;
         }
 
-        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChangesFactory authChangesFactory)
+        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IDistributedCache cache)
             : base(options)
         {
-            _cache = authChangesFactory.CreateIAuthChange(this);
+            if (cache != null)
+                _authChange = new Lazy<IAuthChanges>(() => new AuthChanges(cache, this));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

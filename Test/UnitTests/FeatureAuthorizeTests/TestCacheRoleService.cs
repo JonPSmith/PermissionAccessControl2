@@ -26,16 +26,16 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestSeedCacheRole(bool hasCache2)
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 context.Database.EnsureCreated();
 
                 //ATTEMPT
                 context.SeedCacheRole(hasCache2);
             }
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             { 
                 //VERIFY
                 var role = context.RolesToPermissions.Single();
@@ -48,9 +48,9 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestToggleCacheRole()
         {
             //SETUP
-            var fakeAuthChangesFactory = new FakeAuthChangesFactory();
+            var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChangesFactory))
+            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
             {
                 context.Database.EnsureCreated();
                 context.SeedCacheRole(true);
@@ -69,7 +69,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 var role = context.RolesToPermissions.Single();
                 role.RoleName.ShouldEqual("CacheRole");
                 role.PermissionsInRole.Count().ShouldEqual(1);
-                fakeAuthChangesFactory.FakeAuthChanges.CacheValueSet.ShouldBeTrue();
+                fakeCache.CachedKey.ShouldNotBeNull();
             }
         }
 

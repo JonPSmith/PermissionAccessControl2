@@ -4,12 +4,14 @@
 using System.Reflection;
 using CommonCache;
 using DataAuthorize;
+using DataLayer.CacheParts;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
@@ -36,7 +38,7 @@ namespace Test.DiConfigHelpers
             services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
             services.AddSingleton<IConfiguration>(startupConfig);
             services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(null));
-            services.AddSingleton<IAuthChangesFactory>(new AuthChangesFactory(new FakeDistributedCache()));
+            services.AddSingleton<IDistributedCache>(new FakeDistributedCache());
 
             var serviceProvider = services.BuildServiceProvider();
 
