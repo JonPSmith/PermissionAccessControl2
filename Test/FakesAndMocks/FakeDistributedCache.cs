@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace Test.EfHelpers
+namespace Test.FakesAndMocks
 {
     public class FakeDistributedCache : IDistributedCache
     {

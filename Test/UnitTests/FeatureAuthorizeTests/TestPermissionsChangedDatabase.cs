@@ -10,6 +10,7 @@ using DataLayer.ExtraAuthClasses;
 using Microsoft.EntityFrameworkCore;
 using PermissionParts;
 using Test.EfHelpers;
+using Test.FakesAndMocks;
 using TestSupport.EfHelpers;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;

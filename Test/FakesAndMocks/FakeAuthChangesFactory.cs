@@ -1,7 +1,6 @@
 ﻿using CommonCache;
-using Microsoft.Extensions.Caching.Distributed;
 
-namespace Test.EfHelpers
+namespace Test.FakesAndMocks
 {
     public class FakeAuthChangesFactory : IAuthChangesFactory
     {

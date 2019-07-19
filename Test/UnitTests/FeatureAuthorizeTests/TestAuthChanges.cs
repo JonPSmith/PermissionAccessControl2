@@ -3,6 +3,7 @@
 
 using CommonCache;
 using Test.EfHelpers;
+using Test.FakesAndMocks;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 

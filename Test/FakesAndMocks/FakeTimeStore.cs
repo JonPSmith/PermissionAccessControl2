@@ -1,6 +1,6 @@
 ﻿using CommonCache;
 
-namespace Test.EfHelpers
+namespace Test.FakesAndMocks
 {
     public class FakeTimeStore : ITimeStore
     {
