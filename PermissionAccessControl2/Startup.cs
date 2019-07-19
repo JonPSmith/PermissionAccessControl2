@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using CommonCache;
-using CommonCache.AppStart;
 using DataAuthorize;
 using DataLayer.EfCode;
 using FeatureAuthorize.PolicyCode;
@@ -16,9 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PermissionAccessControl2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,6 +50,8 @@ namespace PermissionAccessControl2
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             //Need to register before ConfigureCookiesForExtraAuth 
+            services.AddScoped<ITimeStore, ExtraAuthorizeDbContext>();
+            services.AddSingleton<IAuthChangesFactory,AuthChangesFactory>();
 
             //This enables Cookies for authentication and adds the feature and data claims to the user
             services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "True");
@@ -69,10 +65,7 @@ namespace PermissionAccessControl2
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            //This defines the ITimeStore used by CommonCache
-            services.AddScoped<ITimeStore, ExtraAuthorizeDbContext>();
-            //This sets up the CommonCache 
-            services.CommonCacheStartup(Configuration);
+
             //This registers the services into DI
             services.ServiceLayerStartup(Configuration);
 

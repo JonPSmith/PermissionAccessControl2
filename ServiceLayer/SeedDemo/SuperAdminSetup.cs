@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.SeedDemo.Internal;
 using Microsoft.Extensions.Configuration;
 using PermissionParts;
+using ServiceLayer.UserServices.Internal;
 
 namespace ServiceLayer.SeedDemo
 {
@@ -49,7 +50,7 @@ namespace ServiceLayer.SeedDemo
 
                 using (var context = services.GetRequiredService<ExtraAuthorizeDbContext>())
                 {
-                    var extraService = new SetupExtraAuthUsers(context);
+                    var extraService = new ExtraAuthUsersSetup(context);
                     extraService.CheckAddNewRole(SuperAdminRoleName, "SuperAdmin Role", new List<Permissions>{ Permissions.AccessAll});
                     extraService.CheckAddRoleToUser(superUser.Id, SuperAdminRoleName);
                     context.SaveChanges();

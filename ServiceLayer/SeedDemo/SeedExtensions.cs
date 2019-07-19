@@ -2,17 +2,16 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionParts;
 using ServiceLayer.SeedDemo.Internal;
+using ServiceLayer.UserServices.Internal;
 
 namespace ServiceLayer.SeedDemo
 {
@@ -69,7 +68,7 @@ namespace ServiceLayer.SeedDemo
             var pathRolesData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, RolesFilename));
             var context = services.GetRequiredService<ExtraAuthorizeDbContext>();
             
-            var extraService = new SetupExtraAuthUsers(context);
+            var extraService = new ExtraAuthUsersSetup(context);
             var lines = File.ReadAllLines(pathRolesData);
             foreach (var line in lines)
             {

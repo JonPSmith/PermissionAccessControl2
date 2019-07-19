@@ -11,17 +11,17 @@ using PermissionParts;
 
 [assembly: InternalsVisibleTo("Test")]
 
-namespace ServiceLayer.SeedDemo.Internal
+namespace ServiceLayer.UserServices.Internal
 {
     /// <summary>
     /// These contain the individual methods to add/update the database, BUT you should call SaveChanges to update the database
     /// (This is different to AspNetUserExtension, where the userManger updates the database (immediately)
     /// </summary>
-    internal class SetupExtraAuthUsers
+    internal class ExtraAuthUsersSetup
     {
         private readonly ExtraAuthorizeDbContext _context;
 
-        public SetupExtraAuthUsers(ExtraAuthorizeDbContext context)
+        public ExtraAuthUsersSetup(ExtraAuthorizeDbContext context)
         {
             _context = context;
         }
@@ -33,6 +33,15 @@ namespace ServiceLayer.SeedDemo.Internal
                 //Note that CreateRoleWithPermissions will return a invalid status if the role is already present.
                 _context.Add(status.Result);
         }
+
+        public void UpdateRole(string roleName, ICollection<Permissions> permissions)
+        {
+            var existingRole = _context.Find<RoleToPermissions>(roleName);
+            if (existingRole == null)
+                throw new KeyNotFoundException($"Could not find the role {roleName} to update.");
+            existingRole.UpdatePermissionsInRole(permissions);
+        }
+
 
         public void CheckAddRoleToUser(string userId, string roleName)
         {

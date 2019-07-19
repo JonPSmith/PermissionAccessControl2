@@ -1,4 +1,4 @@
-﻿@model PermissionParts.Permissions[]
+﻿@model IEnumerable<PermissionParts.Permissions>
 @{
     ViewData["Title"] = "User";
 }
@@ -8,12 +8,19 @@
 @if (User?.Identity.IsAuthenticated == true)
 {
     <h4>User '@User.Identity.Name'</h4>
-    <ul>
-        @foreach (var claim in @Model)
-        {
-            <li>@claim.ToString()</li>
-        }
-    </ul>
+    @if (@Model == null)
+     {
+         <p>User has no permissions.</p>
+     }
+     else
+     {
+         <ul>
+             @foreach (var claim in @Model)
+             {
+                 <li>@claim.ToString()</li>
+             }
+         </ul>
+     }
 }
 else
 {

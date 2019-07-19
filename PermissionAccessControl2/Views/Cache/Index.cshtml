@@ -1,0 +1,24 @@
+﻿@model IEnumerable<PermissionParts.Permissions>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Toggle Cache</h1>
+
+@if (@Model == null)
+{
+    <h3>Either no one is logged in or you don't have the CacheRole.</h3>
+}
+else
+{
+    <h3>You currently have these cache permissions</h3>
+    <ul>
+        @foreach (var claim in @Model)
+        {
+            <li>@claim.ToString()</li>
+        }
+    </ul>
+
+    <a class="btn btn-primary" asp-area="" asp-controller="Cache" asp-action="Index">Toggle Cache</a>
+}
+

@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Linq;
+using System.Security.Claims;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using FeatureAuthorize;
@@ -32,9 +33,8 @@ namespace PermissionAccessControl2.Controllers
 
         public IActionResult UserPermissions()
         {
-            var permissionsClaim = HttpContext.User.Claims.SingleOrDefault(c => c.Type == PermissionConstants.PackedPermissionClaimType);
-            var permissions = permissionsClaim?.Value.UnpackPermissionsFromString().ToArray();
-            return View(permissions);
+            return View(HttpContext.User.Claims.PermissionsFromClaims());
         }
+
     }
 }

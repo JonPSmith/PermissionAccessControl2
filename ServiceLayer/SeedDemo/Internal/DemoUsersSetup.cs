@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using ServiceLayer.UserServices.Internal;
 
 [assembly: InternalsVisibleTo("Test")]
 
@@ -21,13 +22,13 @@ namespace ServiceLayer.SeedDemo.Internal
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ExtraAuthorizeDbContext _extraContext;
-        private readonly SetupExtraAuthUsers _extraService;
+        private readonly ExtraAuthUsersSetup _extraService;
 
         public DemoUsersSetup(IServiceProvider services)
         {
             _userManager = services.GetRequiredService<UserManager<IdentityUser>>();
             _extraContext = services.GetRequiredService<ExtraAuthorizeDbContext>();
-            _extraService = new SetupExtraAuthUsers(_extraContext);
+            _extraService = new ExtraAuthUsersSetup(_extraContext);
         }
 
         public async Task CheckAddDemoUsersAsync(string usersJson)

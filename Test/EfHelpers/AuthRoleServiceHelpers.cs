@@ -31,5 +31,18 @@ namespace Test.EfHelpers
 
             context.SaveChanges();
         }
+
+        public static void SeedCacheRole(this ExtraAuthorizeDbContext context, bool hasCache2, string userId = "userId")
+        {
+            var permissions = new List<Permissions> { Permissions.Cache1 };
+            if (hasCache2)
+                permissions.Add(Permissions.Cache2);
+            var userStatus = RoleToPermissions.CreateRoleWithPermissions(
+                "CacheRole", "CacheRole", permissions, context);
+            userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
+            context.Add(userStatus.Result);
+
+            context.SaveChanges();
+        }
     }
 }
