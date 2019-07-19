@@ -4,6 +4,7 @@
 using System;
 using CommonCache;
 using DataLayer.EfCode;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,12 +26,11 @@ namespace ServiceLayer.CodeCalledInStartup
             {
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
-                var simpleCache = sp.GetRequiredService<IAuthChanges>();
+                var authChange = sp.GetRequiredService<IAuthChanges>();
 
-                //TODO add update on feature change to AuthCookieValidate
                 var authCookieValidate = new AuthCookieValidate(
                     new CalcAllowedPermissions(extraAuthContextOptions), 
-                    new CalcDataKey(extraAuthContextOptions), simpleCache);
+                    new CalcDataKey(extraAuthContextOptions), authChange);
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
                 services.ConfigureApplicationCookie(options =>

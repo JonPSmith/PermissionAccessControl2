@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using CommonCache;
+using CommonCache.AppStart;
 using DataAuthorize;
 using DataLayer.EfCode;
 using FeatureAuthorize.PolicyCode;
@@ -68,12 +69,17 @@ namespace PermissionAccessControl2
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            //This defines the ITimeStore used by CommonCache
+            services.AddScoped<ITimeStore, ExtraAuthorizeDbContext>();
+            //This sets up the CommonCache 
+            services.CommonCacheStartup(Configuration);
+            //This registers the services into DI
+            services.ServiceLayerStartup(Configuration);
+
+            //This has to come after the CommonCache settings
             services.ConfigureGenericServicesEntities(typeof(ExtraAuthorizeDbContext), typeof(CompanyDbContext))
                 .ScanAssemblesForDtos(Assembly.GetAssembly(typeof(ListUsersDto)))
                 .RegisterGenericServices();
-
-            //This registers the services into DI
-            services.ServiceLayerStartup(Configuration);
 
             services.AddSwaggerGen(c =>
             {
