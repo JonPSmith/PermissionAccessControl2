@@ -2,6 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Reflection;
+using CommonCache;
 using DataAuthorize;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
@@ -35,7 +36,7 @@ namespace Test.DiConfigHelpers
             services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
             services.AddSingleton<IConfiguration>(startupConfig);
             services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(null));
-            services.AddSingleton<IDistributedCache>(new FakeDistributedCache());
+            services.AddSingleton<IAuthChanges>(x => null);
 
             var serviceProvider = services.BuildServiceProvider();
 

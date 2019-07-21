@@ -16,7 +16,7 @@ namespace DataLayer.EfCode
 {
     public class ExtraAuthorizeDbContext : DbContext, ITimeStore
     {
-        private readonly Lazy<IAuthChanges> _authChange;
+        private readonly IAuthChanges _authChange;
 
         public DbSet<UserToRole> UserToRoles { get; set; }
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
@@ -30,10 +30,14 @@ namespace DataLayer.EfCode
 
         //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
+        { 
+            if (_authChange == null)
+                //_authChange is null if not using UpdateCookieOnChange, so bypass permission change code
+                return base.SaveChanges(acceptAllChangesOnSuccess);
+
             Action callOnSuccess = null; 
             if (this.UserPermissionsMayHaveChanged())
-                callOnSuccess = _authChange?.Value.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                callOnSuccess = _authChange.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
             //If SaveChange was successful we call the cache success method
             callOnSuccess?.Invoke();
@@ -42,20 +46,23 @@ namespace DataLayer.EfCode
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
         {
+            if (_authChange == null)
+                //_authChange is null if not using UpdateCookieOnChange, so bypass permission change code
+                return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
             Action callOnSuccess = null;
             if (this.UserPermissionsMayHaveChanged())
-                callOnSuccess = _authChange?.Value.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
+                callOnSuccess = _authChange?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
             //If SaveChange was successful we call the cache success method
             callOnSuccess?.Invoke();
             return result;
         }
 
-        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IDistributedCache cache)
+        public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChanges authChange)
             : base(options)
         {
-            if (cache != null)
-                _authChange = new Lazy<IAuthChanges>(() => new AuthChanges(cache, this));
+            _authChange = authChange;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

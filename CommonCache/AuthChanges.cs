@@ -3,6 +3,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
 [assembly: InternalsVisibleTo("Test")]
@@ -12,12 +13,10 @@ namespace CommonCache
     public class AuthChanges : IAuthChanges
     {
         private readonly IDistributedCache _cache;
-        private readonly ITimeStore _databaseAccess;
 
-        public AuthChanges(IDistributedCache cache, ITimeStore databaseAccess)
+        public AuthChanges(IDistributedCache cache)
         {
             _cache = cache;
-            _databaseAccess = databaseAccess;
         }
 
         /// <summary>
@@ -26,20 +25,20 @@ namespace CommonCache
         /// <param name="cacheKey"></param>
         /// <param name="ticksToCompareString"></param>
         /// <returns></returns>
-        public bool IsLowerThan(string cacheKey, string ticksToCompareString)
+        public bool IsLowerThan(string cacheKey, string ticksToCompareString, ITimeStore databaseAccess)
         {
             if (ticksToCompareString == null) return false;
             var ticksToCompare = long.Parse(ticksToCompareString);
-            return IsLowerThan(cacheKey, ticksToCompare);
+            return IsLowerThan(cacheKey, ticksToCompare, databaseAccess);
         }
 
-        private bool IsLowerThan(string cacheKey, long ticksToCompare)
+        private bool IsLowerThan(string cacheKey, long ticksToCompare, ITimeStore databaseAccess)
         {
             var bytes = _cache.Get(cacheKey);
             if (bytes == null)
             {
                 //not in cache, so read from TimeStore in database
-                bytes = _databaseAccess.GetValueFromStore(cacheKey);
+                bytes = databaseAccess.GetValueFromStore(cacheKey);
                 if (bytes == null)
                     throw new ApplicationException($"You must seed the database with a cache value for the key {cacheKey}.");
             }
@@ -47,10 +46,10 @@ namespace CommonCache
             return ticksToCompare < cachedTicks;
         }
 
-        public Action AddOrUpdate(string cacheKey, long cachedValue)
+        public Action AddOrUpdate(string cacheKey, long cachedValue, ITimeStore databaseAccess)
         {
             var bytes = BitConverter.GetBytes(cachedValue);
-            _databaseAccess.AddUpdateValue(cacheKey, bytes);
+            databaseAccess.AddUpdateValue(cacheKey, bytes);
             return () => _cache.Set(cacheKey, bytes);
         }
     }

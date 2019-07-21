@@ -11,7 +11,7 @@ namespace Test.FakesAndMocks
         public long CachedValue { get; private set; } = -1;
         public bool CacheValueSet => CachedValue != -1;
 
-        public bool IsLowerThan(string cacheKey, string ticksToCompareString)
+        public bool IsLowerThan(string cacheKey, string ticksToCompareString, ITimeStore databaseAccess)
         {
             throw new System.NotImplementedException();
         }
@@ -21,7 +21,7 @@ namespace Test.FakesAndMocks
             throw new System.NotImplementedException();
         }
 
-        public Action AddOrUpdate(string cacheKey, long cachedValue)
+        public Action AddOrUpdate(string cacheKey, long cachedValue, ITimeStore databaseAccess)
         {
             CachedValue = cachedValue;
             return () => { };

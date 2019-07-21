@@ -19,9 +19,7 @@ namespace ServiceLayer.CodeCalledInStartup
         /// This is the code that can calculates the feature permissions for a user
         /// </summary>
         private readonly CalcAllowedPermissions _rtoPCalcer;
-
         private readonly CalcDataKey _dataKeyCalcer;
-
         private readonly IAuthChanges _cache;
 
         public AuthCookieValidate(CalcAllowedPermissions rtoPCalcer, CalcDataKey dataKeyCalcer, IAuthChanges cache)
@@ -37,7 +35,7 @@ namespace ServiceLayer.CodeCalledInStartup
             var originalClaims = context.Principal.Claims.ToList();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
                 _cache.IsLowerThan(AuthChangesConsts.FeatureCacheKey, 
-                    originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value))
+                    originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value, null))
             {
                 //Handle the feature permissions
                 var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;

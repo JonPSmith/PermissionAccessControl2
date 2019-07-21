@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommonCache;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChanges(fakeCache)))
             {
                 context.Database.EnsureCreated();
 
@@ -45,7 +46,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChanges(fakeCache)))
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
@@ -70,7 +71,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChanges(fakeCache)))
             {
                 context.Database.EnsureCreated();
                 var rolToPer = RoleToPermissions.CreateRoleWithPermissions
@@ -96,13 +97,13 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeCache = new FakeDistributedCache();
             var options = SqliteInMemory.CreateOptions<ExtraAuthorizeDbContext>();
-            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChanges(fakeCache)))
             {
                 context.Database.EnsureCreated();
                 context.Add(new TimeStore{Key = "dup"});
                 context.SaveChanges();
             }
-            using (var context = new ExtraAuthorizeDbContext(options, fakeCache))
+            using (var context = new ExtraAuthorizeDbContext(options, new AuthChanges(fakeCache)))
             {
                 context.Database.EnsureCreated();
 

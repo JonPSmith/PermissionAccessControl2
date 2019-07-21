@@ -20,11 +20,11 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         {
             //SETUP
             var fakeTimeStore = new FakeTimeStore();
-            var cache = new AuthChanges(new FakeDistributedCache(), fakeTimeStore);
-            cache.AddOrUpdate("test", 200);
+            var cache = new AuthChanges(new FakeDistributedCache());
+            cache.AddOrUpdate("test", 200, fakeTimeStore);
 
             //ATTEMPT
-            var isHigher = cache.IsLowerThan(key, ticksToTry);
+            var isHigher = cache.IsLowerThan(key, ticksToTry, fakeTimeStore);
 
             //VERIFY
             isHigher.ShouldEqual(expectedResult);
