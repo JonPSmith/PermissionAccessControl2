@@ -24,42 +24,36 @@ namespace ServiceLayer.CodeCalledInStartup
         private readonly DbContextOptions<ExtraAuthorizeDbContext> _extraAuthContextOptions;
         private readonly IAuthChanges _authChanges;
 
-        private readonly Lazy<ExtraAuthorizeDbContext> _contextLazy;
-        private readonly Lazy<CalcAllowedPermissions> _rtoPLazy;
-        private readonly Lazy<CalcDataKey> _dataKeyLazy;
-
-
-
         public AuthCookieValidate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions, IAuthChanges authChanges)
         {
             _extraAuthContextOptions = extraAuthContextOptions;
             _authChanges = authChanges;
-
-            //now we set up the lazy values - I used Lazy for performance reasons, as 99.9% of the time the lazy parts aren't needed
-            _contextLazy = new Lazy<ExtraAuthorizeDbContext>( () => new ExtraAuthorizeDbContext(_extraAuthContextOptions, authChanges));
-            _rtoPLazy = new Lazy<CalcAllowedPermissions>(() => new CalcAllowedPermissions(_contextLazy.Value));
-            _dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(_contextLazy.Value));
         }
 
         public async Task ValidateAsync(CookieValidatePrincipalContext context)
         {
+            //now we set up the lazy values - I used Lazy for performance reasons, as 99.9% of the time the lazy parts aren't needed
+            var contextLazy = new Lazy<ExtraAuthorizeDbContext>(() => new ExtraAuthorizeDbContext(_extraAuthContextOptions, _authChanges));
+            var rtoPLazy = new Lazy<CalcAllowedPermissions>(() => new CalcAllowedPermissions(contextLazy.Value));
+            var dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(contextLazy.Value));
+
             var newClaims = new List<Claim>();
             var originalClaims = context.Principal.Claims.ToList();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
-                _authChanges.IsLowerThan(AuthChangesConsts.FeatureCacheKey, 
+                _authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
                     // ReSharper disable once AccessToDisposedClosure
-                    () => _contextLazy.Value))
+                    () => contextLazy.Value))
             {
                 //Handle the feature permissions
                 var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                newClaims.AddRange(await BuildFeatureClaimsAsync(userId));
+                newClaims.AddRange(await BuildFeatureClaimsAsync(userId, rtoPLazy.Value));
             }
 
             if (originalClaims.All(x => x.Type != DataAuthConstants.HierarchicalKeyClaimName))
             {
                 var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-                newClaims.AddRange(BuildDataClaims(userId));
+                newClaims.AddRange(BuildDataClaims(userId, dataKeyLazy.Value));
             }
 
             if (newClaims.Any())
@@ -74,7 +68,7 @@ namespace ServiceLayer.CodeCalledInStartup
                 //THIS IS IMPORTANT: This updates the cookie, otherwise this calc will be done every HTTP request
                 context.ShouldRenew = true;
 
-                _contextLazy.Value.Dispose();
+                contextLazy.Value.Dispose();
             }
         }
 
@@ -84,21 +78,21 @@ namespace ServiceLayer.CodeCalledInStartup
             return originalClaims.Where(x => !newClaimTypes.Contains(x.Type));
         }
 
-        private async Task<List<Claim>> BuildFeatureClaimsAsync(string userId)
+        private async Task<List<Claim>> BuildFeatureClaimsAsync(string userId, CalcAllowedPermissions rtoP)
         {
             var claims = new List<Claim>
             {
-                new Claim(PermissionConstants.PackedPermissionClaimType, await _rtoPLazy.Value.CalcPermissionsForUserAsync(userId)),
+                new Claim(PermissionConstants.PackedPermissionClaimType, await rtoP.CalcPermissionsForUserAsync(userId)),
                 new Claim(PermissionConstants.LastPermissionsUpdatedClaimType, DateTime.UtcNow.Ticks.ToString())
             };
             return claims;
         }
 
-        private List<Claim> BuildDataClaims(string userId)
+        private List<Claim> BuildDataClaims(string userId, CalcDataKey dataKeyCalc)
         {
             var claims = new List<Claim>
             {
-                new Claim(DataAuthConstants.HierarchicalKeyClaimName, _dataKeyLazy.Value.CalcDataKeyForUser(userId))
+                new Claim(DataAuthConstants.HierarchicalKeyClaimName, dataKeyCalc.CalcDataKeyForUser(userId))
             };
             return claims;
         }

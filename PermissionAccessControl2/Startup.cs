@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using CommonCache;
 using DataAuthorize;
 using DataLayer.EfCode;
 using FeatureAuthorize.PolicyCode;
@@ -48,8 +49,6 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            //Need to register before ConfigureCookiesForExtraAuth 
-
             //This enables Cookies for authentication and adds the feature and data claims to the user
             services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "True");
 
@@ -61,7 +60,6 @@ namespace PermissionAccessControl2
             //This is needed to implement the data authorize code 
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
 
             //This registers the services into DI
             services.ServiceLayerStartup(Configuration);

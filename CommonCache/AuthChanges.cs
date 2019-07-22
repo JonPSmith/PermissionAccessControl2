@@ -26,22 +26,27 @@ namespace CommonCache
         /// <param name="ticksToCompareString"></param>
         /// <param name="getTimeStore">This func gets the timeStore - Func used to allow lazy creation of DbContext</param>
         /// <returns></returns>
-        public bool IsLowerThan(string cacheKey, string ticksToCompareString, Func<ITimeStore> getTimeStore)
+        public bool IsOutOfDateOrMissing(string cacheKey, string ticksToCompareString, Func<ITimeStore> getTimeStore)
         {
-            if (ticksToCompareString == null) return false;
+            if (ticksToCompareString == null)
+                //if there is no time claim then you do need to reset the claims
+                return true;
+
             var ticksToCompare = long.Parse(ticksToCompareString);
-            return IsLowerThan(cacheKey, ticksToCompare, getTimeStore.Invoke());
+            return IsOutOfDate(cacheKey, ticksToCompare, getTimeStore.Invoke());
         }
 
-        private bool IsLowerThan(string cacheKey, long ticksToCompare, ITimeStore databaseAccess)
+        private bool IsOutOfDate(string cacheKey, long ticksToCompare, ITimeStore databaseAccess)
         {
-            var bytes = _cache.Get(cacheKey);
+            byte[] bytes = _cache.Get(cacheKey);
             if (bytes == null)
             {
                 //not in cache, so read from TimeStore in database
                 bytes = databaseAccess.GetValueFromStore(cacheKey);
                 if (bytes == null)
                     throw new ApplicationException($"You must seed the database with a cache value for the key {cacheKey}.");
+                //And update the cache
+                _cache.Set(cacheKey, bytes);
             }
             var cachedTicks = BitConverter.ToInt64(bytes, 0);
             return ticksToCompare < cachedTicks;
@@ -51,7 +56,10 @@ namespace CommonCache
         {
             var bytes = BitConverter.GetBytes(cachedValue);
             databaseAccess.AddUpdateValue(cacheKey, bytes);
-            return () => _cache.Set(cacheKey, bytes);
+            return () =>
+            {
+                _cache.Set(cacheKey, bytes);
+            };
         }
     }
 }

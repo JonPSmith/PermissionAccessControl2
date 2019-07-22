@@ -39,7 +39,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             { 
                 //VERIFY
                 var role = context.RolesToPermissions.Single();
-                role.RoleName.ShouldEqual("CacheRole");
+                role.RoleName.ShouldEqual(CacheRoleService.CacheRoleName);
                 role.PermissionsInRole.Count().ShouldEqual(hasCache2 ? 2 : 1);
             }
         }
@@ -55,7 +55,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.Database.EnsureCreated();
                 context.SeedCacheRole(true);
 
-                var cacheRoleService = new CacheRoleService(context);
+                var cacheRoleService = new CacheRoleService(context, new FakeDistributedCache());
                 var claims = new List<Claim>
                 {
                     new Claim(PermissionConstants.PackedPermissionClaimType,
@@ -63,11 +63,11 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 };
 
                 //ATTEMPT
-                cacheRoleService.ToggleCacheRole(claims);
+                cacheRoleService.ToggleCacheRole();
 
                 //VERIFY
                 var role = context.RolesToPermissions.Single();
-                role.RoleName.ShouldEqual("CacheRole");
+                role.RoleName.ShouldEqual(CacheRoleService.CacheRoleName);
                 role.PermissionsInRole.Count().ShouldEqual(1);
                 fakeAuthChanges.CacheValueSet.ShouldBeTrue();
             }

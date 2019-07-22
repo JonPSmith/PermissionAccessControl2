@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using PermissionParts;
+using ServiceLayer.UserServices.Concrete;
 using Xunit.Extensions.AssertExtensions;
 
 namespace Test.EfHelpers
@@ -59,7 +60,7 @@ namespace Test.EfHelpers
             if (hasCache2)
                 permissions.Add(Permissions.Cache2);
             var userStatus = RoleToPermissions.CreateRoleWithPermissions(
-                "CacheRole", "CacheRole", permissions, context);
+                CacheRoleService.CacheRoleName, CacheRoleService.CacheRoleName, permissions, context);
             userStatus.IsValid.ShouldBeTrue(userStatus.GetAllErrors());
             context.Add(userStatus.Result);
 

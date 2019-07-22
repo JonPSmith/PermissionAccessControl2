@@ -7,6 +7,7 @@ namespace ServiceLayer.UserServices
     public interface ICacheRoleService
     {
         IEnumerable<Permissions> ShowExistingCachePermissions(IEnumerable<Claim> usersClaims);
-        void ToggleCacheRole(IEnumerable<Claim> usersClaims);
+        void ToggleCacheRole();
+        IEnumerable<string> GetFeatureLastUpdated();
     }
 }

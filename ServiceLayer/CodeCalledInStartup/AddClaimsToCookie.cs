@@ -1,10 +1,8 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using System;
 using CommonCache;
 using DataLayer.EfCode;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +22,10 @@ namespace ServiceLayer.CodeCalledInStartup
 
             if (updateCookieOnChange)
             {
+                //Need to register for update cookies 
+                services.AddDistributedMemoryCache();
+                services.AddSingleton<IAuthChanges, AuthChanges>();
+
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
                 var authChange = sp.GetRequiredService<IAuthChanges>();
@@ -38,6 +40,8 @@ namespace ServiceLayer.CodeCalledInStartup
             }
             else
             {
+                services.AddSingleton<IAuthChanges>(x => null); //This will turn off the checks in the ExtraAuthDbContext
+
                 //Simple version - see https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
                 services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, AddPermissionsToUserClaims>();
             }
