@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
@@ -11,6 +12,26 @@ namespace Test.EfHelpers
 {
     public static class AuthRoleServiceHelpers
     {
+        public static void SeedUserWithDefaultPermissions(this ExtraAuthorizeDbContext context,
+            PaidForModules modules = PaidForModules.None, string userId = "userId")
+        {
+            var defaultPermissions = new List<Permissions> {Permissions.StockRead, Permissions.Feature1Access};
+
+            var roleStatus = RoleToPermissions.CreateRoleWithPermissions(
+                "TestRole1", "TestRole1", defaultPermissions, context);
+            roleStatus.IsValid.ShouldBeTrue(roleStatus.GetAllErrors());
+            context.Add(roleStatus.Result);
+
+            var moduleUser = new ModulesForUser(userId, modules);
+            context.Add(moduleUser);
+
+            var userStatus = UserToRole.AddRoleToUser(userId, "TestRole1", context);
+            userStatus.IsValid.ShouldBeTrue(roleStatus.GetAllErrors());
+            context.Add(userStatus.Result);
+
+            context.SaveChanges();
+        }
+
         public static void SeedUserWithTwoRoles(this ExtraAuthorizeDbContext context, string userId = "userId")
         {
             var userStatus = RoleToPermissions.CreateRoleWithPermissions(

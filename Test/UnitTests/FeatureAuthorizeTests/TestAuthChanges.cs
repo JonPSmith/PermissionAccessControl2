@@ -24,7 +24,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             cache.AddOrUpdate("test", 200, fakeTimeStore);
 
             //ATTEMPT
-            var isHigher = cache.IsLowerThan(key, ticksToTry, fakeTimeStore);
+            var isHigher = cache.IsLowerThan(key, ticksToTry, () => fakeTimeStore);
 
             //VERIFY
             isHigher.ShouldEqual(expectedResult);

@@ -8,25 +8,37 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CommonCache;
 using DataAuthorize;
+using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLayer.CodeCalledInStartup
 {
+    /// <summary>
+    /// This is the code that can calculates the feature and data claims for a user.
+    /// Because it needs to be set up at the start we cannot use any DI items that are scoped.
+    /// </summary>
     public class AuthCookieValidate
     {
-        /// <summary>
-        /// This is the code that can calculates the feature permissions for a user
-        /// </summary>
-        private readonly CalcAllowedPermissions _rtoPCalcer;
-        private readonly CalcDataKey _dataKeyCalcer;
-        private readonly IAuthChanges _cache;
+        private readonly DbContextOptions<ExtraAuthorizeDbContext> _extraAuthContextOptions;
+        private readonly IAuthChanges _authChanges;
 
-        public AuthCookieValidate(CalcAllowedPermissions rtoPCalcer, CalcDataKey dataKeyCalcer, IAuthChanges cache)
+        private readonly Lazy<ExtraAuthorizeDbContext> _contextLazy;
+        private readonly Lazy<CalcAllowedPermissions> _rtoPLazy;
+        private readonly Lazy<CalcDataKey> _dataKeyLazy;
+
+
+
+        public AuthCookieValidate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions, IAuthChanges authChanges)
         {
-            _rtoPCalcer = rtoPCalcer;
-            _dataKeyCalcer = dataKeyCalcer;
-            _cache = cache;
+            _extraAuthContextOptions = extraAuthContextOptions;
+            _authChanges = authChanges;
+
+            //now we set up the lazy values - I used Lazy for performance reasons, as 99.9% of the time the lazy parts aren't needed
+            _contextLazy = new Lazy<ExtraAuthorizeDbContext>( () => new ExtraAuthorizeDbContext(_extraAuthContextOptions, authChanges));
+            _rtoPLazy = new Lazy<CalcAllowedPermissions>(() => new CalcAllowedPermissions(_contextLazy.Value));
+            _dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(_contextLazy.Value));
         }
 
         public async Task ValidateAsync(CookieValidatePrincipalContext context)
@@ -34,8 +46,10 @@ namespace ServiceLayer.CodeCalledInStartup
             var newClaims = new List<Claim>();
             var originalClaims = context.Principal.Claims.ToList();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
-                _cache.IsLowerThan(AuthChangesConsts.FeatureCacheKey, 
-                    originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value, null))
+                _authChanges.IsLowerThan(AuthChangesConsts.FeatureCacheKey, 
+                    originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
+                    // ReSharper disable once AccessToDisposedClosure
+                    () => _contextLazy.Value))
             {
                 //Handle the feature permissions
                 var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -59,6 +73,8 @@ namespace ServiceLayer.CodeCalledInStartup
                 context.ReplacePrincipal(newPrincipal);
                 //THIS IS IMPORTANT: This updates the cookie, otherwise this calc will be done every HTTP request
                 context.ShouldRenew = true;
+
+                _contextLazy.Value.Dispose();
             }
         }
 
@@ -72,7 +88,7 @@ namespace ServiceLayer.CodeCalledInStartup
         {
             var claims = new List<Claim>
             {
-                new Claim(PermissionConstants.PackedPermissionClaimType, await _rtoPCalcer.CalcPermissionsForUser(userId)),
+                new Claim(PermissionConstants.PackedPermissionClaimType, await _rtoPLazy.Value.CalcPermissionsForUserAsync(userId)),
                 new Claim(PermissionConstants.LastPermissionsUpdatedClaimType, DateTime.UtcNow.Ticks.ToString())
             };
             return claims;
@@ -82,7 +98,7 @@ namespace ServiceLayer.CodeCalledInStartup
         {
             var claims = new List<Claim>
             {
-                new Claim(DataAuthConstants.HierarchicalKeyClaimName, _dataKeyCalcer.CalcDataKeyForUser(userId))
+                new Claim(DataAuthConstants.HierarchicalKeyClaimName, _dataKeyLazy.Value.CalcDataKeyForUser(userId))
             };
             return claims;
         }

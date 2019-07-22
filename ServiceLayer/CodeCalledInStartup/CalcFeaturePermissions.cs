@@ -11,43 +11,36 @@ using PermissionParts;
 
 namespace ServiceLayer.CodeCalledInStartup
 {
+    /// <summary>
+    /// This is the code that calculates what permissions a user has
+    /// </summary>
     public class CalcAllowedPermissions
     {
-        /// <summary>
-        /// NOTE: This class is used in OnValidatePrincipal so it can't use DI, so I can't inject the DbContext here because that is dynamic.
-        /// Therefore I can pass in the database options because that is a singleton
-        /// From that the method can create a valid dbContext to access the database
-        /// </summary>
-        private readonly DbContextOptions<ExtraAuthorizeDbContext> _extraAuthDbContextOptions;
-
-        private ExtraAuthorizeDbContext _context;
+        private readonly ExtraAuthorizeDbContext _context;
 
         public CalcAllowedPermissions(ExtraAuthorizeDbContext context)
         {
             _context = context;
         }
 
-        public CalcAllowedPermissions(DbContextOptions<ExtraAuthorizeDbContext> extraAuthDbContextOptions)
-        {
-            _extraAuthDbContextOptions = extraAuthDbContextOptions;
-        }
-
         /// <summary>
         /// This is called if the Permissions that a user needs calculating.
+        /// It looks at what permissions the user has, and then filters out any permissions
+        /// they aren't allowed because they haven't get access to the module that permission is linked to.
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<string> CalcPermissionsForUser(string userId)
+        /// <returns>a string containing the packed permissions</returns>
+        public async Task<string> CalcPermissionsForUserAsync(string userId)
         {
-            var dbContext = GetContext();
             //This gets all the permissions, with a distinct to remove duplicates
-            var permissionsForUser = await dbContext.UserToRoles.Where(x => x.UserId == userId)
-                .SelectMany(x => x.Role.PermissionsInRole)
-                .Distinct()
-                .ToListAsync();
+            var permissionsForUser = (await _context.UserToRoles.Where(x => x.UserId == userId)
+                .Select(x => x.Role.PermissionsInRole)
+                .ToListAsync())
+                //Because the permissions are packed we have to put these parts of the query after the ToListAsync()
+                .SelectMany(x => x).Distinct();
+
             //we get the modules this user is allowed to see
-            var userModules =
-                dbContext.ModulesForUsers.Find(userId)
+            var userModules = _context.ModulesForUsers.Find(userId)
                     ?.AllowedPaidForModules ?? PaidForModules.None;
             //Now we remove permissions that are linked to modules that the user has no access to
             var filteredPermissions =
@@ -60,9 +53,5 @@ namespace ServiceLayer.CodeCalledInStartup
             return filteredPermissions.PackPermissionsIntoString();
         }
 
-        private ExtraAuthorizeDbContext GetContext()
-        {
-            return _context ?? new ExtraAuthorizeDbContext(_extraAuthDbContextOptions, null);
-        }
     }
 }

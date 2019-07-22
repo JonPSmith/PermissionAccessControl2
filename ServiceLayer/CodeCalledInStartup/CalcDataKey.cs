@@ -10,25 +10,12 @@ using Microsoft.EntityFrameworkCore;
 namespace ServiceLayer.CodeCalledInStartup
 {
     public class CalcDataKey
-
     {
-        /// <summary>
-        /// NOTE: This class is used in OnValidatePrincipal so it can't use DI, so I can't inject the DbContext here because that is dynamic.
-        /// Therefore I can pass in the database options because that is a singleton
-        /// From that the method can create a valid dbContext to access the database
-        /// </summary>
-        private readonly DbContextOptions<ExtraAuthorizeDbContext> _extraAuthDbContextOptions;
+        private readonly ExtraAuthorizeDbContext _context;
 
-        private readonly ExtraAuthorizeDbContext _extraContext;
-
-        public CalcDataKey(ExtraAuthorizeDbContext extraContext)
+        public CalcDataKey(ExtraAuthorizeDbContext context)
         {
-            _extraContext = extraContext;
-        }
-
-        public CalcDataKey(DbContextOptions<ExtraAuthorizeDbContext> extraAuthDbContextOptions)
-        {
-            _extraAuthDbContextOptions = extraAuthDbContextOptions;
+            _context = context;
         }
 
         /// <summary>
@@ -38,14 +25,8 @@ namespace ServiceLayer.CodeCalledInStartup
         /// <returns>The found data key, or empty string if not found</returns>
         public string CalcDataKeyForUser(string userId)
         {
-            var extraContext = GetExtraAuthContext();
-            return extraContext.DataAccess.Where(x => x.UserId == userId)
+            return _context.DataAccess.Where(x => x.UserId == userId)
                 .Select(x => x.LinkedTenant.DataKey).SingleOrDefault() ?? string.Empty;
-        }
-
-        private ExtraAuthorizeDbContext GetExtraAuthContext()
-        {
-            return _extraContext ?? new ExtraAuthorizeDbContext(_extraAuthDbContextOptions, null);
         }
     }
 }

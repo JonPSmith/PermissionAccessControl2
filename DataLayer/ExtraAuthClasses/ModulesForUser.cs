@@ -13,18 +13,20 @@ namespace DataLayer.ExtraAuthClasses
     /// </summary>
     public class ModulesForUser : IChangeEffectsUser, IAddRemoveEffectsUser
     {
-        public ModulesForUser(string moduleKey, PaidForModules allowedPaidForModules)
+        /// <summary>
+        /// This links modules to a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="allowedPaidForModules"></param>
+        public ModulesForUser(string userId, PaidForModules allowedPaidForModules)
         {
-            ModuleKey = moduleKey ?? throw new ArgumentNullException(nameof(moduleKey));
+            UserId = userId ?? throw new ArgumentNullException(nameof(userId));
             AllowedPaidForModules = allowedPaidForModules;
         }
 
-        /// <summary>
-        /// The ModuleKey can be either the UserId, or in multi-tenant systems it is likely to be the tenant Id
-        /// </summary>
         [Key]
-        [MaxLength(ExtraAuthConstants.ModuleKeySize)]
-        public string ModuleKey { get; private set; }
+        [MaxLength(ExtraAuthConstants.UserIdSize)]
+        public string UserId { get; private set; }
 
         public PaidForModules AllowedPaidForModules { get; private set; }
     }

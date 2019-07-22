@@ -28,9 +28,7 @@ namespace ServiceLayer.CodeCalledInStartup
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
                 var authChange = sp.GetRequiredService<IAuthChanges>();
 
-                var authCookieValidate = new AuthCookieValidate(
-                    new CalcAllowedPermissions(extraAuthContextOptions), 
-                    new CalcDataKey(extraAuthContextOptions), authChange);
+                var authCookieValidate = new AuthCookieValidate(extraAuthContextOptions, authChange);
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
                 services.ConfigureApplicationCookie(options =>

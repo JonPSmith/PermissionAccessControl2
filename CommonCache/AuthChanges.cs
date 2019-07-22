@@ -24,12 +24,13 @@ namespace CommonCache
         /// </summary>
         /// <param name="cacheKey"></param>
         /// <param name="ticksToCompareString"></param>
+        /// <param name="getTimeStore">This func gets the timeStore - Func used to allow lazy creation of DbContext</param>
         /// <returns></returns>
-        public bool IsLowerThan(string cacheKey, string ticksToCompareString, ITimeStore databaseAccess)
+        public bool IsLowerThan(string cacheKey, string ticksToCompareString, Func<ITimeStore> getTimeStore)
         {
             if (ticksToCompareString == null) return false;
             var ticksToCompare = long.Parse(ticksToCompareString);
-            return IsLowerThan(cacheKey, ticksToCompare, databaseAccess);
+            return IsLowerThan(cacheKey, ticksToCompare, getTimeStore.Invoke());
         }
 
         private bool IsLowerThan(string cacheKey, long ticksToCompare, ITimeStore databaseAccess)
