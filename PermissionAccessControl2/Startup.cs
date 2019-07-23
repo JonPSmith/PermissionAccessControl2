@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using CommonCache;
 using DataAuthorize;
 using DataLayer.EfCode;
+using FeatureAuthorize;
 using FeatureAuthorize.PolicyCode;
 using GenericServices.Setup;
 using Microsoft.AspNetCore.Authorization;
@@ -112,8 +114,21 @@ namespace PermissionAccessControl2
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
             app.UseAuthentication();
+
+            if (Configuration["DemoSetup:UpdateCookieOnChange"] == "True")
+            {
+                //If UpdateCookieOnChange is enabled we want to return a header which has the time that the user's claims were updated
+                //thanks to https://stackoverflow.com/a/48610119/1434764
+                app.Use((context, next) =>
+                {
+                    var lastTimeUserPermissionsSet = context.User.Claims
+                        .SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value;
+                    if (lastTimeUserPermissionsSet != null)
+                        context.Response.Headers["Last-Time-Users-Permissions-Updated"] = lastTimeUserPermissionsSet;
+                    return next.Invoke();
+                });
+            }
 
             app.UseMvc(routes =>
             {
