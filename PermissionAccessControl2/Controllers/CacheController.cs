@@ -26,7 +26,7 @@ namespace PermissionAccessControl2.Controllers
 
         public IActionResult ShowUpdateTime()
         {
-            return View(_cacheRoleService.GetFeatureLastUpdated());
+            return View(_cacheRoleService.GetFeatureLastUpdated(HttpContext.User.Claims));
         }
     }
 }

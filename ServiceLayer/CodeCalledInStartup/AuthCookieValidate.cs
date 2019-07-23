@@ -24,18 +24,18 @@ namespace ServiceLayer.CodeCalledInStartup
         private readonly DbContextOptions<ExtraAuthorizeDbContext> _extraAuthContextOptions;
         private readonly IAuthChanges _authChanges;
 
-        public AuthCookieValidate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions, IAuthChanges authChanges)
+        public AuthCookieValidate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions)
         {
             _extraAuthContextOptions = extraAuthContextOptions;
-            _authChanges = authChanges;
+            _authChanges = new AuthChanges();
         }
 
         public async Task ValidateAsync(CookieValidatePrincipalContext context)
         {
+            var extraContext = new ExtraAuthorizeDbContext(_extraAuthContextOptions, _authChanges);
             //now we set up the lazy values - I used Lazy for performance reasons, as 99.9% of the time the lazy parts aren't needed
-            var contextLazy = new Lazy<ExtraAuthorizeDbContext>(() => new ExtraAuthorizeDbContext(_extraAuthContextOptions, _authChanges));
-            var rtoPLazy = new Lazy<CalcAllowedPermissions>(() => new CalcAllowedPermissions(contextLazy.Value));
-            var dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(contextLazy.Value));
+            var rtoPLazy = new Lazy<CalcAllowedPermissions>(() => new CalcAllowedPermissions(extraContext));
+            var dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(extraContext));
 
             var newClaims = new List<Claim>();
             var originalClaims = context.Principal.Claims.ToList();
@@ -43,7 +43,7 @@ namespace ServiceLayer.CodeCalledInStartup
                 _authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
                     // ReSharper disable once AccessToDisposedClosure
-                    () => contextLazy.Value))
+                    () => extraContext))
             {
                 //Handle the feature permissions
                 var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -68,7 +68,7 @@ namespace ServiceLayer.CodeCalledInStartup
                 //THIS IS IMPORTANT: This updates the cookie, otherwise this calc will be done every HTTP request
                 context.ShouldRenew = true;
 
-                contextLazy.Value.Dispose();
+                extraContext.Dispose();
             }
         }
 

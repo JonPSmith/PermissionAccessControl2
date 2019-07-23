@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
+using CommonCache;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using FeatureAuthorize;
@@ -54,8 +55,8 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 context.Database.EnsureCreated();
                 context.SeedCacheRole(true);
-
-                var cacheRoleService = new CacheRoleService(context, new FakeDistributedCache());
+                
+                var cacheRoleService = new CacheRoleService(context);
                 var claims = new List<Claim>
                 {
                     new Claim(PermissionConstants.PackedPermissionClaimType,

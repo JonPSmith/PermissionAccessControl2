@@ -35,12 +35,9 @@ namespace DataLayer.EfCode
                 //_authChange is null if not using UpdateCookieOnChange, so bypass permission change code
                 return base.SaveChanges(acceptAllChangesOnSuccess);
 
-            Action callOnSuccess = null; 
             if (this.UserPermissionsMayHaveChanged())
-                callOnSuccess = _authChange.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
+                _authChange.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
-            //If SaveChange was successful we call the cache success method
-            callOnSuccess?.Invoke();
             return result;
         }
 
@@ -50,12 +47,9 @@ namespace DataLayer.EfCode
                 //_authChange is null if not using UpdateCookieOnChange, so bypass permission change code
                 return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 
-            Action callOnSuccess = null;
             if (this.UserPermissionsMayHaveChanged())
-                callOnSuccess = _authChange?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
+                _authChange?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
             var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            //If SaveChange was successful we call the cache success method
-            callOnSuccess?.Invoke();
             return result;
         }
 

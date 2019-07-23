@@ -13,6 +13,6 @@ namespace CommonCache
         /// <returns></returns>
         bool IsOutOfDateOrMissing(string cacheKey, string ticksToCompareString, Func<ITimeStore> getTimeStore);
 
-        Action AddOrUpdate(string cacheKey, long cachedValue, ITimeStore databaseAccess);
+        void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore databaseAccess);
     }
 }

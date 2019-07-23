@@ -8,6 +8,6 @@ namespace ServiceLayer.UserServices
     {
         IEnumerable<Permissions> ShowExistingCachePermissions(IEnumerable<Claim> usersClaims);
         void ToggleCacheRole();
-        IEnumerable<string> GetFeatureLastUpdated();
+        IEnumerable<string> GetFeatureLastUpdated(IEnumerable<Claim> usersClaims);
     }
 }

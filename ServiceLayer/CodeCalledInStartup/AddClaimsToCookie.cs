@@ -5,6 +5,7 @@ using CommonCache;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ServiceLayer.CodeCalledInStartup
@@ -22,15 +23,12 @@ namespace ServiceLayer.CodeCalledInStartup
 
             if (updateCookieOnChange)
             {
-                //Need to register for update cookies 
-                services.AddDistributedMemoryCache();
                 services.AddSingleton<IAuthChanges, AuthChanges>();
 
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
-                var authChange = sp.GetRequiredService<IAuthChanges>();
 
-                var authCookieValidate = new AuthCookieValidate(extraAuthContextOptions, authChange);
+                var authCookieValidate = new AuthCookieValidate(extraAuthContextOptions);
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
                 services.ConfigureApplicationCookie(options =>

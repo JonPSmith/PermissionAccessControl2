@@ -15,20 +15,6 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 {
     public class TestAuthChanges
     {
-        [Fact]
-        public void TestIDistributedCache()
-        {
-            //SETUP
-            var cache = new MemoryDistributedCache(new OptionsWrapper<MemoryDistributedCacheOptions>(new MemoryDistributedCacheOptions()));
-            cache.Get("test").ShouldBeNull();
-
-            //ATTEMPT
-            cache.Set("test", new byte[]{1});
-            var result = cache.Get("test");
-
-            //VERIFY
-            result.ShouldEqual(new byte[] { 1 });
-        }
 
         [Theory]
         [InlineData("test", "123", true)]
@@ -38,11 +24,11 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         {
             //SETUP
             var fakeTimeStore = new FakeTimeStore();
-            var cache = new AuthChanges(new FakeDistributedCache());
-            cache.AddOrUpdate("test", 200, fakeTimeStore);
+            var authChange = new AuthChanges();
+            authChange.AddOrUpdate("test", 200, fakeTimeStore);
 
             //ATTEMPT
-            var isOutOfDate = cache.IsOutOfDateOrMissing(key, ticksToTry, () => fakeTimeStore);
+            var isOutOfDate = authChange.IsOutOfDateOrMissing(key, ticksToTry, () => fakeTimeStore);
 
             //VERIFY
             isOutOfDate.ShouldEqual(expectedResult);
@@ -56,10 +42,10 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 Value = BitConverter.GetBytes((long)200)
             };
-            var cache = new AuthChanges(new FakeDistributedCache());
+            var authChange = new AuthChanges();
 
             //ATTEMPT
-            var isOutOfDate = cache.IsOutOfDateOrMissing("test", "100", () => fakeTimeStore);
+            var isOutOfDate = authChange.IsOutOfDateOrMissing("test", "100", () => fakeTimeStore);
 
             //VERIFY
             isOutOfDate.ShouldEqual(true);
@@ -74,11 +60,10 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             {
                 Value = BitConverter.GetBytes((long)200)
             };
-            var fakeCache = new FakeDistributedCache();
-            var cache = new AuthChanges(fakeCache);
+            var authChange = new AuthChanges();
 
             //ATTEMPT
-            var action = cache.AddOrUpdate("test", 100, fakeTimeStore);
+            authChange.AddOrUpdate("test", 100, fakeTimeStore);
 
             //VERIFY
             fakeTimeStore.Value.ShouldEqual(BitConverter.GetBytes((long)100));
@@ -89,33 +74,13 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         {
             //SETUP
             var fakeTimeStore = new FakeTimeStore();
-            var fakeCache = new FakeDistributedCache();
-            var cache = new AuthChanges(fakeCache);
+            var authChange = new AuthChanges();
 
             //ATTEMPT
-            var action = cache.AddOrUpdate("test", 100, fakeTimeStore);
+            authChange.AddOrUpdate("test", 100, fakeTimeStore);
 
             //VERIFY
             fakeTimeStore.Value.ShouldEqual(BitConverter.GetBytes((long)100));
-        }
-
-        [Fact]
-        public void TestAddOrUpdateCacheUpdate()
-        {
-            //SETUP
-            var fakeTimeStore = new FakeTimeStore()
-            {
-                Value = BitConverter.GetBytes((long)200)
-            };
-            var fakeCache = new FakeDistributedCache();
-            var cache = new AuthChanges(fakeCache);
-
-            //ATTEMPT
-            var action = cache.AddOrUpdate("test", 100, fakeTimeStore);
-            action.Invoke();
-
-            //VERIFY
-            fakeCache.CachedValue.ShouldEqual(BitConverter.GetBytes((long)100));
         }
 
     }
