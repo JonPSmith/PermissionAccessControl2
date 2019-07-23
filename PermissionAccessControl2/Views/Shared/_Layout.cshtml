@@ -57,6 +57,17 @@
                         }
                         <li class="nav-item">
                             <div class="dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" role="button" id="dropdown3MenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Change role
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdown3MenuButton">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cache" asp-action="Index">Toggle Role</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cache" asp-action="ShowUpdateTime">LastUpdated</a>
+                                </div>
+                            </div>                       
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
                                 <a class="nav-link text-danger dropdown-toggle" role="button" id="dropdown2MenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Users
                                 </a>
@@ -71,16 +82,7 @@
                             
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" asp-area="" asp-controller="Company" asp-action="Index">Company/Outlets</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cache" asp-action="Index">Cache Test</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cache" asp-action="ShowUpdateTime">Show caches</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-danger" asp-area="" asp-controller="Company" asp-action="Index">Hierarchy</a>
                         </li>
                     </ul>
                 </div>

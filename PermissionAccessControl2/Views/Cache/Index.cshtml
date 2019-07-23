@@ -3,22 +3,22 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Toggle Cache</h1>
+<h2>Dynamic toggling of user's claims</h2>
 
 @if (@Model == null)
 {
-    <h3>Either no one is logged in or you don't have the CacheRole.</h3>
+<p class="text-danger">Either no one is logged in or UpdateCookieOnChange is set to false in appsettings.json.</p>
 }
 else
 {
-    <h3>You currently have these cache permissions</h3>
+    <h5>You currently have these cache permissions in your claims</h5>
     <ul>
         @foreach (var claim in @Model)
         {
             <li>@claim.ToString()</li>
         }
     </ul>
-
+    <p><i>NOTE: UpdateCookieOnChange must be set to true in appsettings.json for dynamic changes in user's permissions to work.</i></p>
     <a class="btn btn-primary" asp-area="" asp-controller="Cache" asp-action="Toggle">Toggle Cache</a>
 }
 
