@@ -43,7 +43,7 @@ namespace ServiceLayer.CodeCalledInStartup
                 _authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
                     // ReSharper disable once AccessToDisposedClosure
-                    () => extraContext))
+                    extraContext))
             {
                 //Handle the feature permissions
                 var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;

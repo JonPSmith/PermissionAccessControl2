@@ -28,7 +28,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             authChange.AddOrUpdate("test", 200, fakeTimeStore);
 
             //ATTEMPT
-            var isOutOfDate = authChange.IsOutOfDateOrMissing(key, ticksToTry, () => fakeTimeStore);
+            var isOutOfDate = authChange.IsOutOfDateOrMissing(key, ticksToTry, fakeTimeStore);
 
             //VERIFY
             isOutOfDate.ShouldEqual(expectedResult);
@@ -45,7 +45,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             var authChange = new AuthChanges();
 
             //ATTEMPT
-            var isOutOfDate = authChange.IsOutOfDateOrMissing("test", "100", () => fakeTimeStore);
+            var isOutOfDate = authChange.IsOutOfDateOrMissing("test", "100", fakeTimeStore);
 
             //VERIFY
             isOutOfDate.ShouldEqual(true);

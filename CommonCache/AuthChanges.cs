@@ -16,23 +16,23 @@ namespace CommonCache
         /// </summary>
         /// <param name="cacheKey"></param>
         /// <param name="ticksToCompareString"></param>
-        /// <param name="getTimeStore">This func gets the timeStore - Func used to allow lazy creation of DbContext</param>
+        /// <param name="timeStore"></param>
         /// <returns></returns>
-        public bool IsOutOfDateOrMissing(string cacheKey, string ticksToCompareString, Func<ITimeStore> getTimeStore)
+        public bool IsOutOfDateOrMissing(string cacheKey, string ticksToCompareString, ITimeStore timeStore)
         {
             if (ticksToCompareString == null)
                 //if there is no time claim then you do need to reset the claims
                 return true;
 
             var ticksToCompare = long.Parse(ticksToCompareString);
-            return IsOutOfDate(cacheKey, ticksToCompare, getTimeStore);
+            return IsOutOfDate(cacheKey, ticksToCompare, timeStore);
         }
 
-        private bool IsOutOfDate(string cacheKey, long ticksToCompare, Func<ITimeStore> getTimeStore)
+        private bool IsOutOfDate(string cacheKey, long ticksToCompare, ITimeStore timeStore)
         {
 
             //we get the 
-            var bytes = getTimeStore.Invoke().GetValueFromStore(cacheKey);
+            var bytes = timeStore.GetValueFromStore(cacheKey);
             if (bytes == null)
                 throw new ApplicationException(
                     $"You must seed the database with a cache value for the key {cacheKey}.");

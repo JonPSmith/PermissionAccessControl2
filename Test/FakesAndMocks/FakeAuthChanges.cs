@@ -11,7 +11,7 @@ namespace Test.FakesAndMocks
         public long CachedValue { get; private set; } = -1;
         public bool CacheValueSet => CachedValue != -1;
 
-        public bool IsOutOfDateOrMissing(string cacheKey, string ticksToCompareString, Func<ITimeStore> getTimeStore)
+        public bool IsOutOfDateOrMissing(string cacheKey, string ticksToCompareString, ITimeStore timeStore)
         {
             throw new System.NotImplementedException();
         }

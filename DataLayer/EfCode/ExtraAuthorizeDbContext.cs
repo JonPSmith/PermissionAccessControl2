@@ -10,7 +10,6 @@ using DataLayer.ExtraAuthClasses;
 using DataLayer.ExtraAuthClasses.Support;
 using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace DataLayer.EfCode
 {
@@ -64,7 +63,6 @@ namespace DataLayer.EfCode
             modelBuilder.TenantBaseConfig();
             modelBuilder.ExtraAuthorizeConfig();
         }
-
 
         public byte[] GetValueFromStore(string key)
         {
