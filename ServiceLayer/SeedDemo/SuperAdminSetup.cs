@@ -22,7 +22,7 @@ namespace ServiceLayer.SeedDemo
         /// <summary>
         /// This ensures there is a SuperAdmin user in the system.
         /// It gets the SuperAdmin's email and password from the "SuperAdmin" section of the appsettings.json file
-        /// NOTE: fro security reasons I only allows one user with the RoleName of <see cref="SuperAdminRoleName"/> 
+        /// NOTE: for security reasons I only allows one user with the RoleName of <see cref="SuperAdminRoleName"/> 
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
@@ -51,7 +51,7 @@ namespace ServiceLayer.SeedDemo
                 using (var context = services.GetRequiredService<ExtraAuthorizeDbContext>())
                 {
                     var extraService = new ExtraAuthUsersSetup(context);
-                    extraService.CheckAddNewRole(SuperAdminRoleName, "SuperAdmin Role", new List<Permissions>{ Permissions.AccessAll});
+                    extraService.AddUpdateRoleToPermissions(SuperAdminRoleName, "SuperAdmin Role", new List<Permissions>{ Permissions.AccessAll});
                     extraService.CheckAddRoleToUser(superUser.Id, SuperAdminRoleName);
                     context.SaveChanges();
                 }

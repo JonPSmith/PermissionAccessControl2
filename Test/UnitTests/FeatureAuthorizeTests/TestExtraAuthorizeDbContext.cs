@@ -78,12 +78,13 @@ namespace Test.UnitTests.FeatureAuthorizeTests
 
                 //ATTEMPT
                 var roleToUpdate = context.Find<RoleToPermissions>("test");
-                roleToUpdate.UpdatePermissionsInRole(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
+                roleToUpdate.Update("new name", new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
                 context.SaveChanges();
             }
             using (var context = new ExtraAuthorizeDbContext(options, fakeAuthChanges))
             {
                 //VERIFY
+                context.RolesToPermissions.Single().Description.ShouldEqual("new name");
                 context.RolesToPermissions.Single().PermissionsInRole
                     .ShouldEqual(new List<Permissions> { Permissions.StockAddNew, Permissions.StockRemove });
             }

@@ -9,6 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLayer.SeedDemo.Internal
 {
+    /// <summary>
+    /// This adds stock to the shops using the data given by the wwwroot/SeedData/ShopStock.txt file
+    /// ONLY USED FOR DEMO
+    /// </summary>
     public static class SetupShopStock
     {
         public static void AddStockToShops(this CompanyDbContext context, string [] lines)

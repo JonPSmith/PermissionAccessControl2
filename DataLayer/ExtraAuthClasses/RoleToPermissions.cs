@@ -31,8 +31,7 @@ namespace DataLayer.ExtraAuthClasses
         private RoleToPermissions(string roleName, string description, ICollection<Permissions> permissions)
         {
             RoleName = roleName;
-            Description = description;
-            UpdatePermissionsInRole(permissions);
+            Update(description, permissions);
         }
 
         /// <summary>
@@ -67,16 +66,12 @@ namespace DataLayer.ExtraAuthClasses
             return status.SetResult(new RoleToPermissions(roleName, description, permissionInRole));
         }
 
-        public void UpdatePermissionsInRole(ICollection<Permissions> permissions)
+        public void Update(string description, ICollection<Permissions> permissions)
         {
             if (permissions == null || !permissions.Any())
                 throw new InvalidOperationException("There should be at least one permission associated with a role.");
 
             _permissionsInRole = permissions.PackPermissionsIntoString();
-        }
-
-        public void UpdateDescription(string description)
-        {
             Description = description;
         }
 

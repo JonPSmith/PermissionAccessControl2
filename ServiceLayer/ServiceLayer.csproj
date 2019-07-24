@@ -19,8 +19,4 @@
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="MultiTenant\Concrete\" />
-  </ItemGroup>
-
 </Project>

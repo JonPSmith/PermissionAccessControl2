@@ -13,7 +13,10 @@ namespace ServiceLayer.CodeCalledInStartup
     public static class AddClaimsToCookie
     {
         /// <summary>
-        /// This configures Cookies for authentication and adds the feature and data claims to the user
+        /// This configures Cookies for authentication and adds the feature and data claims to the user.
+        /// There are two approaches:
+        /// 1. One that allows logged in user's permissions to updated when the Roles/Permissions are changed.
+        /// 2. A simpler/better performance way to set up permissions, but doesn't support dynamic updates of logged in user's permissions
         /// </summary>
         /// <param name="services"></param>
         /// <param name="updateCookieOnChange">if false then uses simple method to set up the claims,

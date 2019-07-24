@@ -11,6 +11,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLayer.CompanyServices.Concrete
 {
+    /// <summary>
+    /// This displays a list of the Company hierarchies in a simple way
+    /// ONLY USED FOR DEMO
+    /// </summary>
     public class ListCompaniesService : IListCompaniesService
     {
         private readonly CompanyDbContext _context;

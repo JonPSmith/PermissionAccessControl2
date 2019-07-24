@@ -53,7 +53,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.SaveChanges();
 
                 //ATTEMPT
-                rolToPer.UpdatePermissionsInRole(new List<Permissions> { Permissions.EmployeeRead });
+                rolToPer.Update("test", new List<Permissions> { Permissions.EmployeeRead });
                 context.SaveChanges();
 
                 //VERIFY

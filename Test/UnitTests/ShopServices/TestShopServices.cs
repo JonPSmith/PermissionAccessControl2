@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using PermissionParts;
 using ServiceLayer.CodeCalledInStartup;
 using ServiceLayer.Shop;
+using Test.FakesAndMocks;
 using TestSupport.EfHelpers;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;

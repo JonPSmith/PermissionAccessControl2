@@ -61,16 +61,17 @@ namespace PermissionAccessControl2
 
             //This is needed to implement the data authorize code 
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             //This registers the services into DI
             services.ServiceLayerStartup(Configuration);
 
-            //This has to come after the CommonCache settings
+            //This has to come after the ConfigureCookiesForExtraAuth settings, which sets up the IAuthChanges
             services.ConfigureGenericServicesEntities(typeof(ExtraAuthorizeDbContext), typeof(CompanyDbContext))
                 .ScanAssemblesForDtos(Assembly.GetAssembly(typeof(ListUsersDto)))
                 .RegisterGenericServices();
 
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //I add Swagger so that you can test the FrontEndController that provides the permissions of the current user
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API V1", Version = "v1" });
@@ -118,7 +119,7 @@ namespace PermissionAccessControl2
 
             if (Configuration["DemoSetup:UpdateCookieOnChange"] == "True")
             {
-                //If UpdateCookieOnChange is enabled we want to return a header which has the time that the user's claims were updated
+                //If UpdateCookieOnChange this adds a header which has the time that the user's claims were updated
                 //thanks to https://stackoverflow.com/a/48610119/1434764
                 app.Use((context, next) =>
                 {

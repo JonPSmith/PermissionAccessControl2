@@ -12,6 +12,11 @@ using PermissionParts;
 
 namespace ServiceLayer.SeedDemo.Internal
 {
+    /// <summary>
+    /// This is a extension method that converts a given format of text data (see default companyDefinitions)
+    /// in to a set of tenants with hierarchical links between them. Just used to demo tenant data for display or unit testing
+    /// ONLY USED FOR DEMO and UNIT TESTING
+    /// </summary>
     public static class HierarchicalSeeder
     {
         public static List<Company> AddCompanyAndChildrenInDatabase(this CompanyDbContext context, params string[] companyDefinitions)

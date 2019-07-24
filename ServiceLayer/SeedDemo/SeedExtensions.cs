@@ -15,6 +15,11 @@ using ServiceLayer.UserServices.Internal;
 
 namespace ServiceLayer.SeedDemo
 {
+    /// <summary>
+    /// This extension adds the demo data to the database. It will work with "real" databases,
+    /// i.e. it will only add data if it isn't already in the database
+    /// ONLY USED FOR DEMO
+    /// </summary>
     public static class SeedExtensions
     {
         private const string SeedDataDir = "SeedData";
@@ -77,7 +82,7 @@ namespace ServiceLayer.SeedDemo
                 var permissions = line.Substring(colonIndex + 1).Split(',')
                     .Select(x => Enum.Parse(typeof(Permissions), x.Trim(), true))
                     .Cast<Permissions>().ToList();
-                extraService.CheckAddNewRole(roleName, roleName, permissions);
+                extraService.AddUpdateRoleToPermissions(roleName, roleName, permissions);
             }
 
             context.SaveChanges();

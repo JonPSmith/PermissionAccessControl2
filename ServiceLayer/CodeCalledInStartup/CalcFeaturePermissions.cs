@@ -12,7 +12,7 @@ using PermissionParts;
 namespace ServiceLayer.CodeCalledInStartup
 {
     /// <summary>
-    /// This is the code that calculates what permissions a user has
+    /// This is the code that calculates what feature permissions a user has
     /// </summary>
     public class CalcAllowedPermissions
     {

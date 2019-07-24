@@ -20,6 +20,11 @@ namespace DataLayer.ExtraAuthClasses
 
         public UserDataHierarchical(string userId, TenantBase linkedTenant) : base(userId)
         {
+            Update(linkedTenant);
+        }
+
+        public void Update(TenantBase linkedTenant)
+        {
             if (linkedTenant.TenantItemId == 0)
                 throw new ApplicationException("The linkedTenant must be already in the database.");
             LinkedTenant = linkedTenant;

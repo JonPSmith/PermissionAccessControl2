@@ -21,7 +21,7 @@ namespace Test.FakesAndMocks
             throw new System.NotImplementedException();
         }
 
-        public void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore databaseAccess)
+        public void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore timeStore)
         {
             CachedValue = cachedValue;
         }

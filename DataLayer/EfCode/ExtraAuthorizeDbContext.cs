@@ -21,6 +21,9 @@ namespace DataLayer.EfCode
         public DbSet<RoleToPermissions> RolesToPermissions { get; set; }
         public DbSet<ModulesForUser> ModulesForUsers { get; set; }
 
+        /// <summary>
+        /// The TimeStore holds the time when a change is made to the Roles/Permission such that it might alter a user's permissions.
+        /// </summary>
         public DbSet<TimeStore> TimeStores { get; set; }
 
         //Now links to two classes in the CompanyDbContext that hold data used to set up the user's modules and data access rights
@@ -63,6 +66,10 @@ namespace DataLayer.EfCode
             modelBuilder.TenantBaseConfig();
             modelBuilder.ExtraAuthorizeConfig();
         }
+
+        //-------------------------------------------------------
+        //The ITimeStore methods
+
 
         public byte[] GetValueFromStore(string key)
         {

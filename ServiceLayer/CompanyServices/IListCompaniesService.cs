@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Html;
 
-namespace ServiceLayer.CompanyServices.Concrete
+namespace ServiceLayer.CompanyServices
 {
     public interface IListCompaniesService
     {

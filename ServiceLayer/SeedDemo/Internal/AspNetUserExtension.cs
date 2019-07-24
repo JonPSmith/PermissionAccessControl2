@@ -13,7 +13,13 @@ namespace ServiceLayer.SeedDemo.Internal
 {
     internal static class AspNetUserExtension
     {
-
+        /// <summary>
+        /// This will add a user with the given email if they don't all ready exist
+        /// </summary>
+        /// <param name="userManager"></param>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static async Task<IdentityUser> CheckAddNewUserAsync(this UserManager<IdentityUser> userManager, string email, string password)
         {
             var user = await userManager.FindByEmailAsync(email);

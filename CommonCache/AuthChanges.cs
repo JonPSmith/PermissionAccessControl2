@@ -30,8 +30,6 @@ namespace CommonCache
 
         private bool IsOutOfDate(string cacheKey, long ticksToCompare, ITimeStore timeStore)
         {
-
-            //we get the 
             var bytes = timeStore.GetValueFromStore(cacheKey);
             if (bytes == null)
                 throw new ApplicationException(
@@ -41,10 +39,10 @@ namespace CommonCache
             return ticksToCompare < cachedTicks;
         }
 
-        public void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore databaseAccess)
+        public void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore timeStore)
         {
             var bytes = BitConverter.GetBytes(cachedValue);
-            databaseAccess.AddUpdateValue(cacheKey, bytes);
+            timeStore.AddUpdateValue(cacheKey, bytes);
         }
     }
 }

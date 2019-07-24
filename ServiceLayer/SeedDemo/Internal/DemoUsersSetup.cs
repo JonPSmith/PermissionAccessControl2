@@ -18,6 +18,11 @@ using ServiceLayer.UserServices.Internal;
 
 namespace ServiceLayer.SeedDemo.Internal
 {
+    /// <summary>
+    /// This is the code that sets up the demo user, with their roles and data keys.
+    /// It uses the data from in the wwwroot/SeedData/Users.json file
+    /// ONLY USED FOR DEMO
+    /// </summary>
     internal class DemoUsersSetup
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -65,7 +70,7 @@ namespace ServiceLayer.SeedDemo.Internal
             {
                 _extraService.CheckAddRoleToUser(user.Id, roleName);
             }
-            _extraService.CheckAddDataAccessHierarchical(user.Id, linkedTenant);
+            _extraService.AddUpdateDataAccessHierarchical(user.Id, linkedTenant);
             _extraService.CheckAddModules(user.Id, linkedTenant);
         }
 
