@@ -3,7 +3,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Caching.Distributed;
 
 [assembly: InternalsVisibleTo("Test")]
 
@@ -30,19 +29,17 @@ namespace CommonCache
 
         private bool IsOutOfDate(string cacheKey, long ticksToCompare, ITimeStore timeStore)
         {
-            var bytes = timeStore.GetValueFromStore(cacheKey);
-            if (bytes == null)
+            var cachedTicks = timeStore.GetValueFromStore(cacheKey);
+            if (cachedTicks == null)
                 throw new ApplicationException(
                     $"You must seed the database with a cache value for the key {cacheKey}.");
 
-            var cachedTicks = BitConverter.ToInt64(bytes, 0);
             return ticksToCompare < cachedTicks;
         }
 
         public void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore timeStore)
         {
-            var bytes = BitConverter.GetBytes(cachedValue);
-            timeStore.AddUpdateValue(cacheKey, bytes);
+            timeStore.AddUpdateValue(cacheKey, cachedValue);
         }
     }
 }

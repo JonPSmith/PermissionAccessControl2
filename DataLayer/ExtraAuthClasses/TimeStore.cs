@@ -12,7 +12,6 @@ namespace DataLayer.ExtraAuthClasses
         [MaxLength(AuthChangesConsts.CacheKeyMaxSize)]
         public string Key { get; set; }
 
-        [MaxLength(AuthChangesConsts.CacheValueMaxSize)]
-        public byte[] Value { get; set; }
+        public long LastUpdatedTicks { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeTimeStore = new FakeTimeStore()
             {
-                Value = BitConverter.GetBytes((long)200)
+                Value = 200
             };
             var authChange = new AuthChanges();
 
@@ -58,7 +58,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             //SETUP
             var fakeTimeStore = new FakeTimeStore()
             {
-                Value = BitConverter.GetBytes((long)200)
+                Value = 200
             };
             var authChange = new AuthChanges();
 
@@ -66,7 +66,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             authChange.AddOrUpdate("test", 100, fakeTimeStore);
 
             //VERIFY
-            fakeTimeStore.Value.ShouldEqual(BitConverter.GetBytes((long)100));
+            fakeTimeStore.Value.ShouldEqual((long)100);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             authChange.AddOrUpdate("test", 100, fakeTimeStore);
 
             //VERIFY
-            fakeTimeStore.Value.ShouldEqual(BitConverter.GetBytes((long)100));
+            fakeTimeStore.Value.ShouldEqual((long)100);
         }
 
     }

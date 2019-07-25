@@ -66,10 +66,10 @@ namespace ServiceLayer.UserServices.Concrete
         /// <returns></returns>
         public IEnumerable<string> GetFeatureLastUpdated(IEnumerable<Claim> usersClaims)
         {
-            var databaseValue = _context.Find<TimeStore>(AuthChangesConsts.FeatureCacheKey)?.Value;
+            var databaseValue = _context.Find<TimeStore>(AuthChangesConsts.FeatureCacheKey)?.LastUpdatedTicks;
             yield return databaseValue == null
                 ? "No database value present"
-                : $"Database: {new DateTime(BitConverter.ToInt64(databaseValue, 0)):F}";
+                : $"Database: {new DateTime((long)databaseValue):F}";
 
             var claimsValue = usersClaims
                 .SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value;

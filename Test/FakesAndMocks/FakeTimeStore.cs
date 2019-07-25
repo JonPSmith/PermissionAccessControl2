@@ -4,16 +4,16 @@ namespace Test.FakesAndMocks
 {
     public class FakeTimeStore : ITimeStore
     {
-        public byte[] Value { get; set; }
+        public long? Value { get; set; }
         public string Key { get; set; }
 
-        public byte[] GetValueFromStore(string key)
+        public long? GetValueFromStore(string key)
         {
             Key = key;
             return Value;
         }
 
-        public void AddUpdateValue(string key, byte[] value)
+        public void AddUpdateValue(string key, long value)
         {
             Key = key;
             Value = value;

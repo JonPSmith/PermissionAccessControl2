@@ -29,11 +29,11 @@ namespace Test.UnitTests.FeatureAuthorizeTests
                 context.Database.EnsureCreated();
 
                 //ATTEMPT
-                context.AddUpdateValue("test", new byte[]{1,2,3});
+                context.AddUpdateValue("test", (long)1234);
                 context.SaveChanges();
 
                 //VERIFY
-                context.TimeStores.Single().Value.ShouldEqual(new byte[] { 1, 2, 3 });
+                context.TimeStores.Single().LastUpdatedTicks.ShouldEqual((long)1234);
             }
         }
 
@@ -45,15 +45,15 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 context.Database.EnsureCreated();
-                context.AddUpdateValue("test", new byte[] { 1, 2, 3 });
+                context.AddUpdateValue("test", (long)1234);
                 context.SaveChanges();
 
                 //ATTEMPT
-                context.AddUpdateValue("test", new byte[] { 4,5,6 });
+                context.AddUpdateValue("test", (long)5678);
                 context.SaveChanges();
 
                 //VERIFY
-                context.TimeStores.Single().Value.ShouldEqual(new byte[] { 4, 5, 6 });
+                context.TimeStores.Single().LastUpdatedTicks.ShouldEqual((long)5678);
             }
         }
 
@@ -65,14 +65,14 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 context.Database.EnsureCreated();
-                context.AddUpdateValue("test", new byte[] { 1, 2, 3 });
+                context.AddUpdateValue("test", (long)1234);
                 context.SaveChanges();
 
                 //ATTEMPT
                 var result = context.GetValueFromStore("test");
 
                 //VERIFY
-                result.ShouldEqual(new byte[] { 1, 2, 3 });
+                result.ShouldEqual((long)1234);
             }
         }
 
@@ -101,7 +101,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
             using (var context = new ExtraAuthorizeDbContext(options, null))
             {
                 context.Database.EnsureCreated();
-                context.AddUpdateValue("test", new byte[] { 1, 2, 3 });
+                context.AddUpdateValue("test", (long)1234);
                 context.SaveChanges();
 
                 const int numTimes = 1000;

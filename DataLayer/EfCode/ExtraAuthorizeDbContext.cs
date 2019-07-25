@@ -71,21 +71,21 @@ namespace DataLayer.EfCode
         //The ITimeStore methods
 
 
-        public byte[] GetValueFromStore(string key)
+        public long? GetValueFromStore(string key)
         {
-            return Find<TimeStore>(key)?.Value;
+            return Find<TimeStore>(key)?.LastUpdatedTicks;
         }
 
-        public void AddUpdateValue(string key, byte[] value)
+        public void AddUpdateValue(string key, long cachedTicks)
         {
             var currentEntry = Find<TimeStore>(key);
             if (currentEntry != null)
             {
-                currentEntry.Value = value;
+                currentEntry.LastUpdatedTicks = cachedTicks;
             }
             else
             {
-                Add(new TimeStore {Key = key, Value = value});
+                Add(new TimeStore {Key = key, LastUpdatedTicks = cachedTicks });
             }
         }
     }
