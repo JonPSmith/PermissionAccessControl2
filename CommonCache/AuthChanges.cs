@@ -11,7 +11,7 @@ namespace CommonCache
     public class AuthChanges : IAuthChanges
     {
         /// <summary>
-        /// This returns true if there is an entry in the cache and the ticks given are lower, i.e. we need to recalc things
+        /// This returns true if ticksToCompareString is null, or if its value is lower than the value in the TimeStore
         /// </summary>
         /// <param name="cacheKey"></param>
         /// <param name="ticksToCompareString"></param>
@@ -37,9 +37,9 @@ namespace CommonCache
             return ticksToCompare < cachedTicks;
         }
 
-        public void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore timeStore)
+        public void AddOrUpdate(ITimeStore timeStore)
         {
-            timeStore.AddUpdateValue(cacheKey, cachedValue);
+            timeStore.AddUpdateValue(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks);
         }
     }
 }

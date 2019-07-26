@@ -1,12 +1,7 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using System;
-using Castle.Components.DictionaryAdapter;
 using CommonCache;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using Test.FakesAndMocks;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
@@ -23,9 +18,8 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestIsOutOfDateOrMissing(string key, string ticksToTry, bool expectedResult )
         {
             //SETUP
-            var fakeTimeStore = new FakeTimeStore();
+            var fakeTimeStore = new FakeTimeStore("test", 200);
             var authChange = new AuthChanges();
-            authChange.AddOrUpdate("test", 200, fakeTimeStore);
 
             //ATTEMPT
             var isOutOfDate = authChange.IsOutOfDateOrMissing(key, ticksToTry, fakeTimeStore);
@@ -38,10 +32,7 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestIsOutOfDateOrMissingNoOriginalValue()
         {
             //SETUP
-            var fakeTimeStore = new FakeTimeStore()
-            {
-                Value = 200
-            };
+            var fakeTimeStore = new FakeTimeStore("test", 200);
             var authChange = new AuthChanges();
 
             //ATTEMPT
@@ -56,31 +47,30 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestAddOrUpdateDatabaseUpdate()
         {
             //SETUP
-            var fakeTimeStore = new FakeTimeStore()
-            {
-                Value = 200
-            };
+            var fakeTimeStore = new FakeTimeStore("test", 200);
             var authChange = new AuthChanges();
 
             //ATTEMPT
-            authChange.AddOrUpdate("test", 100, fakeTimeStore);
+            authChange.AddOrUpdate(fakeTimeStore);
 
             //VERIFY
-            fakeTimeStore.Value.ShouldEqual((long)100);
+            fakeTimeStore.Key.ShouldEqual(AuthChangesConsts.FeatureCacheKey);
+            fakeTimeStore.Value.ShouldNotEqual((long)200);
         }
 
         [Fact]
         public void TestAddOrUpdateDatabaseAdd()
         {
             //SETUP
-            var fakeTimeStore = new FakeTimeStore();
+            var fakeTimeStore = new FakeTimeStore(AuthChangesConsts.FeatureCacheKey, 200);
             var authChange = new AuthChanges();
 
             //ATTEMPT
-            authChange.AddOrUpdate("test", 100, fakeTimeStore);
+            authChange.AddOrUpdate(fakeTimeStore);
 
             //VERIFY
-            fakeTimeStore.Value.ShouldEqual((long)100);
+            fakeTimeStore.Key.ShouldEqual(AuthChangesConsts.FeatureCacheKey);
+            fakeTimeStore.Value.ShouldNotEqual((long)200);
         }
 
     }

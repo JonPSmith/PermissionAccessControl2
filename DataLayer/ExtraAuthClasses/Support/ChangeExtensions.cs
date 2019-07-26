@@ -11,8 +11,9 @@ namespace DataLayer.ExtraAuthClasses.Support
         public static bool UserPermissionsMayHaveChanged(this DbContext context)
         {
             return context.ChangeTracker.Entries()
-                .Any(x => (x.Entity is IChangeEffectsUser && x.State == EntityState.Modified)
-                          || (x.Entity is IAddRemoveEffectsUser && (x.State == EntityState.Added || x.State == EntityState.Deleted)));
+                .Any(x => (x.Entity is IChangeEffectsUser && x.State == EntityState.Modified) || 
+                          (x.Entity is IAddRemoveEffectsUser && 
+                                (x.State == EntityState.Added || x.State == EntityState.Deleted)));
         }
     }
 }

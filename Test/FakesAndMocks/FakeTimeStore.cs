@@ -4,8 +4,14 @@ namespace Test.FakesAndMocks
 {
     public class FakeTimeStore : ITimeStore
     {
-        public long? Value { get; set; }
-        public string Key { get; set; }
+        public FakeTimeStore(string key, long? value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public string Key { get; private set; }
+        public long? Value { get; private set; }
 
         public long? GetValueFromStore(string key)
         {

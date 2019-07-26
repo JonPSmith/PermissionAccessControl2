@@ -30,7 +30,7 @@ namespace DataLayer.EfCode
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<UserDataHierarchical> DataAccess { get; set; }
 
-        //I only have to override these two version of SaveChanges, as the other two SaveChanges versions call these
+        //I only have to override these two versions of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         { 
             if (_authChange == null)
@@ -38,9 +38,8 @@ namespace DataLayer.EfCode
                 return base.SaveChanges(acceptAllChangesOnSuccess);
 
             if (this.UserPermissionsMayHaveChanged())
-                _authChange.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
-            var result = base.SaveChanges(acceptAllChangesOnSuccess);
-            return result;
+                _authChange.AddOrUpdate(this);
+            return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
@@ -50,9 +49,8 @@ namespace DataLayer.EfCode
                 return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 
             if (this.UserPermissionsMayHaveChanged())
-                _authChange?.AddOrUpdate(AuthChangesConsts.FeatureCacheKey, DateTime.UtcNow.Ticks, this);
-            var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            return result;
+                _authChange?.AddOrUpdate(this);
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public ExtraAuthorizeDbContext(DbContextOptions<ExtraAuthorizeDbContext> options, IAuthChanges authChange)

@@ -16,9 +16,7 @@ namespace CommonCache
         /// <summary>
         /// This adds or updates the TimeStore entry with the cacheKey with the cachedValue (datetime as ticks) 
         /// </summary>
-        /// <param name="cacheKey"></param>
-        /// <param name="cachedValue"></param>
         /// <param name="timeStore"></param>
-        void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore timeStore);
+        void AddOrUpdate(ITimeStore timeStore);
     }
 }

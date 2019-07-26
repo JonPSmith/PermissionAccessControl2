@@ -13,7 +13,7 @@ namespace DataLayer.ExtraAuthClasses
     /// <summary>
     /// This is a one-to-many relationship between the User (represented by the UserId) and their Roles (represented by RoleToPermissions)
     /// </summary>
-    public class UserToRole : IAddRemoveEffectsUser
+    public class UserToRole : IAddRemoveEffectsUser, IChangeEffectsUser
     {
         private UserToRole() { } //needed by EF Core
 

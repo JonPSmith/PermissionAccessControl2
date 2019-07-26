@@ -9,7 +9,7 @@ namespace Test.FakesAndMocks
     public class FakeAuthChanges : IAuthChanges
     {
         public long CachedValue { get; private set; } = -1;
-        public bool CacheValueSet => CachedValue != -1;
+        public bool CacheValueSet { get; private set; }
 
         public bool IsOutOfDateOrMissing(string cacheKey, string ticksToCompareString, ITimeStore timeStore)
         {
@@ -21,14 +21,15 @@ namespace Test.FakesAndMocks
             throw new System.NotImplementedException();
         }
 
-        public void AddOrUpdate(string cacheKey, long cachedValue, ITimeStore timeStore)
+        public void AddOrUpdate(ITimeStore timeStore)
         {
-            CachedValue = cachedValue;
+            CacheValueSet = true;
         }
 
         public void Clear()
         {
             CachedValue = -1;
+            CacheValueSet = false;
         }
     }
 }
