@@ -117,6 +117,7 @@ namespace PermissionAccessControl2
             app.UseCookiePolicy();
             app.UseAuthentication();
 
+            //This should come AFTER the app.UseAuthentication() call
             if (Configuration["DemoSetup:UpdateCookieOnChange"] == "True")
             {
                 //If UpdateCookieOnChange this adds a header which has the time that the user's claims were updated

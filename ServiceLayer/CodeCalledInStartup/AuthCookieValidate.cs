@@ -53,7 +53,6 @@ namespace ServiceLayer.CodeCalledInStartup
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
                 _authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
-                    // ReSharper disable once AccessToDisposedClosure
                     extraContext))
             {
                 //Handle the feature permissions
