@@ -17,7 +17,7 @@ The default setting (see Configuration section below) will use in-memory databas
 
 1. Different **Permissions**, which controls what they can do, e.g. only a StoreManager can provide a refund.
 2. Different **DataKey**, which controls what part of the shop data they can see, e.g. a SalesAssistant and StoreManager can only see the data in their shop, but a Director can see all shop data in the company.
-3. A **Change Role** menu dropdown which allows you to try the "refreshing users claims" feature described in the Part 5 article.
+3. A **Refresh Claims** menu dropdown which allows you to try the "refreshing users claims" feature described in the Part 5 article.
 
 There is a link on the home page to a list of users that you can log in via (the email address is also the password). There are two different companies, 4U Inc. and Pets2 Ltd., which have a number of shops in different divisions, represented by hierarchical data. Logging in as a user will give you access to some features and data (if linked to data).
 
