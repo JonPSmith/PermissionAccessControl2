@@ -2,12 +2,15 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 
-namespace ServiceLayer.UserImpersonation.Concrete
+[assembly: InternalsVisibleTo("Test")]
+
+namespace ServiceLayer.UserImpersonation.Concrete.Internal
 {
-    public class ImpersonationCookie
+    internal class ImpersonationCookie
     {
         private const string CookieName = "UserImpersonation";
         private readonly CookieOptions _options;

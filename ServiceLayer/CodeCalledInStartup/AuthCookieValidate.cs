@@ -11,7 +11,9 @@ using DataAuthorize;
 using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using ServiceLayer.UserImpersonation.Concrete.Internal;
 
 namespace ServiceLayer.CodeCalledInStartup
 {
@@ -23,11 +25,14 @@ namespace ServiceLayer.CodeCalledInStartup
     public class AuthCookieValidate
     {
         private readonly DbContextOptions<ExtraAuthorizeDbContext> _extraAuthContextOptions;
+        private readonly IDataProtectionProvider _protectionProvider;
         private readonly IAuthChanges _authChanges;
 
-        public AuthCookieValidate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions)
+        public AuthCookieValidate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions, 
+            IDataProtectionProvider protectionProvider)
         {
-            _extraAuthContextOptions = extraAuthContextOptions;
+            _extraAuthContextOptions = extraAuthContextOptions ?? throw new ArgumentNullException(nameof(extraAuthContextOptions));
+            _protectionProvider = protectionProvider; //This can be null, in which case impersonation is turned off
             _authChanges = new AuthChanges();
         }
 
@@ -48,9 +53,13 @@ namespace ServiceLayer.CodeCalledInStartup
             // ReSharper disable once AccessToDisposedClosure
             var dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(extraContext));
 
-            var newClaims = new List<Claim>();
             var originalClaims = context.Principal.Claims.ToList();
+            var impHandler = new ImpersonationHandler(context.HttpContext, _protectionProvider, originalClaims);
+            
+
+            var newClaims = new List<Claim>();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
+                impHandler.ImpersonationChange ||
                 _authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
                     extraContext))
@@ -60,7 +69,8 @@ namespace ServiceLayer.CodeCalledInStartup
                 newClaims.AddRange(await BuildFeatureClaimsAsync(userId, rtoPLazy.Value));
             }
 
-            if (originalClaims.All(x => x.Type != DataAuthConstants.HierarchicalKeyClaimName))
+            if (originalClaims.All(x => x.Type != DataAuthConstants.HierarchicalKeyClaimName) ||
+                impHandler.ImpersonationChange)
             {
                 var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
                 newClaims.AddRange(BuildDataClaims(userId, dataKeyLazy.Value));

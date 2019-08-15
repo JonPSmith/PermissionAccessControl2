@@ -4,6 +4,7 @@
 using System;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
+using ServiceLayer.UserImpersonation.Concrete.Internal;
 
 namespace ServiceLayer.UserImpersonation.Concrete
 {
@@ -17,8 +18,6 @@ namespace ServiceLayer.UserImpersonation.Concrete
         {
             _httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
             _protectionProvider = protectionProvider ?? throw new ArgumentNullException(nameof(protectionProvider));
-
-
             _cookie = new ImpersonationCookie();
         }
 
