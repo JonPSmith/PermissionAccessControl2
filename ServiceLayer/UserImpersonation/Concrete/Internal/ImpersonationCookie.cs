@@ -29,7 +29,10 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             {
                 Secure = false,  //In real life you would want this to be true, but for this demo I allow http
                 HttpOnly = true, //Not used by JavaScript
-                IsEssential = true
+                IsEssential = true,
+                //These two make it a session cookie, i.e. it disappears when the browser is closed
+                Expires = null,
+                MaxAge = null
             };
         }
 

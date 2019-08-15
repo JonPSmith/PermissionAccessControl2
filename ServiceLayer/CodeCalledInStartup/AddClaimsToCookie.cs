@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
+using ServiceLayer.UserImpersonation.Concrete.Internal;
 
 namespace ServiceLayer.CodeCalledInStartup
 {
@@ -34,11 +35,14 @@ namespace ServiceLayer.CodeCalledInStartup
                 var protectionProvider = sp.GetService<IDataProtectionProvider>(); //NOTE: This can be null, which turns off impersonation
 
                 var authCookieValidate = new AuthCookieValidate(extraAuthContextOptions, protectionProvider);
+                var authCookieSigningOut = new AuthCookieSigningOut();
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
                 services.ConfigureApplicationCookie(options =>
                 {
                     options.Events.OnValidatePrincipal = authCookieValidate.ValidateAsync;
+                    //This ensures the impersonation cookie is deleted when a user signs out
+                    options.Events.OnSigningOut = authCookieSigningOut.SigningOutAsync;
                 });
             }
             else
