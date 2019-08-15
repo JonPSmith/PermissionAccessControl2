@@ -10,15 +10,12 @@ namespace ServiceLayer.UserImpersonation.Concrete
 {
     public class ImpersonationService : IImpersonationService
     {
-        private readonly HttpContext _httpContext;
-        private readonly IDataProtectionProvider _protectionProvider;
         private readonly ImpersonationCookie _cookie;
 
         public ImpersonationService(HttpContext httpContext, IDataProtectionProvider protectionProvider)
         {
-            _httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-            _protectionProvider = protectionProvider ?? throw new ArgumentNullException(nameof(protectionProvider));
-            _cookie = new ImpersonationCookie();
+            if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
+            _cookie = new ImpersonationCookie(httpContext, protectionProvider);
         }
 
         /// <summary>
@@ -27,7 +24,7 @@ namespace ServiceLayer.UserImpersonation.Concrete
         /// <param name="userId">This must be the userId of the user you want to impersonate</param>
         public void StartImpersonation(string userId)
         {
-            _cookie.AddUpdateCookie(userId, _protectionProvider, _httpContext.Response.Cookies);
+            _cookie.AddUpdateCookie(userId);
         }
 
         /// <summary>
@@ -35,7 +32,7 @@ namespace ServiceLayer.UserImpersonation.Concrete
         /// </summary>
         public void StopImpersonation()
         {
-            _cookie.Delete(_httpContext.Response.Cookies);
+            _cookie.Delete();
         }
     }
 }

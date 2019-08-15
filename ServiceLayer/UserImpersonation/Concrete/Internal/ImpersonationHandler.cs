@@ -37,7 +37,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         {
             _httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
             _protectionProvider = protectionProvider;
-            _cookie = new ImpersonationCookie();
+            _cookie = new ImpersonationCookie(httpContext, protectionProvider);
             _originalClaims = originalClaims;
 
             _impersonationState = GetImpersonationState();
@@ -47,8 +47,14 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         {
             if (_impersonationState == ImpersonationStates.Starting)
             {
-                return _cookie.GetCookieInValue(_protectionProvider)
+                return _cookie.GetCookieInValue();
             }
+            return _originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        public string GetUserIdForWorkingDataKey()
+        {
+            return GetUserIdForWorkingOutPermissions();
         }
 
         //-------------------------------------------------

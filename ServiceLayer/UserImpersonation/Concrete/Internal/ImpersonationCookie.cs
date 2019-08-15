@@ -13,12 +13,17 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
     internal class ImpersonationCookie
     {
         private const string CookieName = "UserImpersonation";
+
+        private readonly HttpContext _httpContext;
+        private readonly IDataProtectionProvider _protectionProvider;
         private readonly CookieOptions _options;
 
         public string EncryptPurpose { get; private set; }
 
-        public ImpersonationCookie()
+        public ImpersonationCookie(HttpContext httpContext, IDataProtectionProvider protectionProvider)
         {
+            _httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
+            _protectionProvider = protectionProvider; //Can be null
             EncryptPurpose = "hffhegse432!&2!jbK!K3wqqqagg3bbassdewdsgfedgbfdewe13c";
             _options = new CookieOptions
             {
@@ -29,14 +34,14 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             };
         }
 
-        public void AddUpdateCookie(string data, IDataProtectionProvider provider, IResponseCookies cookiesOut)
+        public void AddUpdateCookie(string data)
         {
-            if (provider == null) throw new ArgumentNullException(nameof(provider));
-            if (cookiesOut == null) throw new ArgumentNullException(nameof(cookiesOut));
+            if (_protectionProvider == null)
+                throw new NullReferenceException($"The {nameof(IDataProtectionProvider)} was null, which means impersonation is turned off.");
 
-            var protector = provider.CreateProtector(EncryptPurpose);
+            var protector = _protectionProvider.CreateProtector(EncryptPurpose);
             var encryptedString = protector.Protect(data);
-            cookiesOut.Append(CookieName, encryptedString, _options);
+            _httpContext.Response.Cookies.Append(CookieName, encryptedString, _options);
         }
 
         public bool Exists(IRequestCookieCollection cookiesIn)
@@ -44,17 +49,16 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             return cookiesIn[CookieName] != null;
         }
 
-        public string GetCookieInValue(IDataProtectionProvider provider, IRequestCookieCollection cookiesIn,
-            IResponseCookies cookiesOut)
+        public string GetCookieInValue()
         {
-            if (provider == null) throw new ArgumentNullException(nameof(provider));
-            if (cookiesIn == null) throw new ArgumentNullException(nameof(cookiesIn));
+            if (_protectionProvider == null)
+                throw new NullReferenceException($"The {nameof(IDataProtectionProvider)} was null, which means impersonation is turned off.");
 
-            var cookieData = cookiesIn[CookieName];
+            var cookieData = _httpContext.Request.Cookies[CookieName];
             if (string.IsNullOrEmpty(cookieData))
                 return null;
 
-            var protector = provider.CreateProtector(EncryptPurpose);
+            var protector = _protectionProvider.CreateProtector(EncryptPurpose);
             string decrypt = null;
             try
             {
@@ -63,16 +67,16 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             catch (Exception e)
             {
                 //_logger.LogError(e, "Error decoding a cookie. Have deleted cookie to stop problem.");
-                Delete(cookiesOut);
+                Delete();
                 throw;
             }
 
             return decrypt;
         }
 
-        public void Delete(IResponseCookies cookiesOut)
+        public void Delete()
         {
-            cookiesOut.Delete(CookieName, _options);
+            _httpContext.Response.Cookies.Delete(CookieName, _options);
         }
     }
 }

@@ -3,6 +3,7 @@
 
 using CommonCache;
 using DataLayer.EfCode;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -30,8 +31,9 @@ namespace ServiceLayer.CodeCalledInStartup
 
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
+                var protectionProvider = sp.GetService<IDataProtectionProvider>(); //NOTE: This can be null, which turns off impersonation
 
-                var authCookieValidate = new AuthCookieValidate(extraAuthContextOptions);
+                var authCookieValidate = new AuthCookieValidate(extraAuthContextOptions, protectionProvider);
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
                 services.ConfigureApplicationCookie(options =>

@@ -38,8 +38,8 @@ namespace Test.UnitTests.ServiceLayerTests
             var eProvider = new EphemeralDataProtectionProvider();
 
             //ATTEMPT
-            var cookie = new ImpersonationCookie();
-            cookie.AddUpdateCookie("Hello world", eProvider, mocks.MockContext.Response.Cookies);
+            var cookie = new ImpersonationCookie(mocks.MockContext, eProvider);
+            cookie.AddUpdateCookie("Hello world");
 
             //VERIFY
             mocks.ResponseCookies.Count.ShouldEqual(1);
@@ -53,11 +53,11 @@ namespace Test.UnitTests.ServiceLayerTests
             //SETUP
             var mocks = new MockHttpContextCookies();
             var eProvider = new EphemeralDataProtectionProvider();
-            var cookie = new ImpersonationCookie();
+            var cookie = new ImpersonationCookie(mocks.MockContext, eProvider);
 
             //ATTEMPT
             mocks.RequestCookies["UserImpersonation"] = eProvider.CreateProtector(cookie.EncryptPurpose).Protect("Hello world");
-            var data = cookie.GetCookieInValue(eProvider, mocks.MockContext.Request.Cookies, mocks.MockContext.Response.Cookies);
+            var data = cookie.GetCookieInValue();
 
             //VERIFY
             data.ShouldEqual("Hello world");
@@ -69,17 +69,17 @@ namespace Test.UnitTests.ServiceLayerTests
             //SETUP
             var mocks = new MockHttpContextCookies();
             var eProvider = new EphemeralDataProtectionProvider();
-            var cookie = new ImpersonationCookie();
+            var cookie = new ImpersonationCookie(mocks.MockContext, eProvider);
 
             //ATTEMPT
             mocks.RequestCookies["UserImpersonation"] = "???";
             var ex = Assert.Throws<CryptographicException>(() => 
-                cookie.GetCookieInValue(eProvider, mocks.MockContext.Request.Cookies, mocks.MockContext.Response.Cookies));
+                cookie.GetCookieInValue());
 
             //VERIFY
             ex.Message.ShouldStartWith("An error occurred during a cryptographic operation.");
             mocks.ResponseCookies["Set-Cookie"].ShouldNotBeNull();
-            mocks.ResponseCookies["Set-Cookie"][0].ShouldEndWith("expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=lax");
+            mocks.ResponseCookies["Set-Cookie"][0].ShouldEndWith("expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=lax; httponly");
         }
 
         [Fact]
@@ -88,10 +88,10 @@ namespace Test.UnitTests.ServiceLayerTests
             //SETUP
             var mocks = new MockHttpContextCookies();
             var eProvider = new EphemeralDataProtectionProvider();
-            var cookie = new ImpersonationCookie();
+            var cookie = new ImpersonationCookie(mocks.MockContext, eProvider);
 
             //ATTEMPT
-            var data = cookie.GetCookieInValue(eProvider, mocks.MockContext.Request.Cookies, mocks.MockContext.Response.Cookies);
+            var data = cookie.GetCookieInValue();
 
             //VERIFY
             data.ShouldBeNull();
@@ -103,8 +103,8 @@ namespace Test.UnitTests.ServiceLayerTests
             //SETUP
             var mocks = new MockHttpContextCookies();
             var eProvider = new EphemeralDataProtectionProvider();
-            var cookie = new ImpersonationCookie();
-            cookie.AddUpdateCookie("Hello world", eProvider, mocks.MockContext.Response.Cookies);
+            var cookie = new ImpersonationCookie(mocks.MockContext, eProvider);
+            cookie.AddUpdateCookie("Hello world");
 
             mocks.RequestCookies["UserImpersonation"] = "???";
 
@@ -120,15 +120,15 @@ namespace Test.UnitTests.ServiceLayerTests
         {
             //SETUP
             var mocks = new MockHttpContextCookies();
-            var cookie = new ImpersonationCookie();
+            var cookie = new ImpersonationCookie(mocks.MockContext, null);
 
             mocks.ResponseCookies["Set-Cookie"] = "Some data";
 
             //ATTEMPT
-            cookie.Delete(mocks.MockContext.Response.Cookies);
+            cookie.Delete();
 
             //VERIFY
-            mocks.ResponseCookies["Set-Cookie"][1].ShouldEndWith("expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=lax");
+            mocks.ResponseCookies["Set-Cookie"][1].ShouldEndWith("expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=lax; httponly");
         }
 
     }
