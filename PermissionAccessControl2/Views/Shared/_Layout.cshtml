@@ -68,6 +68,17 @@
                         </li>
                         <li class="nav-item">
                             <div class="dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" role="button" id="dropdown4MenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Impersonation
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdown4MenuButton">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Impersonate" asp-action="Index">List Users</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Impersonate" asp-action="Stop">Stop Impersonation</a>
+                                </div>
+                            </div>                       
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
                                 <a class="nav-link text-danger dropdown-toggle" role="button" id="dropdown2MenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Users
                                 </a>

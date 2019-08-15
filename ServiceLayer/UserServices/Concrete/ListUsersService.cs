@@ -38,7 +38,7 @@ namespace ServiceLayer.UserServices.Concrete
                         companyName = _extraContext.Find<TenantBase>(linkedTenant.ExtractCompanyId())?.Name;
                 }
 
-                result.Add(new ListUsersDto(user.UserName, string.Join(", ", userRoleNames), companyName, tenantName));
+                result.Add(new ListUsersDto(user.Id, user.UserName, string.Join(", ", userRoleNames), companyName, tenantName));
             }
 
             return result;

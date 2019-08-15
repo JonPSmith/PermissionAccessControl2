@@ -1,0 +1,15 @@
+﻿@model System.Tuple<string,string>
+
+@{
+    ViewBag.Title = "Message";
+}
+
+<h2>Message</h2>
+@if (Model.Item1 != null)
+{
+    <p class="text-danger">Error: @Model.Item1</p>
+}
+else
+{
+    <p>@Model.Item2</p>
+}

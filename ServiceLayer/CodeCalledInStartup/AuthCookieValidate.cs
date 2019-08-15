@@ -56,7 +56,6 @@ namespace ServiceLayer.CodeCalledInStartup
             var originalClaims = context.Principal.Claims.ToList();
             var impHandler = new ImpersonationHandler(context.HttpContext, _protectionProvider, originalClaims);
             
-
             var newClaims = new List<Claim>();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
                 impHandler.ImpersonationChange ||
@@ -65,14 +64,14 @@ namespace ServiceLayer.CodeCalledInStartup
                     extraContext))
             {
                 //Handle the feature permissions
-                var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                var userId = impHandler.GetUserIdForWorkingOutPermissions();
                 newClaims.AddRange(await BuildFeatureClaimsAsync(userId, rtoPLazy.Value));
             }
 
             if (originalClaims.All(x => x.Type != DataAuthConstants.HierarchicalKeyClaimName) ||
                 impHandler.ImpersonationChange)
             {
-                var userId = originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+                var userId = impHandler.GetUserIdForWorkingDataKey();
                 newClaims.AddRange(BuildDataClaims(userId, dataKeyLazy.Value));
             }
 
@@ -81,6 +80,7 @@ namespace ServiceLayer.CodeCalledInStartup
                 //Something has changed so we replace the current ClaimsPrincipal with a new one
 
                 newClaims.AddRange(RemoveUpdatedClaimsFromOriginalClaims(originalClaims, newClaims)); //Copy over unchanged claims
+                impHandler.AddOrRemoveImpersonationClaim(newClaims);
                 //Build a new ClaimsPrincipal and use it to replace the current ClaimsPrincipal
                 var identity = new ClaimsIdentity(newClaims, "Cookie");
                 var newPrincipal = new ClaimsPrincipal(identity);

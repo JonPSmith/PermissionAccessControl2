@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
+using FeatureAuthorize;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Internal;
 
 [assembly: InternalsVisibleTo("Test")]
 
@@ -16,7 +16,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
 {
     internal class ImpersonationHandler
     {
-        private const string ImpersonationClaimType = "Impersonalising";
+        public const string ImpersonationClaimType = "Impersonalising";
 
         private readonly HttpContext _httpContext;
         private readonly IDataProtectionProvider _protectionProvider;
@@ -49,12 +49,30 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             {
                 return _cookie.GetCookieInValue();
             }
-            return _originalClaims.SingleOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            return _originalClaims.GetUserIdFromClaims();
         }
 
         public string GetUserIdForWorkingDataKey()
         {
             return GetUserIdForWorkingOutPermissions();
+        }
+
+        public void AddOrRemoveImpersonationClaim(List<Claim> claimsToGoIntoNewPrincipal)
+        {
+            switch (_impersonationState)
+            {
+                case ImpersonationStates.NoChange:
+                    break; //Do nothing
+                case ImpersonationStates.Starting:
+                    claimsToGoIntoNewPrincipal.Add(new Claim(ImpersonationClaimType, ""));
+                    break;
+                case ImpersonationStates.Stopping:
+                    var foundClaim = claimsToGoIntoNewPrincipal.Single(x => x.Type == ImpersonationClaimType);
+                    claimsToGoIntoNewPrincipal.Remove(foundClaim);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         //-------------------------------------------------
@@ -75,7 +93,5 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             }
             return ImpersonationStates.NoChange;
         }
-
-
     }
 }
