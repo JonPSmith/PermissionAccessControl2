@@ -53,7 +53,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
 
         public string GetUserIdForWorkingDataKey()
         {
-            return GetUserIdBasedOnRequirements(true);
+            return GetUserIdBasedOnRequirements(false);
         }
 
         public void AddOrRemoveImpersonationClaim(List<Claim> claimsToGoIntoNewPrincipal)

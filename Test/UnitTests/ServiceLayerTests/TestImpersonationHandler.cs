@@ -95,7 +95,7 @@ namespace Test.UnitTests.ServiceLayerTests
             //VERIFY
             handler.ImpersonationChange.ShouldBeTrue();
             handler.GetUserIdForWorkingOutPermissions().ShouldEqual("userid");
-            handler.GetUserIdForWorkingDataKey().ShouldEqual("userid");
+            handler.GetUserIdForWorkingDataKey().ShouldEqual("differentUserId");
             handler.AddOrRemoveImpersonationClaim(claims);
             claims.SingleOrDefault(x => x.Type == ImpersonationHandler.ImpersonationClaimType)?.Value.ShouldEqual("name@gmail.com");
         }
@@ -118,7 +118,7 @@ namespace Test.UnitTests.ServiceLayerTests
             //VERIFY
             handler.ImpersonationChange.ShouldBeTrue();
             handler.GetUserIdForWorkingOutPermissions().ShouldEqual("differentUserId");
-            handler.GetUserIdForWorkingDataKey().ShouldEqual("userid");
+            handler.GetUserIdForWorkingDataKey().ShouldEqual("differentUserId");
             handler.AddOrRemoveImpersonationClaim(claims);
             claims.SingleOrDefault(x => x.Type == ImpersonationHandler.ImpersonationClaimType)?.Value.ShouldEqual("name@gmail.com");
         }
