@@ -44,6 +44,11 @@ namespace PermissionParts
         [Display(GroupName = "CacheTest", Name = "Cache2", Description = "Permission to toggle for update permission test")]
         Cache2 = 61,
 
+        [Display(GroupName = "Impersonation", Name = "Impersonate - straight", Description = "Impersonate user using their permissions")]
+        Impersonate = 70,
+        [Display(GroupName = "Impersonation", Name = "Impersonate - enhanced", Description = "Impersonate user using current permissions")]
+        ImpersonateWithOwnPermissions = 71,
+
         //This is an example of what to do with permission you don't used anymore.
         //You don't want its number to be reused as it could cause problems 
         //Just mark it as obsolete and the PermissionDisplay code won't show it

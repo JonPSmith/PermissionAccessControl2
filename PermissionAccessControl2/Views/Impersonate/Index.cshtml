@@ -19,12 +19,19 @@
         <td>@user.CompanyName</td>
         <td>@user.LinkedTenantName</td>
         <td>
-            <form asp-action="Start" method="post">
+            <form asp-action="StartNormal" method="post">
                 <!-- Input and Submit elements -->
                 <input name="UserId" type="hidden" value="@user.UserId" />
                 <input name="UserName" type="hidden" value="@user.UserName" />
 
-                <button type="submit">Impersonate</button>
+                <button type="submit">Impersonate - their permissions</button>
+            </form>
+            <form asp-action="StartEnhanced" method="post">
+                <!-- Input and Submit elements -->
+                <input name="UserId" type="hidden" value="@user.UserId" />
+                <input name="UserName" type="hidden" value="@user.UserName" />
+
+                <button type="submit">Impersonate - your permissions</button>
             </form>
         </td>
     </tr>
