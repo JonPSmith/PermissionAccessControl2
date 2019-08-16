@@ -20,11 +20,12 @@ namespace PermissionAccessControl2.Controllers
         }
 
         [HttpPost]
-        public IActionResult Start(string userId, string email, [FromServices] IImpersonationService service)
+        public IActionResult Start(string userId, string userName, bool keepOwnPermissions,
+            [FromServices] IImpersonationService service)
         {
-            var errorMessage = service.StartImpersonation(userId);
+            var errorMessage = service.StartImpersonation(userId, userName, keepOwnPermissions);
             return RedirectToAction(nameof(Message), 
-                new {errorMessage, successMessage =$"You are now impersonating user with {email}." });
+                new {errorMessage, successMessage =$"You are now impersonating user {userName}." });
         }
 
         public IActionResult Stop([FromServices] IImpersonationService service)

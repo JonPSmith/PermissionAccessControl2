@@ -3,9 +3,6 @@
 
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
-using ServiceLayer.UserImpersonation;
-using ServiceLayer.UserImpersonation.Concrete;
 using ServiceLayer.UserImpersonation.Concrete.Internal;
 using Test.FakesAndMocks;
 using Xunit;

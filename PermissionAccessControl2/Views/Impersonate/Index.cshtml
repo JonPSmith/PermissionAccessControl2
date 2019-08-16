@@ -5,7 +5,7 @@
 
 <table class="table">
     <tr>
-        <th>User Email</th>
+        <th>User Name/Email</th>
         <th>User roles</th>
         <th>Company</th>
         <th>Linked tenant</th>
@@ -14,7 +14,7 @@
     @foreach (var user in @Model)
     {
     <tr>
-        <td>@user.Email</td>
+        <td>@user.UserName</td>
         <td>@user.RoleNames</td>
         <td>@user.CompanyName</td>
         <td>@user.LinkedTenantName</td>
@@ -22,7 +22,7 @@
             <form asp-action="Start" method="post">
                 <!-- Input and Submit elements -->
                 <input name="UserId" type="hidden" value="@user.UserId" />
-                <input name="Email" type="hidden" value="@user.Email" />
+                <input name="UserName" type="hidden" value="@user.UserName" />
 
                 <button type="submit">Impersonate</button>
             </form>

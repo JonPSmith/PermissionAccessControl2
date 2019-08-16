@@ -24,8 +24,10 @@ namespace ServiceLayer.UserImpersonation.Concrete
         /// This creates an user impersonation cookie, which starts the user impersonation via the AuthCookie ValidateAsync event
         /// </summary>
         /// <param name="userId">This must be the userId of the user you want to impersonate</param>
+        /// <param name="userName"></param>
+        /// <param name="keepOwnPermissions"></param>
         /// <returns>Error message, or null if OK.</returns>
-        public string StartImpersonation(string userId)
+        public string StartImpersonation(string userId, string userName, bool keepOwnPermissions)
         {
             if (!_httpContext.User.Identity.IsAuthenticated)
                 return "You must be logged in to impersonate a user.";
@@ -36,7 +38,7 @@ namespace ServiceLayer.UserImpersonation.Concrete
             if (userId == null)
                 return "You must provide a userId string";
 
-            _cookie.AddUpdateCookie(userId);
+            _cookie.AddUpdateCookie(new ImpersonationData(userId, userName, keepOwnPermissions).GetPackImpersonationData());
             return null;
         }
 

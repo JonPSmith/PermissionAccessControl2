@@ -23,6 +23,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         private readonly ImpersonationCookie _cookie;
         private readonly List<Claim> _originalClaims;
 
+        private readonly ImpersonationData _startData;
         private readonly ImpersonationStates _impersonationState;
 
         public bool ImpersonationChange => _impersonationState != ImpersonationStates.NoChange;
@@ -41,20 +42,18 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             _originalClaims = originalClaims;
 
             _impersonationState = GetImpersonationState();
+            if (_impersonationState == ImpersonationStates.Starting)
+                _startData = new ImpersonationData(_cookie.GetCookieInValue());
         }
 
         public string GetUserIdForWorkingOutPermissions()
         {
-            if (_impersonationState == ImpersonationStates.Starting)
-            {
-                return _cookie.GetCookieInValue();
-            }
-            return _originalClaims.GetUserIdFromClaims();
+            return GetUserIdBasedOnRequirements(_startData?.KeepOwnPermissions);
         }
 
         public string GetUserIdForWorkingDataKey()
         {
-            return GetUserIdForWorkingOutPermissions();
+            return GetUserIdBasedOnRequirements(true);
         }
 
         public void AddOrRemoveImpersonationClaim(List<Claim> claimsToGoIntoNewPrincipal)
@@ -64,7 +63,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
                 case ImpersonationStates.NoChange:
                     break; //Do nothing
                 case ImpersonationStates.Starting:
-                    claimsToGoIntoNewPrincipal.Add(new Claim(ImpersonationClaimType, ""));
+                    claimsToGoIntoNewPrincipal.Add(new Claim(ImpersonationClaimType, _startData.UserName));
                     break;
                 case ImpersonationStates.Stopping:
                     var foundClaim = claimsToGoIntoNewPrincipal.Single(x => x.Type == ImpersonationClaimType);
@@ -77,6 +76,15 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
 
         //-------------------------------------------------
         //private methods
+
+        private string GetUserIdBasedOnRequirements(bool? keepOwnPermissions)
+        {
+            if (_impersonationState == ImpersonationStates.Starting && keepOwnPermissions == false)
+            {
+                return _startData.UserId;
+            }
+            return _originalClaims.GetUserIdFromClaims();
+        }
 
         private ImpersonationStates GetImpersonationState()
         {
