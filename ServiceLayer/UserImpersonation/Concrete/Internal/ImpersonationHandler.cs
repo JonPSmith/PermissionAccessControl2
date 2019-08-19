@@ -23,7 +23,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         private readonly ImpersonationCookie _cookie;
         private readonly List<Claim> _originalClaims;
 
-        private readonly ImpersonationData _startData;
+        private readonly Lazy<ImpersonationData> _startData;
         private readonly ImpersonationStates _impersonationState;
 
         /// <summary>
@@ -46,18 +46,19 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             _originalClaims = originalClaims;
 
             _impersonationState = GetImpersonationState();
-            if (_impersonationState == ImpersonationStates.Starting || _impersonationState == ImpersonationStates.Impersonating)
-                _startData = new ImpersonationData(_cookie.GetCookieInValue());
+            //I use a lazy access to the cookie value as this takes a (bit) more time
+            _startData = new Lazy<ImpersonationData>(() => new ImpersonationData(_cookie.GetCookieInValue()));
+
         }
 
         public string GetUserIdForWorkingOutPermissions()
         {
-            return GetUserIdBasedOnRequirements(_startData?.KeepOwnPermissions);
+            return GetUserIdBasedOnRequirements(() => _startData.Value.KeepOwnPermissions);
         }
 
         public string GetUserIdForWorkingDataKey()
         {
-            return GetUserIdBasedOnRequirements(false);
+            return GetUserIdBasedOnRequirements(() => false);
         }
 
         public void AddOrRemoveImpersonationClaim(List<Claim> claimsToGoIntoNewPrincipal)
@@ -68,7 +69,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
                 case ImpersonationStates.Impersonating:
                     break; //Do nothing
                 case ImpersonationStates.Starting:
-                    claimsToGoIntoNewPrincipal.Add(new Claim(ImpersonationClaimType, _startData.UserName));
+                    claimsToGoIntoNewPrincipal.Add(new Claim(ImpersonationClaimType, _startData.Value?.UserName));
                     break;
                 case ImpersonationStates.Stopping:
                     var foundClaim = claimsToGoIntoNewPrincipal.Single(x => x.Type == ImpersonationClaimType);
@@ -85,15 +86,15 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         /// <summary>
         /// This returns the impersonated user's UserId if we are impersonating and the keepOwnPermissions is false
         /// </summary>
-        /// <param name="keepOwnPermissions"></param>
+        /// <param name="keepOwnPermissionsFunc"></param>
         /// <returns></returns>
-        private string GetUserIdBasedOnRequirements(bool? keepOwnPermissions)
+        private string GetUserIdBasedOnRequirements(Func<bool> keepOwnPermissionsFunc)
         {
             if ((_impersonationState == ImpersonationStates.Starting 
                  || _impersonationState == ImpersonationStates.Impersonating) 
-                && keepOwnPermissions == false)
+                && keepOwnPermissionsFunc() == false)
             {
-                return _startData.UserId;
+                return _startData.Value.UserId;
             }
             return _originalClaims.GetUserIdFromClaims();
         }
