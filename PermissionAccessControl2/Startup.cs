@@ -51,8 +51,6 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            //User impersonation needs the encryption services provided by AddDataProtection
-            services.AddDataProtection();
             //This enables Cookies for authentication and adds the feature and data claims to the user
             services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "True");
 

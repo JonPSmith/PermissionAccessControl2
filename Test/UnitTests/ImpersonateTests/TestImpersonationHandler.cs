@@ -4,14 +4,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.DataProtection;
 using ServiceLayer.UserImpersonation.Concrete.Internal;
 using Test.FakesAndMocks;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
-namespace Test.UnitTests.ServiceLayerTests
+namespace Test.UnitTests.ImpersonateTests
 {
     public class TestImpersonationHandler
     {
@@ -54,7 +53,7 @@ namespace Test.UnitTests.ServiceLayerTests
         }
 
         [Fact]
-        public void TestHandlerHasCookieHasClaim()
+        public void TestHandlerHasCookieAndClaim()
         {
             //SETUP
             var mocks = new MockHttpContextCookies();
@@ -71,8 +70,8 @@ namespace Test.UnitTests.ServiceLayerTests
 
             //VERIFY
             handler.ImpersonationChange.ShouldBeFalse();
-            handler.GetUserIdForWorkingOutPermissions().ShouldEqual("userid");
-            handler.GetUserIdForWorkingDataKey().ShouldEqual("userid");
+            handler.GetUserIdForWorkingOutPermissions().ShouldEqual("differentUserId");
+            handler.GetUserIdForWorkingDataKey().ShouldEqual("differentUserId");
             handler.AddOrRemoveImpersonationClaim(claims);
             claims.Count.ShouldEqual(2);
         }

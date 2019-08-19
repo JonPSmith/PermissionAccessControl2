@@ -8,7 +8,7 @@ using Test.FakesAndMocks;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 
-namespace Test.UnitTests.ServiceLayerTests
+namespace Test.UnitTests.ImpersonateTests
 {
     public class TestImpersonationCookie
     {

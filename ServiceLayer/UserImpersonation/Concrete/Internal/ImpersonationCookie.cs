@@ -39,7 +39,8 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         public void AddUpdateCookie(string data)
         {
             if (_protectionProvider == null)
-                throw new NullReferenceException($"The {nameof(IDataProtectionProvider)} was null, which means impersonation is turned off.");
+                throw new NullReferenceException(
+                    $"The {nameof(IDataProtectionProvider)} was null, which means impersonation is turned off.");
 
             var protector = _protectionProvider.CreateProtector(EncryptPurpose);
             var encryptedString = protector.Protect(data);
@@ -54,7 +55,8 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         public string GetCookieInValue()
         {
             if (_protectionProvider == null)
-                throw new NullReferenceException($"The {nameof(IDataProtectionProvider)} was null, which means impersonation is turned off.");
+                throw new NullReferenceException(
+                    $"The {nameof(IDataProtectionProvider)} was null, which means impersonation is turned off.");
 
             var cookieData = _httpContext.Request.Cookies[CookieName];
             if (string.IsNullOrEmpty(cookieData))
@@ -68,7 +70,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             }
             catch (Exception e)
             {
-                //_logger.LogError(e, "Error decoding a cookie. Have deleted cookie to stop problem.");
+                //_logger.LogError(e, "Error decoding a cookie. Have deleted cookie to stop any further problems.");
                 Delete();
                 throw;
             }

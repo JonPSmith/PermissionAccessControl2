@@ -26,7 +26,11 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         private readonly ImpersonationData _startData;
         private readonly ImpersonationStates _impersonationState;
 
-        public bool ImpersonationChange => _impersonationState != ImpersonationStates.NoChange;
+        /// <summary>
+        /// If true then the Permissions/DataKey need recalculating
+        /// </summary>
+        public bool ImpersonationChange => _impersonationState == ImpersonationStates.Starting || 
+                                           _impersonationState == ImpersonationStates.Stopping;
 
         /// <summary>
         /// Creates ImpersonationHandler. NOTE: if protectionProvider is null then impersonation is turned off
@@ -42,7 +46,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             _originalClaims = originalClaims;
 
             _impersonationState = GetImpersonationState();
-            if (_impersonationState == ImpersonationStates.Starting)
+            if (_impersonationState == ImpersonationStates.Starting || _impersonationState == ImpersonationStates.Impersonating)
                 _startData = new ImpersonationData(_cookie.GetCookieInValue());
         }
 
@@ -60,7 +64,8 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         {
             switch (_impersonationState)
             {
-                case ImpersonationStates.NoChange:
+                case ImpersonationStates.NormalUse:
+                case ImpersonationStates.Impersonating:
                     break; //Do nothing
                 case ImpersonationStates.Starting:
                     claimsToGoIntoNewPrincipal.Add(new Claim(ImpersonationClaimType, _startData.UserName));
@@ -77,9 +82,16 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         //-------------------------------------------------
         //private methods
 
+        /// <summary>
+        /// This returns the impersonated user's UserId if we are impersonating and the keepOwnPermissions is false
+        /// </summary>
+        /// <param name="keepOwnPermissions"></param>
+        /// <returns></returns>
         private string GetUserIdBasedOnRequirements(bool? keepOwnPermissions)
         {
-            if (_impersonationState == ImpersonationStates.Starting && keepOwnPermissions == false)
+            if ((_impersonationState == ImpersonationStates.Starting 
+                 || _impersonationState == ImpersonationStates.Impersonating) 
+                && keepOwnPermissions == false)
             {
                 return _startData.UserId;
             }
@@ -90,7 +102,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         {
             //If you set _protectionProvider to null it turns off the impersonation feature
             if (_protectionProvider == null)
-                return ImpersonationStates.NoChange;
+                return ImpersonationStates.NormalUse;
 
             var impCookieExists = _cookie.Exists(_httpContext.Request.Cookies);
             var impClaimExists = _originalClaims.Any(x => x.Type == ImpersonationClaimType);
@@ -99,7 +111,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             {
                 return impClaimExists ? ImpersonationStates.Stopping : ImpersonationStates.Starting;
             }
-            return ImpersonationStates.NoChange;
+            return impCookieExists ? ImpersonationStates.Impersonating : ImpersonationStates.NormalUse;
         }
     }
 }

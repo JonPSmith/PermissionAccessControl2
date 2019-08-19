@@ -5,7 +5,8 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
 {
     internal enum ImpersonationStates
     {
-        NoChange,
+        NormalUse,
+        Impersonating,
         Starting,
         Stopping
     }

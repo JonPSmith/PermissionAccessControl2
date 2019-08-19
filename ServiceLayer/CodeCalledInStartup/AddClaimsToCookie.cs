@@ -29,6 +29,8 @@ namespace ServiceLayer.CodeCalledInStartup
             if (updateCookieOnChange)
             {
                 services.AddSingleton<IAuthChanges, AuthChanges>();
+                //User impersonation needs the encryption services provided by AddDataProtection
+                services.AddDataProtection();
 
                 var sp = services.BuildServiceProvider();
                 var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();

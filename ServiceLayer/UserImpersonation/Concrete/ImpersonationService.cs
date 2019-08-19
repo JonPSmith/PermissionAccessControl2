@@ -17,7 +17,9 @@ namespace ServiceLayer.UserImpersonation.Concrete
         public ImpersonationService(IHttpContextAccessor httpContextAccessor, IDataProtectionProvider protectionProvider)
         {
             _httpContext = httpContextAccessor.HttpContext;
-            _cookie = new ImpersonationCookie(_httpContext, protectionProvider);
+            _cookie = protectionProvider != null //If protectionProvider is null then impersonation is turned off
+                    ? new ImpersonationCookie(_httpContext, protectionProvider)
+                    : null;
         }
 
         /// <summary>
@@ -29,6 +31,8 @@ namespace ServiceLayer.UserImpersonation.Concrete
         /// <returns>Error message, or null if OK.</returns>
         public string StartImpersonation(string userId, string userName, bool keepOwnPermissions)
         {
+            if (_cookie == null)
+                return "Impersonation is turned off in this application.";
             if (!_httpContext.User.Identity.IsAuthenticated)
                 return "You must be logged in to impersonate a user.";
             if (_httpContext.User.Claims.GetUserIdFromClaims() == userId)
@@ -37,6 +41,8 @@ namespace ServiceLayer.UserImpersonation.Concrete
                 return "You are already in impersonation mode.";
             if (userId == null)
                 return "You must provide a userId string";
+            if (userName == null)
+                return "You must provide a username string";
 
             _cookie.AddUpdateCookie(new ImpersonationData(userId, userName, keepOwnPermissions).GetPackImpersonationData());
             return null;
