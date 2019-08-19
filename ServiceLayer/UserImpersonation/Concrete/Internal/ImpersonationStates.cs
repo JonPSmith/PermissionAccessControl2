@@ -6,8 +6,8 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
     internal enum ImpersonationStates
     {
         Normal,
+        Starting,           //causes a recalc in AuthCookieValidate
         Impersonating,
-        Starting,
-        Stopping
+        Stopping            //causes a recalc in AuthCookieValidate
     }
 }
