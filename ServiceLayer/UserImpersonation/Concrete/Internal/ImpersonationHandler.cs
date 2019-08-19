@@ -64,7 +64,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         {
             switch (_impersonationState)
             {
-                case ImpersonationStates.NormalUse:
+                case ImpersonationStates.Normal:
                 case ImpersonationStates.Impersonating:
                     break; //Do nothing
                 case ImpersonationStates.Starting:
@@ -102,7 +102,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         {
             //If you set _protectionProvider to null it turns off the impersonation feature
             if (_protectionProvider == null)
-                return ImpersonationStates.NormalUse;
+                return ImpersonationStates.Normal;
 
             var impCookieExists = _cookie.Exists(_httpContext.Request.Cookies);
             var impClaimExists = _originalClaims.Any(x => x.Type == ImpersonationClaimType);
@@ -111,7 +111,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
             {
                 return impClaimExists ? ImpersonationStates.Stopping : ImpersonationStates.Starting;
             }
-            return impCookieExists ? ImpersonationStates.Impersonating : ImpersonationStates.NormalUse;
+            return impCookieExists ? ImpersonationStates.Impersonating : ImpersonationStates.Normal;
         }
     }
 }
