@@ -16,6 +16,7 @@
     <li><a href="https://www.thereformedprogrammer.net/a-better-way-to-handle-asp-net-core-authorization-six-months-on/">Part 3: A better way to handle authorization – six months on</a></li>
     <li><a href="https://www.thereformedprogrammer.net/part-4-building-a-robust-and-secure-data-authorization-with-ef-core/">Part 4: Building robust and secure data authorization with EF Core</a></li>
     <li><a href="https://www.thereformedprogrammer.net/part-5-a-better-way-to-handle-authorization-refreshing-users-claims/">Part 5: A better way to handle authorization – refreshing users claims</a></li>
+    <li><a href="#">Part 6: Adding user impersonation to an ASP.NET Core web application s</a></li>
 </ul>
 
 <h2>How to use use this application</h2>
@@ -39,5 +40,6 @@
         <li>When log in you can see your claims, permissions and other user/role ifo via the "Users" menu button.</li>
         <li>Also look at <a asp-area="" asp-controller="Company" asp-action="Index">Company</a> for a list of the hierarchical data.</li>
         <li>To test refresh of users permissions go to <a asp-area="" asp-controller="Cache" asp-action="Index">Toggle Role</a> to see this in action. <i>NOTE: UpdateCookieOnChange must be set to true in appsettings.json</i></li>
+        <li>To test user impersonation feature log in as the SuperAdmin user go to <a asp-area="" asp-controller="Impersonate" asp-action="Index">Impersonation->Pick User</a> to see this in action. <i>NOTE: UpdateCookieOnChange must be set to true in appsettings.json</i></li>
     </ol>
 </p>
