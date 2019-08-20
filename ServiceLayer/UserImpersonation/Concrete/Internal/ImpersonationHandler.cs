@@ -18,6 +18,14 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
     {
         public const string ImpersonationClaimType = "Impersonalising";
 
+        private enum ImpersonationStates
+        {
+            Normal,
+            Starting,           //causes a recalc in AuthCookieValidate
+            Impersonating,
+            Stopping            //causes a recalc in AuthCookieValidate
+        }
+
         private readonly HttpContext _httpContext;
         private readonly IDataProtectionProvider _protectionProvider;
         private readonly ImpersonationCookie _cookie;
@@ -27,7 +35,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
         private readonly ImpersonationStates _impersonationState;
 
         /// <summary>
-        /// If true then the Permissions/DataKey need recalculating
+        /// If true then the Permissions/DataKey need recalculating due to impersonation starting/stopping
         /// </summary>
         public bool ImpersonationChange => _impersonationState == ImpersonationStates.Starting || 
                                            _impersonationState == ImpersonationStates.Stopping;
