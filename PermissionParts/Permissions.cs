@@ -47,7 +47,7 @@ namespace PermissionParts
         [Display(GroupName = "Impersonation", Name = "Impersonate - straight", Description = "Impersonate user using their permissions")]
         Impersonate = 70,
         [Display(GroupName = "Impersonation", Name = "Impersonate - enhanced", Description = "Impersonate user using current permissions")]
-        ImpersonateWithOwnPermissions = 71,
+        ImpersonateKeepOwnPermissions = 71,
 
         //This is an example of what to do with permission you don't used anymore.
         //You don't want its number to be reused as it could cause problems 

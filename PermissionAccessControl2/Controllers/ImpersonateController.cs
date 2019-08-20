@@ -34,7 +34,7 @@ namespace PermissionAccessControl2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission(Permissions.ImpersonateWithOwnPermissions)]
+        [HasPermission(Permissions.ImpersonateKeepOwnPermissions)]
         public IActionResult StartEnhanced(string userId, string userName, [FromServices] IImpersonationService service)
         {
             var errorMessage = service.StartImpersonation(userId, userName, true);
