@@ -12,6 +12,11 @@ using Microsoft.Extensions.Options;
 
 namespace ServiceLayer.CodeCalledInStartup
 {
+    /// <summary>
+    /// This version provides:
+    /// - Adds Permissions to the user's claims.
+    /// - Adds DataKey to the user's claims
+    /// </summary>
     // Thanks to https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
     public class AddPermissionsToUserClaims : UserClaimsPrincipalFactory<IdentityUser>
     {
