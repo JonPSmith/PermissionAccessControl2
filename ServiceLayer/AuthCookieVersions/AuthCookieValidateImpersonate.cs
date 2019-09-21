@@ -19,9 +19,10 @@ using ServiceLayer.UserImpersonation.Concrete.Internal;
 namespace ServiceLayer.AuthCookieVersions
 {
     /// <summary>
-    /// This is the code that can calculates the feature and data claims for a user.
-    /// It also has the ability to recalculate the logged-in user's permissions when the UserRoles/RoleToPermissions change
-    /// NOTE: Because it needs to be set up at the start we cannot use any DI items that are scoped or rely on same-instance singletons
+    /// This version provides:
+    /// - Adds Permissions to the user's claims.
+    /// - Adds DataKey to the user's claims
+    /// - AND allows for user impersonation
     /// </summary>
     public class AuthCookieValidateImpersonate
     {
