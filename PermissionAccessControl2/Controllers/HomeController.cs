@@ -14,7 +14,7 @@ namespace PermissionAccessControl2.Controllers
     {
         public IActionResult Index([FromServices] IListUsersService service)
         {
-            return View(service.ListUserWithRolesAndDataTenant());
+            return View();
         }
 
         public IActionResult Privacy()

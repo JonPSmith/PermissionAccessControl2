@@ -52,7 +52,7 @@ namespace PermissionAccessControl2
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             //This enables Cookies for authentication and adds the feature and data claims to the user
-            services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:UpdateCookieOnChange"] == "True");
+            services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:AuthCookieVersion"]);
 
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
             //Register the Permission policy handlers
