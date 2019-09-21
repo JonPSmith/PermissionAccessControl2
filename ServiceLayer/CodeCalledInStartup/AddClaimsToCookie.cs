@@ -6,6 +6,7 @@ using CommonCache;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.AuthCookieVersions;
+using ServiceLayer.UserImpersonation.Concrete.Internal;
 
 namespace ServiceLayer.CodeCalledInStartup
 {
@@ -32,8 +33,27 @@ namespace ServiceLayer.CodeCalledInStartup
                     //Simple version - see https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
                     services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, AddPermissionsToUserClaims>();
                     break;
-                case "Basic":
-                    cookieEventMethod = new AuthCookieValidateBasic();
+                case "PermissionsOnly":
+                    //Event - only permissions set up
+                    cookieEventMethod = new AuthCookieValidatePermissionsOnly();
+                    break;
+                case "PermissionsDataKey":
+                     // Event - Permissions and DataKey set up
+                     cookieEventMethod = new AuthCookieValidatePermissionsDataKey();
+                    break;
+                case "UserImpersonation":
+                    // Event - Permissions and DataKey set up and provides User Impersonation
+                    services.AddDataProtection();   //DataProtection is needed to encrypt the data in the Impersonation cookie
+                    //We set two events, so we do this here
+                    services.ConfigureApplicationCookie(options =>
+                    {
+                        options.Events.OnValidatePrincipal = new AuthCookieValidatePermissionsDataKey().ValidateAsync;
+                        //This ensures the impersonation cookie is deleted when a user signs out
+                        options.Events.OnSigningOut = new AuthCookieSigningOut().SigningOutAsync;
+                    });
+                    break;
+                case "RefreshClaims":
+                    cookieEventMethod = new AuthCookieValidateRefreshClaims();
                     break;
                 default: 
                     throw new ArgumentException($"{authCookieVersion} isn't a valid version");
@@ -51,36 +71,6 @@ namespace ServiceLayer.CodeCalledInStartup
             {
                 services.AddSingleton<IAuthChanges>(x => null); //This will turn off the checks in the ExtraAuthDbContext
             }
-
-
-            //if (updateCookieOnChange)
-            //{
-            //    services.AddSingleton<IAuthChanges, AuthChanges>();
-            //    //User impersonation needs the encryption services provided by AddDataProtection
-            //    services.AddDataProtection();
-
-            //    var sp = services.BuildServiceProvider();
-            //    var extraAuthContextOptions = sp.GetRequiredService<DbContextOptions<ExtraAuthorizeDbContext>>();
-            //    var protectionProvider = sp.GetService<IDataProtectionProvider>(); //NOTE: This can be null, which turns off impersonation
-
-            //    var authCookieValidate = new AuthCookieValidate(extraAuthContextOptions, protectionProvider);
-            //    var authCookieSigningOut = new AuthCookieSigningOut();
-
-            //    //see https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1#cookie-settings
-            //    services.ConfigureApplicationCookie(options =>
-            //    {
-            //        options.Events.OnValidatePrincipal = authCookieValidate.ValidateAsync;
-            //        //This ensures the impersonation cookie is deleted when a user signs out
-            //        options.Events.OnSigningOut = authCookieSigningOut.SigningOutAsync;
-            //    });
-            //}
-            //else
-            //{
-            //    services.AddSingleton<IAuthChanges>(x => null); //This will turn off the checks in the ExtraAuthDbContext
-
-            //    //Simple version - see https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
-            //    services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, AddPermissionsToUserClaims>();
-            //}
         }
     }
 }

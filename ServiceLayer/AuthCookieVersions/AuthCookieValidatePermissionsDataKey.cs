@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DataAuthorize;
 using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,9 +16,10 @@ namespace ServiceLayer.AuthCookieVersions
 {
     /// <summary>
     /// This version provides:
-    /// - Permissions update.
+    /// - Adds Permissions to the user's claims.
+    /// - Adds DataKey to the user's claims
     /// </summary>
-    public class AuthCookieValidateBasic : IAuthCookieValidate
+    public class AuthCookieValidatePermissionsDataKey : IAuthCookieValidate
     {
         public async Task ValidateAsync(CookieValidatePrincipalContext context)
         {
@@ -25,14 +27,19 @@ namespace ServiceLayer.AuthCookieVersions
                 return;
 
             //No permissions in the claims, so we need to add it. This is only happen once after the user has logged in
-            var dbContext = context.HttpContext.RequestServices.GetRequiredService<ExtraAuthorizeDbContext>();
-            var rtoPCalcer = new CalcAllowedPermissions(dbContext);
+            var extraContext = context.HttpContext.RequestServices.GetRequiredService<ExtraAuthorizeDbContext>();
+            var rtoPCalcer = new CalcAllowedPermissions(extraContext);
+            var dataKeyCalc = new CalcDataKey(extraContext);
 
             var claims = new List<Claim>();
             claims.AddRange(context.Principal.Claims); //Copy over existing claims
+            var userId = context.Principal.Claims.GetUserIdFromClaims();
             //Now calculate the Permissions Claim value and add it
             claims.Add(new Claim(PermissionConstants.PackedPermissionClaimType,
-                await rtoPCalcer.CalcPermissionsForUserAsync(context.Principal.Claims.GetUserIdFromClaims())));
+                await rtoPCalcer.CalcPermissionsForUserAsync(userId)));
+            //and the same for the DataKey
+            claims.Add(new Claim(DataAuthConstants.HierarchicalKeyClaimName,
+                dataKeyCalc.CalcDataKeyForUser(userId)));
 
             //Build a new ClaimsPrincipal and use it to replace the current ClaimsPrincipal
             var identity = new ClaimsIdentity(claims, "Cookie");
