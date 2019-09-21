@@ -29,7 +29,7 @@ namespace ServiceLayer.AuthCookieVersions
         private readonly IDataProtectionProvider _protectionProvider;
         private readonly IAuthChanges _authChanges;
 
-        public AuthCookieValidate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions, 
+        public AuthCookieValidateImpersonate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions, 
             IDataProtectionProvider protectionProvider)
         {
             _extraAuthContextOptions = extraAuthContextOptions ?? throw new ArgumentNullException(nameof(extraAuthContextOptions));
