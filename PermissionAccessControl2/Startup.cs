@@ -51,6 +51,7 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.Configure<DemoSetupOptions>(Configuration.GetSection("DemoSetup"));
             //This enables Cookies for authentication and adds the feature and data claims to the user
             services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:AuthCookieVersion"]);
 

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAuthorize;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using PermissionAccessControl2.Models;
 using ServiceLayer.UserServices;
 using ServiceLayer.UserServices.Concrete;
@@ -12,9 +14,9 @@ namespace PermissionAccessControl2.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index([FromServices] IListUsersService service)
+        public IActionResult Index([FromServices] IOptions<DemoSetupOptions> demoSetup)
         {
-            return View();
+            return View(demoSetup.Value);
         }
 
         public IActionResult Privacy()

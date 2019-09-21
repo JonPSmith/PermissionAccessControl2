@@ -13,6 +13,7 @@ using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.CodeCalledInStartup;
 using ServiceLayer.UserImpersonation.Concrete.Internal;
 
@@ -23,21 +24,10 @@ namespace ServiceLayer.AuthCookieVersions
     /// - Adds Permissions to the user's claims.
     /// - Adds DataKey to the user's claims
     /// - AND allows for user impersonation
+    /// - AND the user's claims are updated if there is a change in the roles/datakey information
     /// </summary>
-    public class AuthCookieValidateImpersonate
+    public class AuthCookieValidateEverything : IAuthCookieValidate
     {
-        private readonly DbContextOptions<ExtraAuthorizeDbContext> _extraAuthContextOptions;
-        private readonly IDataProtectionProvider _protectionProvider;
-        private readonly IAuthChanges _authChanges;
-
-        public AuthCookieValidateImpersonate(DbContextOptions<ExtraAuthorizeDbContext> extraAuthContextOptions, 
-            IDataProtectionProvider protectionProvider)
-        {
-            _extraAuthContextOptions = extraAuthContextOptions ?? throw new ArgumentNullException(nameof(extraAuthContextOptions));
-            _protectionProvider = protectionProvider; //This can be null, in which case impersonation is turned off
-            _authChanges = new AuthChanges();
-        }
-
         /// <summary>
         /// This will set up the user's feature permissions if either of the following states are found
         /// - The current claims doesn't have the PackedPermissionClaimType. This happens when someone logs in.
@@ -48,37 +38,31 @@ namespace ServiceLayer.AuthCookieVersions
         /// <returns></returns>
         public async Task ValidateAsync(CookieValidatePrincipalContext context)
         {
-            var extraContext = new ExtraAuthorizeDbContext(_extraAuthContextOptions, _authChanges);
-            //now we set up the lazy values - I used Lazy for performance reasons, as 99.9% of the time the lazy parts aren't needed
-            // ReSharper disable once AccessToDisposedClosure
-            var rtoPLazy = new Lazy<CalcAllowedPermissions>(() => new CalcAllowedPermissions(extraContext));
-            // ReSharper disable once AccessToDisposedClosure
-            var dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(extraContext));
+            var extraContext = context.HttpContext.RequestServices.GetRequiredService<ExtraAuthorizeDbContext>();
+            var protectionProvider = context.HttpContext.RequestServices.GetService<IDataProtectionProvider>();
+            var authChanges = new AuthChanges();
 
             var originalClaims = context.Principal.Claims.ToList();
-            var impHandler = new ImpersonationHandler(context.HttpContext, _protectionProvider, originalClaims);
+            var impHandler = new ImpersonationHandler(context.HttpContext, protectionProvider, originalClaims);
             
             var newClaims = new List<Claim>();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
                 impHandler.ImpersonationChange ||
-                _authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey, 
+                authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey, 
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
                     extraContext))
             {
+                var rtoPCalcer = new CalcAllowedPermissions(extraContext);
+                var dataKeyCalc = new CalcDataKey(extraContext);
+
                 //Handle the feature permissions
-                var userId = impHandler.GetUserIdForWorkingOutPermissions();
-                newClaims.AddRange(await BuildFeatureClaimsAsync(userId, rtoPLazy.Value));
-            }
+                var permissionUserId = impHandler.GetUserIdForWorkingOutPermissions();
+                newClaims.AddRange(await BuildFeatureClaimsAsync(permissionUserId, rtoPCalcer));
 
-            if (originalClaims.All(x => x.Type != DataAuthConstants.HierarchicalKeyClaimName) ||
-                impHandler.ImpersonationChange)
-            {
-                var userId = impHandler.GetUserIdForWorkingDataKey();
-                newClaims.AddRange(BuildDataClaims(userId, dataKeyLazy.Value));
-            }
+                //Handle the DataKey
+                var datakeyUserId = impHandler.GetUserIdForWorkingDataKey();
+                newClaims.AddRange(BuildDataClaims(datakeyUserId, dataKeyCalc));
 
-            if (newClaims.Any())
-            {
                 //Something has changed so we replace the current ClaimsPrincipal with a new one
 
                 newClaims.AddRange(RemoveUpdatedClaimsFromOriginalClaims(originalClaims, newClaims)); //Copy over unchanged claims
@@ -90,7 +74,6 @@ namespace ServiceLayer.AuthCookieVersions
                 //THIS IS IMPORTANT: This updates the cookie, otherwise this calc will be done every HTTP request
                 context.ShouldRenew = true;             
             }
-            extraContext.Dispose(); //be tidy and dispose the context.
         }
 
         private IEnumerable<Claim> RemoveUpdatedClaimsFromOriginalClaims(List<Claim> originalClaims, List<Claim> newClaims)

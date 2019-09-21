@@ -1,4 +1,4 @@
-﻿@model List<ServiceLayer.UserServices.ListUsersDto>
+﻿@model DataAuthorize.DemoSetupOptions
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -16,8 +16,17 @@
     <li><a href="https://www.thereformedprogrammer.net/a-better-way-to-handle-asp-net-core-authorization-six-months-on/">Part 3: A better way to handle authorization – six months on</a></li>
     <li><a href="https://www.thereformedprogrammer.net/part-4-building-a-robust-and-secure-data-authorization-with-ef-core/">Part 4: Building robust and secure data authorization with EF Core</a></li>
     <li><a href="https://www.thereformedprogrammer.net/part-5-a-better-way-to-handle-authorization-refreshing-users-claims/">Part 5: A better way to handle authorization – refreshing users claims</a></li>
-    <li><a href="#">Part 6: Adding user impersonation to an ASP.NET Core web application s</a></li>
+    <li><a href="https://www.thereformedprogrammer.net/adding-user-impersonation-to-an-asp-net-core-web-application/">Part 6: Adding user impersonation to an ASP.NET Core web applications</a></li>
 </ul>
+
+<div>
+    <h5>The setup from the appsetting.json DemoSetup section is:</h5>
+    <ul>
+        <li><strong>@nameof(DataAuthorize.DemoSetupOptions.DatabaseSetup)</strong>: @Model.DatabaseSetup</li>
+        <li><strong>@nameof(DataAuthorize.DemoSetupOptions.CreateAndSeed)</strong>: @Model.CreateAndSeed</li>
+        <li><strong>@nameof(DataAuthorize.DemoSetupOptions.AuthCookieVersion)</strong>: @Model.AuthCookieVersion</li>
+    </ul>
+</div>
 
 <h2>How to use use this application</h2>
 <p>

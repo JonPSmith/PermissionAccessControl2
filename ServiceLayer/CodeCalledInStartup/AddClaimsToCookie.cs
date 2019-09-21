@@ -41,19 +41,23 @@ namespace ServiceLayer.CodeCalledInStartup
                      // Event - Permissions and DataKey set up
                      cookieEventMethod = new AuthCookieValidatePermissionsDataKey();
                     break;
-                case "UserImpersonation":
-                    // Event - Permissions and DataKey set up and provides User Impersonation
+                case "RefreshClaims":
+                    cookieEventMethod = new AuthCookieValidateRefreshClaims();
+                    break;
+                case "Impersonation":
+                case "EveryThing":
+                    // Event - Permissions and DataKey set up, provides User Impersonation + possible "RefreshClaims"
                     services.AddDataProtection();   //DataProtection is needed to encrypt the data in the Impersonation cookie
+                    var validateAsyncVersion = authCookieVersion == "Impersonation"
+                        ? (IAuthCookieValidate)new AuthCookieValidateImpersonation()
+                        : (IAuthCookieValidate)new AuthCookieValidateEverything();
                     //We set two events, so we do this here
                     services.ConfigureApplicationCookie(options =>
                     {
-                        options.Events.OnValidatePrincipal = new AuthCookieValidatePermissionsDataKey().ValidateAsync;
+                        options.Events.OnValidatePrincipal = validateAsyncVersion.ValidateAsync;
                         //This ensures the impersonation cookie is deleted when a user signs out
                         options.Events.OnSigningOut = new AuthCookieSigningOut().SigningOutAsync;
                     });
-                    break;
-                case "RefreshClaims":
-                    cookieEventMethod = new AuthCookieValidateRefreshClaims();
                     break;
                 default: 
                     throw new ArgumentException($"{authCookieVersion} isn't a valid version");

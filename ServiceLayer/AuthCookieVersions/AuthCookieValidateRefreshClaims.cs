@@ -28,11 +28,6 @@ namespace ServiceLayer.AuthCookieVersions
         {
             var authChanges = new AuthChanges();
             var extraContext = context.HttpContext.RequestServices.GetRequiredService<ExtraAuthorizeDbContext>();
-            //now we set up the lazy values - I used Lazy for performance reasons, as 99.9% of the time the lazy parts aren't needed
-            // ReSharper disable once AccessToDisposedClosure
-            var rtoPLazy = new Lazy<CalcAllowedPermissions>(() => new CalcAllowedPermissions(extraContext));
-            // ReSharper disable once AccessToDisposedClosure
-            var dataKeyLazy = new Lazy<CalcDataKey>(() => new CalcDataKey(extraContext));
 
             var newClaims = new List<Claim>();
             var originalClaims = context.Principal.Claims.ToList();
@@ -41,10 +36,13 @@ namespace ServiceLayer.AuthCookieVersions
                     originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
                     extraContext))
             {
+                var rtoPCalcer = new CalcAllowedPermissions(extraContext);
+                var dataKeyCalc = new CalcDataKey(extraContext);
+
                 //Handle the feature permissions
                 var userId = originalClaims.GetUserIdFromClaims();
-                newClaims.AddRange(await BuildFeatureClaimsAsync(userId, rtoPLazy.Value));
-                newClaims.AddRange(BuildDataClaims(userId, dataKeyLazy.Value));
+                newClaims.AddRange(await BuildFeatureClaimsAsync(userId, rtoPCalcer));
+                newClaims.AddRange(BuildDataClaims(userId, dataKeyCalc));
 
                 //Something has changed so we replace the current ClaimsPrincipal with a new one
 

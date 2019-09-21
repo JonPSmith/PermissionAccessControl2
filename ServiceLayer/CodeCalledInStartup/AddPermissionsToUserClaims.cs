@@ -27,13 +27,11 @@ namespace ServiceLayer.CodeCalledInStartup
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(IdentityUser user)
         {
             var identity = await base.GenerateClaimsAsync(user);
-            //var userId = identity.Claims.GetUserIdFromClaims();
-            //var rtoPCalcer = new CalcAllowedPermissions(_extraAuthDbContext);
-            //identity.AddClaim(new Claim(PermissionConstants.PackedPermissionClaimType,await rtoPCalcer.CalcPermissionsForUserAsync(userId)));
-            //var dataKeyCalcer = new CalcDataKey(_extraAuthDbContext);
-            //identity.AddClaim(new Claim(DataAuthConstants.HierarchicalKeyClaimName, dataKeyCalcer.CalcDataKeyForUser(userId)));
-            //return identity;
-
+            var userId = identity.Claims.GetUserIdFromClaims();
+            var rtoPCalcer = new CalcAllowedPermissions(_extraAuthDbContext);
+            identity.AddClaim(new Claim(PermissionConstants.PackedPermissionClaimType, await rtoPCalcer.CalcPermissionsForUserAsync(userId)));
+            var dataKeyCalcer = new CalcDataKey(_extraAuthDbContext);
+            identity.AddClaim(new Claim(DataAuthConstants.HierarchicalKeyClaimName, dataKeyCalcer.CalcDataKeyForUser(userId)));
             return identity;
         }
     }
