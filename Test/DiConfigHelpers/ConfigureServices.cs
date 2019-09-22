@@ -14,7 +14,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
-using ServiceLayer.CodeCalledInStartup;
 using Test.FakesAndMocks;
 using TestSupport.Helpers;
 

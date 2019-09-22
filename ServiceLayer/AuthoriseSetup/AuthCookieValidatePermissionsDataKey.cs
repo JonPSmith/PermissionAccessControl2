@@ -11,7 +11,6 @@ using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceLayer.CodeCalledInStartup;
 
 namespace ServiceLayer.AuthoriseSetup
 {

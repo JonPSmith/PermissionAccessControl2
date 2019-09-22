@@ -4,8 +4,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
+using FeatureAuthorize;
 using PermissionParts;
-using ServiceLayer.CodeCalledInStartup;
 using Test.EfHelpers;
 using Test.FakesAndMocks;
 using TestSupport.EfHelpers;

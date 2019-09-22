@@ -5,10 +5,9 @@ using System;
 using CommonCache;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceLayer.AuthoriseSetup;
 using ServiceLayer.UserImpersonation.Concrete.Internal;
 
-namespace ServiceLayer.CodeCalledInStartup
+namespace ServiceLayer.AuthoriseSetup
 {
     public static class AddClaimsToCookie
     {

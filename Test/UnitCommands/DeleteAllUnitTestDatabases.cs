@@ -5,7 +5,7 @@ using TestSupport.Attributes;
 using TestSupport.EfHelpers;
 using Xunit.Abstractions;
 
-namespace test.UnitCommands
+namespace Test.UnitCommands
 {
     public class DeleteAllUnitTestDatabases
     {
