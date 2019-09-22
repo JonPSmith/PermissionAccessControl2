@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
 using AutoMapper.Configuration.Conventions;
-using DataAuthorize;
+using DataKeyParts;
 using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;

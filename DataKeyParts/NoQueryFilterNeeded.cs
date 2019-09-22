@@ -3,7 +3,7 @@
 
 using System;
 
-namespace DataAuthorize
+namespace DataKeyParts
 {
     /// <summary>
     /// This is used to mark a database class that doesn't need a query filter.

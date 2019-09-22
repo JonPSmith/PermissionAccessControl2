@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using System.Reflection;
-using DataAuthorize;
+using DataKeyParts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 

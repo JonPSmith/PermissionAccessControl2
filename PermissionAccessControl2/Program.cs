@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DataAuthorize;
+using DataKeyParts;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;

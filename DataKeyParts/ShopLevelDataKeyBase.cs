@@ -4,7 +4,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DataAuthorize
+namespace DataKeyParts
 {
     public class ShopLevelDataKeyBase : IShopLevelDataKey
     {

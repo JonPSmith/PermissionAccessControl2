@@ -8,53 +8,52 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CommonCache;
 using DataAuthorize;
+using DataKeyParts;
 using DataLayer.EfCode;
 using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.CodeCalledInStartup;
-using ServiceLayer.UserImpersonation.Concrete.Internal;
 
-namespace ServiceLayer.AuthCookieVersions
+namespace ServiceLayer.AuthoriseSetup
 {
     /// <summary>
     /// This version provides:
     /// - Adds Permissions to the user's claims.
     /// - Adds DataKey to the user's claims
-    /// - AND user impersonation
+    /// - AND the user's claims are updated if there is a change in the roles/datakey information
     /// </summary>
-    public class AuthCookieValidateImpersonation : IAuthCookieValidate
+    public class AuthCookieValidateRefreshClaims : IAuthCookieValidate
     {
         public async Task ValidateAsync(CookieValidatePrincipalContext context)
         {
-            var originalClaims = context.Principal.Claims.ToList();
-            var protectionProvider = context.HttpContext.RequestServices.GetService<IDataProtectionProvider>();
-            var impHandler = new ImpersonationHandler(context.HttpContext, protectionProvider, originalClaims);
-            
+            var authChanges = new AuthChanges();
+            var extraContext = context.HttpContext.RequestServices.GetRequiredService<ExtraAuthorizeDbContext>();
+
             var newClaims = new List<Claim>();
+            var originalClaims = context.Principal.Claims.ToList();
             if (originalClaims.All(x => x.Type != PermissionConstants.PackedPermissionClaimType) ||
-                impHandler.ImpersonationChange)
+                authChanges.IsOutOfDateOrMissing(AuthChangesConsts.FeatureCacheKey,
+                    originalClaims.SingleOrDefault(x => x.Type == PermissionConstants.LastPermissionsUpdatedClaimType)?.Value,
+                    extraContext))
             {
-                //There is no PackedPermissionClaimType or there was a change in the impersonation state
-                
-                var extraContext = context.HttpContext.RequestServices.GetRequiredService<ExtraAuthorizeDbContext>();
                 var rtoPCalcer = new CalcAllowedPermissions(extraContext);
                 var dataKeyCalc = new CalcDataKey(extraContext);
 
-                var userId = impHandler.GetUserIdForWorkingDataKey();
+                //Handle the feature permissions
+                var userId = originalClaims.GetUserIdFromClaims();
                 newClaims.AddRange(await BuildFeatureClaimsAsync(userId, rtoPCalcer));
                 newClaims.AddRange(BuildDataClaims(userId, dataKeyCalc));
 
+                //Something has changed so we replace the current ClaimsPrincipal with a new one
+
                 newClaims.AddRange(RemoveUpdatedClaimsFromOriginalClaims(originalClaims, newClaims)); //Copy over unchanged claims
-                impHandler.AddOrRemoveImpersonationClaim(newClaims);
                 //Build a new ClaimsPrincipal and use it to replace the current ClaimsPrincipal
                 var identity = new ClaimsIdentity(newClaims, "Cookie");
                 var newPrincipal = new ClaimsPrincipal(identity);
                 context.ReplacePrincipal(newPrincipal);
                 //THIS IS IMPORTANT: This updates the cookie, otherwise this calc will be done every HTTP request
-                context.ShouldRenew = true;             
+                context.ShouldRenew = true;
             }
         }
 

@@ -2,10 +2,9 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.Linq;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
-namespace DataAuthorize
+namespace DataKeyParts
 {
     public class GetClaimsFromUser : IGetClaimsProvider
     {

@@ -3,7 +3,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using DataAuthorize;
+using DataKeyParts;
 using DataLayer.EfCode;
 using GenericServices;
 using Microsoft.EntityFrameworkCore;

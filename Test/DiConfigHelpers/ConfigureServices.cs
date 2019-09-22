@@ -3,7 +3,7 @@
 
 using System.Reflection;
 using CommonCache;
-using DataAuthorize;
+using DataKeyParts;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;

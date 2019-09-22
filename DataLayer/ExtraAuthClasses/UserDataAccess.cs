@@ -3,7 +3,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using DataAuthorize;
+using DataKeyParts;
 
 namespace DataLayer.ExtraAuthClasses
 {

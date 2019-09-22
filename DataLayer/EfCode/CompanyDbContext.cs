@@ -1,10 +1,10 @@
 ﻿// Copyright (c) 2018 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using DataAuthorize;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using DataKeyParts;
 using DataLayer.EfCode.Configurations;
 using DataLayer.ExtraAuthClasses;
 using DataLayer.MultiTenantClasses;

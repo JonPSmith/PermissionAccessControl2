@@ -4,10 +4,8 @@
 using System;
 using System.Linq;
 using DataLayer.EfCode;
-using DataLayer.ExtraAuthClasses;
-using Microsoft.EntityFrameworkCore;
 
-namespace ServiceLayer.CodeCalledInStartup
+namespace DataAuthorize
 {
     public class CalcDataKey
     {

@@ -4,7 +4,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAuthorize
+namespace DataKeyParts
 {
     public static class DbContextExtensions
     {

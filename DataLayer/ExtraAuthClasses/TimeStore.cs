@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CommonCache;
-using DataAuthorize;
+using DataKeyParts;
 
 namespace DataLayer.ExtraAuthClasses
 {
