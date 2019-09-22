@@ -12,7 +12,7 @@ using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ServiceLayer.AuthoriseSetup
+namespace ServiceLayer.AuthorizeSetup
 {
     /// <summary>
     /// This version provides:

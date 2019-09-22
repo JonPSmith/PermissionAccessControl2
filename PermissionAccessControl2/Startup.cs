@@ -19,7 +19,7 @@ using PermissionAccessControl2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.AppStart;
-using ServiceLayer.AuthoriseSetup;
+using ServiceLayer.AuthorizeSetup;
 using ServiceLayer.UserServices;
 using Swashbuckle.AspNetCore.Swagger;
 

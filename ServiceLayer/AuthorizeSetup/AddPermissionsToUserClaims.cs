@@ -10,7 +10,7 @@ using FeatureAuthorize;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace ServiceLayer.AuthoriseSetup
+namespace ServiceLayer.AuthorizeSetup
 {
     /// <summary>
     /// This version provides:

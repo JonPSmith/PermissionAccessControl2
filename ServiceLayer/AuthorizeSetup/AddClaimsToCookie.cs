@@ -7,25 +7,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.UserImpersonation.Concrete.Internal;
 
-namespace ServiceLayer.AuthoriseSetup
+namespace ServiceLayer.AuthorizeSetup
 {
     public static class AddClaimsToCookie
     {
         /// <summary>
-        /// This configures Cookies for authentication and adds the feature and data claims to the user.
-        /// There are two approaches:
-        /// 1. One that allows logged in user's permissions to updated when the Roles/Permissions are changed.
-        /// 2. A simpler/better performance way to set up permissions, but doesn't support dynamic updates of logged in user's permissions
+        /// This configures how the user's claims get updated with the Permissions/DataKey. 
         /// </summary>
         /// <param name="services"></param>
         /// <param name="authCookieVersion">Controls the type of cookie validation used.</param>
         public static void ConfigureCookiesForExtraAuth(this IServiceCollection services, string authCookieVersion)
         {
-            IAuthCookieValidate cookieEventMethod = null;
+            IAuthCookieValidate cookieEventClass = null;
             switch (authCookieVersion)
             {
                 case "Off":
-                    //This turns the permissions/datakey totally off - you are only using ASP.NET Core 
+                    //This turns the permissions/datakey totally off - you are only using ASP.NET Core logged-in user 
                     break;
                 case "None":
                     //This uses UserClaimsPrincipal to set the claims on login - easy and quick.
@@ -34,14 +31,14 @@ namespace ServiceLayer.AuthoriseSetup
                     break;
                 case "PermissionsOnly":
                     //Event - only permissions set up
-                    cookieEventMethod = new AuthCookieValidatePermissionsOnly();
+                    cookieEventClass = new AuthCookieValidatePermissionsOnly();
                     break;
                 case "PermissionsDataKey":
                      // Event - Permissions and DataKey set up
-                     cookieEventMethod = new AuthCookieValidatePermissionsDataKey();
+                     cookieEventClass = new AuthCookieValidatePermissionsDataKey();
                     break;
                 case "RefreshClaims":
-                    cookieEventMethod = new AuthCookieValidateRefreshClaims();
+                    cookieEventClass = new AuthCookieValidateRefreshClaims();
                     break;
                 case "Impersonation":
                 case "EveryThing":
@@ -62,15 +59,19 @@ namespace ServiceLayer.AuthoriseSetup
                     throw new ArgumentException($"{authCookieVersion} isn't a valid version");
             }
 
-            if (cookieEventMethod != null)
+            if (cookieEventClass != null)
             {
                 services.ConfigureApplicationCookie(options =>
                 {
-                    options.Events.OnValidatePrincipal = cookieEventMethod.ValidateAsync;
+                    options.Events.OnValidatePrincipal = cookieEventClass.ValidateAsync;
                 });
             }
 
-            if (authCookieVersion != "RefreshClaims")
+            if (authCookieVersion == "RefreshClaims" || authCookieVersion == "EveryThing")
+            {
+                services.AddSingleton<IAuthChanges, AuthChanges>();
+            }
+            else
             {
                 services.AddSingleton<IAuthChanges>(x => null); //This will turn off the checks in the ExtraAuthDbContext
             }

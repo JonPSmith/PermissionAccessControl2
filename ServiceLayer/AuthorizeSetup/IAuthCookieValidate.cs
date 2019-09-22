@@ -4,7 +4,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace ServiceLayer.AuthoriseSetup
+namespace ServiceLayer.AuthorizeSetup
 {
     public interface IAuthCookieValidate
     {

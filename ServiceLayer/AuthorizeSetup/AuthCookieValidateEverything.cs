@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.UserImpersonation.Concrete.Internal;
 
-namespace ServiceLayer.AuthoriseSetup
+namespace ServiceLayer.AuthorizeSetup
 {
     /// <summary>
     /// This version provides:
