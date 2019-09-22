@@ -53,7 +53,7 @@ namespace PermissionAccessControl2
 
             services.Configure<DemoSetupOptions>(Configuration.GetSection("DemoSetup"));
             //This enables Cookies for authentication and adds the feature and data claims to the user
-            services.ConfigureCookiesForExtraAuth(Configuration["DemoSetup:AuthCookieVersion"]);
+            services.ConfigureCookiesForExtraAuth();
 
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
             //Register the Permission policy handlers

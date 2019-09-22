@@ -3,11 +3,13 @@
 
 namespace DataKeyParts
 {
+    public enum AuthCookieVersions { Off, None, PermissionsOnly, PermissionsDataKey, Impersonation, RefreshClaims, Everything }
+
     public class DemoSetupOptions
     {
         public string DatabaseSetup { get; set; }
         public bool CreateAndSeed { get; set; }
-        public string AuthCookieVersion { get; set; }
+        public AuthCookieVersions AuthVersion { get; set; }
     }
 
 
