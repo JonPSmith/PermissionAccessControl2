@@ -4,7 +4,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace ServiceLayer.UserImpersonation.Concrete.Internal
+namespace UserImpersonation.Concrete
 {
     public class AuthCookieSigningOut
     {

@@ -1,4 +1,4 @@
-﻿namespace CommonCache
+﻿namespace RefreshClaimsParts
 {
     /// <summary>
     /// Access to the TimeStore part of the ExtraAuthorizeDbContext

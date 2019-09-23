@@ -13,9 +13,9 @@ using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceLayer.UserImpersonation.Concrete.Internal;
+using UserImpersonation.Concrete;
 
-namespace ServiceLayer.AuthorizeSetup
+namespace AuthorizeSetup
 {
     /// <summary>
     /// This version provides:

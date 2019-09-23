@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.DataProtection;
-using ServiceLayer.UserImpersonation.Concrete.Internal;
 using Test.FakesAndMocks;
+using UserImpersonation.Concrete;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 

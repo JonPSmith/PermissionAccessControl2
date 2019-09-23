@@ -4,9 +4,9 @@
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Html;
-using ServiceLayer.UserImpersonation.Concrete.Internal;
+using UserImpersonation.Concrete;
 
-namespace ServiceLayer.UserImpersonation
+namespace UserImpersonation
 {
     public static class ImpersonateExtensions
     {

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 
 [assembly: InternalsVisibleTo("Test")]
 
-namespace ServiceLayer.UserImpersonation.Concrete.Internal
+namespace UserImpersonation.Concrete
 {
     public class ImpersonationHandler
     {

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using CommonCache;
 using DataAuthorize;
 using DataKeyParts;
 using DataLayer.EfCode;
@@ -14,9 +13,10 @@ using FeatureAuthorize;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceLayer.UserImpersonation.Concrete.Internal;
+using RefreshClaimsParts;
+using UserImpersonation.Concrete;
 
-namespace ServiceLayer.AuthorizeSetup
+namespace AuthorizeSetup
 {
     /// <summary>
     /// This version provides:

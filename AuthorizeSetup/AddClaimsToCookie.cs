@@ -2,14 +2,14 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System;
-using CommonCache;
 using DataKeyParts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using ServiceLayer.UserImpersonation.Concrete.Internal;
+using RefreshClaimsParts;
+using UserImpersonation.Concrete;
 
-namespace ServiceLayer.AuthorizeSetup
+namespace AuthorizeSetup
 {
     public static class AddClaimsToCookie
     {

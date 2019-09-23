@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using CommonCache;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using FeatureAuthorize;
 using PermissionParts;
+using RefreshClaimsParts;
 using ServiceLayer.UserServices.Internal;
 
 namespace ServiceLayer.UserServices.Concrete

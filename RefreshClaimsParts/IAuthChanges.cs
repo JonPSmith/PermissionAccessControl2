@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CommonCache
+﻿namespace RefreshClaimsParts
 {
     public interface IAuthChanges
     {

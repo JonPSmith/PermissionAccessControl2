@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CommonCache;
+using AuthorizeSetup;
 using DataKeyParts;
 using DataLayer.EfCode;
 using FeatureAuthorize;
@@ -19,9 +19,9 @@ using PermissionAccessControl2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceLayer.AppStart;
-using ServiceLayer.AuthorizeSetup;
 using ServiceLayer.UserServices;
 using Swashbuckle.AspNetCore.Swagger;
+using UserImpersonation.AppStart;
 
 namespace PermissionAccessControl2
 {
@@ -51,11 +51,9 @@ namespace PermissionAccessControl2
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.Configure<DemoSetupOptions>(Configuration.GetSection("DemoSetup"));
-            //This enables Cookies for authentication and adds the feature and data claims to the user
-            services.ConfigureCookiesForExtraAuth();
-
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
+            services.Configure<DemoSetupOptions>(Configuration.GetSection("DemoSetup"));
+
             //Register the Permission policy handlers
             services.AddSingleton<IAuthorizationPolicyProvider, AuthorizationPolicyProvider>();
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
@@ -63,8 +61,12 @@ namespace PermissionAccessControl2
             //This is needed to implement the data authorize code 
             services.AddScoped<IGetClaimsProvider, GetClaimsFromUser>();
 
-            //This registers the services into DI
-            services.ServiceLayerStartup(Configuration);
+            //This registers/sets up the services in these projects. 
+            services.ServiceLayerRegister();
+            services.UserImpersonationRegister();
+
+            //This enables Cookies for authentication and adds the feature and data claims to the user
+            services.ConfigureCookiesForExtraAuth();
 
             //This has to come after the ConfigureCookiesForExtraAuth settings, which sets up the IAuthChanges
             services.ConfigureGenericServicesEntities(typeof(ExtraAuthorizeDbContext), typeof(CompanyDbContext))

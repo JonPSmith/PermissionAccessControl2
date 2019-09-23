@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Test")]
 
-namespace CommonCache
+namespace RefreshClaimsParts
 {
     public class AuthChanges : IAuthChanges
     {

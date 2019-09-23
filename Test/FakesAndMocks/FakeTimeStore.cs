@@ -1,4 +1,4 @@
-﻿using CommonCache;
+﻿using RefreshClaimsParts;
 
 namespace Test.FakesAndMocks
 {

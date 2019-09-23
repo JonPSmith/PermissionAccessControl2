@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CommonCache;
 using DataLayer.EfCode;
 using DataLayer.ExtraAuthClasses;
 using Microsoft.EntityFrameworkCore;
 using PermissionParts;
+using RefreshClaimsParts;
 using Test.FakesAndMocks;
 using TestSupport.EfHelpers;
 using Xunit;

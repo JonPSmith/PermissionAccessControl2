@@ -1,4 +1,4 @@
-﻿namespace CommonCache
+﻿namespace RefreshClaimsParts
 {
     public static class AuthChangesConsts
     {

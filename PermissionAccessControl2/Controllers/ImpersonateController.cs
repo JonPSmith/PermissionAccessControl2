@@ -6,8 +6,8 @@ using FeatureAuthorize.PolicyCode;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PermissionParts;
-using ServiceLayer.UserImpersonation;
 using ServiceLayer.UserServices;
+using UserImpersonation;
 
 namespace PermissionAccessControl2.Controllers
 {

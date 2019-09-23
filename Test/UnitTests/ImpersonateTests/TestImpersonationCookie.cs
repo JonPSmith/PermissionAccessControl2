@@ -3,8 +3,8 @@
 
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.DataProtection;
-using ServiceLayer.UserImpersonation.Concrete.Internal;
 using Test.FakesAndMocks;
+using UserImpersonation.Concrete;
 using Xunit;
 using Xunit.Extensions.AssertExtensions;
 

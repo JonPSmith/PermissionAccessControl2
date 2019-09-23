@@ -3,7 +3,7 @@
 
 using System;
 
-namespace ServiceLayer.UserImpersonation.Concrete.Internal
+namespace UserImpersonation.Concrete
 {
     /// <summary>
     /// This holds the data that will be put into the ImpersonationCookie
