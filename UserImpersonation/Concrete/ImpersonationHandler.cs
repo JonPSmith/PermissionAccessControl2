@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ServiceLayer.UserImpersonation.Concrete.Internal
 {
-    internal class ImpersonationHandler
+    public class ImpersonationHandler
     {
         public const string ImpersonationClaimType = "Impersonalising";
 

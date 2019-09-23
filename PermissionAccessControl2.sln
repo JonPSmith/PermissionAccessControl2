@@ -17,15 +17,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureAuthorize", "FeatureAuthorize\FeatureAuthorize.csproj", "{255486A5-790B-47BC-B95C-572889F004CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonCache", "CommonCache\CommonCache.csproj", "{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{08C37F40-167A-4D8B-86FC-B42980808BDB}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataKeyParts", "DataKeyParts\DataKeyParts.csproj", "{B76F79A2-A02E-4879-B2D4-6DC20483250F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataKeyParts", "DataKeyParts\DataKeyParts.csproj", "{B76F79A2-A02E-4879-B2D4-6DC20483250F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorizeSetup", "AuthorizeSetup\AuthorizeSetup.csproj", "{F6DB2919-2EFF-4940-AA61-A2BD9F57F781}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserImpersonation", "UserImpersonation\UserImpersonation.csproj", "{3FAB19AB-77BC-4548-ADE5-70B11C9B5094}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefreshClaimsParts", "RefreshClaimsParts\RefreshClaimsParts.csproj", "{C9C56B44-3574-4014-831C-8735C200BF56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,14 +65,22 @@ Global
 		{255486A5-790B-47BC-B95C-572889F004CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{255486A5-790B-47BC-B95C-572889F004CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{255486A5-790B-47BC-B95C-572889F004CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2A3A002-D1A3-4BC4-AA6B-B11EFEEE9F87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B76F79A2-A02E-4879-B2D4-6DC20483250F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B76F79A2-A02E-4879-B2D4-6DC20483250F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B76F79A2-A02E-4879-B2D4-6DC20483250F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B76F79A2-A02E-4879-B2D4-6DC20483250F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6DB2919-2EFF-4940-AA61-A2BD9F57F781}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6DB2919-2EFF-4940-AA61-A2BD9F57F781}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6DB2919-2EFF-4940-AA61-A2BD9F57F781}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6DB2919-2EFF-4940-AA61-A2BD9F57F781}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FAB19AB-77BC-4548-ADE5-70B11C9B5094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FAB19AB-77BC-4548-ADE5-70B11C9B5094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FAB19AB-77BC-4548-ADE5-70B11C9B5094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FAB19AB-77BC-4548-ADE5-70B11C9B5094}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9C56B44-3574-4014-831C-8735C200BF56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C56B44-3574-4014-831C-8735C200BF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C56B44-3574-4014-831C-8735C200BF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C56B44-3574-4014-831C-8735C200BF56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

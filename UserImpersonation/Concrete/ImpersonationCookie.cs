@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ServiceLayer.UserImpersonation.Concrete.Internal
 {
-    internal class ImpersonationCookie
+    public class ImpersonationCookie
     {
         private const string CookieName = "UserImpersonation";
 

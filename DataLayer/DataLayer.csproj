@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonCache\CommonCache.csproj" />
     <ProjectReference Include="..\DataKeyParts\DataKeyParts.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
+    <ProjectReference Include="..\RefreshClaimsParts\RefreshClaimsParts.csproj" />
   </ItemGroup>
 
 </Project>

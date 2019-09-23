@@ -8,7 +8,7 @@ namespace ServiceLayer.UserImpersonation.Concrete.Internal
     /// <summary>
     /// This holds the data that will be put into the ImpersonationCookie
     /// </summary>
-    internal class ImpersonationData
+    public class ImpersonationData
     {
         /// <summary>
         /// UserId of the user you are impersonating

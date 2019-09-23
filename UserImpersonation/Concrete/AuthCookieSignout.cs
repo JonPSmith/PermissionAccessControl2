@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ServiceLayer.UserImpersonation.Concrete.Internal
 {
-    internal class AuthCookieSigningOut
+    public class AuthCookieSigningOut
     {
         /// <summary>
         /// This will ensure any impersonation cookie is deleted when a user signs out

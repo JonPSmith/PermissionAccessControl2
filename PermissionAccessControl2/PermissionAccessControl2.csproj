@@ -20,7 +20,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\CommonCache\CommonCache.csproj" />
+    <ProjectReference Include="..\AuthorizeSetup\AuthorizeSetup.csproj" />
     <ProjectReference Include="..\DataAuthorize\DataAuthorize.csproj" />
     <ProjectReference Include="..\DataKeyParts\DataKeyParts.csproj" />
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
