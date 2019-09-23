@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAuthorize\DataAuthorize.csproj" />
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\FeatureAuthorize\FeatureAuthorize.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
