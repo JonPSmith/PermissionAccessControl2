@@ -13,8 +13,6 @@
     <ProjectReference Include="..\DataAuthorize\DataAuthorize.csproj" />
     <ProjectReference Include="..\DataKeyParts\DataKeyParts.csproj" />
     <ProjectReference Include="..\FeatureAuthorize\FeatureAuthorize.csproj" />
-    <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
-    <ProjectReference Include="..\RefreshClaimsParts\RefreshClaimsParts.csproj" />
     <ProjectReference Include="..\UserImpersonation\UserImpersonation.csproj" />
   </ItemGroup>
 
