@@ -22,6 +22,7 @@ namespace PermissionAccessControl2
         public static async Task<IWebHost> BuildWebHostAsync(string[] args)
         {
             var webHost = WebHost.CreateDefaultBuilder(args)
+                .CaptureStartupErrors(true)
                 .UseStartup<Startup>()
                 .Build();
 

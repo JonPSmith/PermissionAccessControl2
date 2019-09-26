@@ -3,7 +3,14 @@
 
 namespace DataKeyParts
 {
-    public enum AuthCookieVersions { Off, None, PermissionsOnly, PermissionsDataKey, Impersonation, RefreshClaims, Everything }
+    public enum AuthCookieVersions
+    {
+        Off,
+        //These use UserClaimsPrincipalFactory on login
+        LoginPermissions, LoginPermissionsDataKey,
+        //These use The Cookie OnValidatePrincipal event
+        PermissionsOnly, PermissionsDataKey, Impersonation, RefreshClaims, Everything
+    }
 
     public class DemoSetupOptions
     {

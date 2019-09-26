@@ -29,10 +29,15 @@ namespace AuthorizeSetup
                 case AuthCookieVersions.Off:
                     //This turns the permissions/datakey totally off - you are only using ASP.NET Core logged-in user 
                     break;
-                case AuthCookieVersions.None:
+                case AuthCookieVersions.LoginPermissions:
                     //This uses UserClaimsPrincipal to set the claims on login - easy and quick.
                     //Simple version - see https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
                     services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, AddPermissionsToUserClaims>();
+                    break;
+                case AuthCookieVersions.LoginPermissionsDataKey:
+                    //This uses UserClaimsPrincipal to set the claims on login - easy and quick.
+                    //Simple version - see https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
+                    services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, AddPermissionsDataKeyToUserClaims>();
                     break;
                 case AuthCookieVersions.PermissionsOnly:
                     //Event - only permissions set up

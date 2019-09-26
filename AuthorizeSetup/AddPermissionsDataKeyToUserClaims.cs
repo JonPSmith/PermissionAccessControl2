@@ -15,13 +15,14 @@ namespace AuthorizeSetup
     /// <summary>
     /// This version provides:
     /// - Adds Permissions to the user's claims.
+    /// - Adds DataKey to the user's claims
     /// </summary>
     // Thanks to https://korzh.com/blogs/net-tricks/aspnet-identity-store-user-data-in-claims
-    public class AddPermissionsToUserClaims : UserClaimsPrincipalFactory<IdentityUser>
+    public class AddPermissionsDataKeyToUserClaims : UserClaimsPrincipalFactory<IdentityUser>
     {
         private readonly ExtraAuthorizeDbContext _extraAuthDbContext;
 
-        public AddPermissionsToUserClaims(UserManager<IdentityUser> userManager, IOptions<IdentityOptions> optionsAccessor,
+        public AddPermissionsDataKeyToUserClaims(UserManager<IdentityUser> userManager, IOptions<IdentityOptions> optionsAccessor,
             ExtraAuthorizeDbContext extraAuthDbContext)
             : base(userManager, optionsAccessor)
         {
@@ -34,6 +35,8 @@ namespace AuthorizeSetup
             var userId = identity.Claims.GetUserIdFromClaims();
             var rtoPCalcer = new CalcAllowedPermissions(_extraAuthDbContext);
             identity.AddClaim(new Claim(PermissionConstants.PackedPermissionClaimType, await rtoPCalcer.CalcPermissionsForUserAsync(userId)));
+            var dataKeyCalcer = new CalcDataKey(_extraAuthDbContext);
+            identity.AddClaim(new Claim(DataAuthConstants.HierarchicalKeyClaimName, dataKeyCalcer.CalcDataKeyForUser(userId)));
             return identity;
         }
     }
