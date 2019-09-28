@@ -23,13 +23,16 @@ namespace DataLayer.EfCode
 
         /// <summary>
         /// The TimeStore holds the time when a change is made to the Roles/Permission such that it might alter a user's permissions.
+        /// //YOU ONLY NEED THIS IF YOU WANT THE "REFRESH USER CLAIMS" FEATURE
         /// </summary>
         public DbSet<TimeStore> TimeStores { get; set; }
 
+        //YOU ONLY NEED THESE TWO DBSET'S IF YOU WANT THE Hierarchical DATAKEY FEATURE
         //Now links to two classes in the CompanyDbContext that hold data used to set up the user's modules and data access rights
         public DbSet<TenantBase> Tenants { get; set; }
         public DbSet<UserDataHierarchical> DataAccess { get; set; }
 
+        //YOU ONLY NEED TO OVERRIDE SAVECHANGES IF YOU WANT THE "REFRESH USER CLAIMS" FEATURE
         //I only have to override these two versions of SaveChanges, as the other two SaveChanges versions call these
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         { 

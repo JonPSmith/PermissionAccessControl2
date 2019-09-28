@@ -79,11 +79,12 @@ namespace AuthorizeSetup
 
             if (authCookieVersion == AuthCookieVersions.RefreshClaims || authCookieVersion == AuthCookieVersions.Everything)
             {
-                services.AddSingleton<IAuthChanges, AuthChanges>();
+                //IAuthChanges is used to detect changes in the ExtraAuthClasses so we can update the user's permission claims
+                services.AddSingleton<IAuthChanges, AuthChanges>(); 
             }
             else
             {
-                services.AddSingleton<IAuthChanges>(x => null); //This will turn off the checks in the ExtraAuthDbContext
+                services.AddSingleton<IAuthChanges>(x => null); //This will turn off the change checks in the ExtraAuthDbContext
             }
         }
     }
