@@ -8,7 +8,10 @@ This is open-source application (MIT license).
 * Part 3: [A better way to handle authorization - six months on](https://www.thereformedprogrammer.net/a-better-way-to-handle-asp-net-core-authorization-six-months-on/).
 * Part 4: [Building a robust and secure data authorization with EF Core](https://www.thereformedprogrammer.net/part-4-building-a-robust-and-secure-data-authorization-with-ef-core/).
 * Part 5: [A better way to handle authorization - refreshing users claims](https://www.thereformedprogrammer.net/part-5-a-better-way-to-handle-authorization-refreshing-users-claims/).
-* Part 6: [Adding user impersonation to an ASP.NET Core web application](#).
+* Part 6: [Adding user impersonation to an ASP.NET Core web application](https://www.thereformedprogrammer.net/adding-user-impersonation-to-an-asp-net-core-web-application/).
+* Part 7: [Adding the “better ASP.NET Core authorization” code into your app](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/).
+
+**NOTE: If you like what these articles describe and want to add one or more of these features to your application I STRONGLY suggest you read the [Part 7 article](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/), which gives a step-by-step guide to how to pick/copy the right code into your app.**
 
 ## How to play with the application
 
@@ -23,7 +26,7 @@ The default setting (see Configuration section below) will use in-memory databas
 
 There is a link on the home page to a list of users that you can log in via (the email address is also the password). There are two different companies, 4U Inc. and Pets2 Ltd., which have a number of shops in different divisions, represented by hierarchical data. Logging in as a user will give you access to some features and data (if linked to data).
 
-The home page gives you more information onf what you can do.
+The home page gives you more information on what you can do.
 
 ## Configuration
 
@@ -36,9 +39,20 @@ This application is written to work with both in-memory or normal (e.g. SQL Serv
 ```javascript
   "DemoSetup": {
     "DatabaseSetup": "InMemory", //This can be "InMemory" or "Permanent" (a real database) database.
-    "UpdateCookieOnChange": false //If true then it will recalc user's cookies if Roles have changed, otherwise user's permission fixed until log out
-  }
+    "CreateAndSeed": true, //If this is true then it will create the dbs and ensure the data is seeded
+    "AuthVersion": "Everything" //The options are Off, LoginPermissions, LoginPermissionsDataKey, PermissionsOnly, PermissionsDataKey, Impersonation, RefreshClaims, Everything
+  
 ```
+
+They are descibed in the next three subsections.
+
+#### 1. DatabaseSetup property
+
+This swiches between:
+* **"InMemory"**: which selects an in-memory Sqlite database - very easy to try out
+* **"Permanent"**: which selects a SQL Server database. 
+
+*NOTE that I use `context.Database.EnsureCreated()` to create the database because its easy. BUT it does preclude the use of EF Core Migrations. See [PermissionsOnlyApp](https://github.com/JonPSmith/PermissionsOnlyApp), which I create in the [Part 7 acticle](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/) and uses EF Core Migrations to handle database changes.*
 
 If you use "Permanent" for the "DatabaseSetup" then you need to provide two connection strings: one for the ASP.NET Core Identity database and the other for the database which holds both the multi-tenant data and the extra authorization data.
 
@@ -48,6 +62,16 @@ If you use "Permanent" for the "DatabaseSetup" then you need to provide two conn
     "DemoDatabaseConnection": "Server=(localdb)\\mssqllocaldb;Database=PermissionAccessControl2-DemoDatabase;Trusted_Connection=True;MultipleActiveResultSets=true"
   },
 ```
+
+#### 2. CreateAndSeed property
+
+This is there for people who want to mess about with a SQL Server database. If its `false` then all the database create and seed parts are turned off. 
+
+*NOTE: The check/add of the SuperAdmin user isn't turned off by this property.*
+
+#### 3. AuthVersion property
+
+This allows you to try the different authorization features covered in the articles. I'm not going to describe all the features here beacause they can be seen in the [AddClaimsToCookie](https://github.com/JonPSmith/PermissionAccessControl2/blob/master/AuthorizeSetup/AddClaimsToCookie.cs) class.
 
 ### Setting up SuperAdmin user
 

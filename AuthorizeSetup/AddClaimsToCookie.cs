@@ -57,7 +57,7 @@ namespace AuthorizeSetup
                     var validateAsyncVersion = authCookieVersion == AuthCookieVersions.Impersonation
                         ? (IAuthCookieValidate)new AuthCookieValidateImpersonation()
                         : (IAuthCookieValidate)new AuthCookieValidateEverything();
-                    //We set two events, so we do this here
+                    //We need two events for impersonation, so we do this here
                     services.ConfigureApplicationCookie(options =>
                     {
                         options.Events.OnValidatePrincipal = validateAsyncVersion.ValidateAsync;
