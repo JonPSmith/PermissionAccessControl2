@@ -52,7 +52,7 @@ This swiches between:
 * **"InMemory"**: which selects an in-memory Sqlite database - very easy to try out things or changing the database.
 * **"Permanent"**: which selects a SQL Server database. 
 
-*NOTE that I use `context.Database.EnsureCreated()` to create the database because its easy. BUT it does preclude the use of EF Core Migrations. See [PermissionsOnlyApp](https://github.com/JonPSmith/PermissionsOnlyApp), which I create in the [Part 7 acticle](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/) and uses EF Core Migrations to handle database changes.*
+*NOTE that I use `context.Database.EnsureCreated()` on startup to create the database because its easy. BUT it does preclude the use of EF Core Migrations. See [PermissionsOnlyApp](https://github.com/JonPSmith/PermissionsOnlyApp), which I create as part of the [Part 7 acticle](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/). It usees EF Core Migrations to handle database changes.*
 
 If you use "Permanent" for the "DatabaseSetup" then you need to provide two connection strings: one for the ASP.NET Core Identity database and the other for the database which holds both the multi-tenant data and the extra authorization data.
 
