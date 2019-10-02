@@ -11,11 +11,11 @@ This is open-source application (MIT license).
 * Part 6: [Adding user impersonation to an ASP.NET Core web application](https://www.thereformedprogrammer.net/adding-user-impersonation-to-an-asp-net-core-web-application/).
 * Part 7: [Adding the “better ASP.NET Core authorization” code into your app](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/).
 
-**NOTE: If you like what these articles describe and want to add one or more of these features to your application I STRONGLY suggest you read the [Part 7 article](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/), which gives a step-by-step guide to how to pick/copy the right code into your app.**
+**NOTE: If you like what these articles describe and want to add one or more of these features to your application I STRONGLY suggest you read the [Part 7 article](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/), which gives a step-by-step guide to how to pick/copy the right code from the `PermissionAccessControl2` into your app.**
 
 ## How to play with the application
 
-You start the PermissionAccessControl2 project to run the ASP.NET Core application. The home screen shows you what you can do.  
+You start the PermissionAccessControl2 project to run the ASP.NET Core application. The home screen shows you what you can do. It also tells you what setup was used the features/database - section [Controlling how the demo works](https://github.com/JonPSmith/PermissionAccessControl2#controlling-how-the-demo-works).
 
 The default setting (see Configuration section below) will use in-memory databases which it will preload with demo users and data at startup (NOTE: Its a bit slow to start as it is setting up all the demo users and data). The demo users have:
 
@@ -49,7 +49,7 @@ They are descibed in the next three subsections.
 #### 1. DatabaseSetup property
 
 This swiches between:
-* **"InMemory"**: which selects an in-memory Sqlite database - very easy to try out
+* **"InMemory"**: which selects an in-memory Sqlite database - very easy to try out things or changing the database.
 * **"Permanent"**: which selects a SQL Server database. 
 
 *NOTE that I use `context.Database.EnsureCreated()` to create the database because its easy. BUT it does preclude the use of EF Core Migrations. See [PermissionsOnlyApp](https://github.com/JonPSmith/PermissionsOnlyApp), which I create in the [Part 7 acticle](https://www.thereformedprogrammer.net/part-7-adding-the-better-asp-net-core-authorization-code-into-your-app/) and uses EF Core Migrations to handle database changes.*
