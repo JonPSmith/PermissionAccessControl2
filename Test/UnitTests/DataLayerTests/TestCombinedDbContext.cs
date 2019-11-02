@@ -1,9 +1,14 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DataLayer.EfCode;
+using DataLayer.ExtraAuthClasses;
+using DataLayer.MultiTenantClasses;
+using PermissionParts;
 using TestSupport.EfHelpers;
 using Xunit;
 using Xunit.Abstractions;
@@ -84,6 +89,26 @@ namespace Test.UnitTests.DataLayerTests
                     "DataLayer.MultiTenantClasses.SubGroup",
                     "DataLayer.MultiTenantClasses.TenantBase",
                 });
+            }
+        }
+
+        [Fact]
+        public async Task TestSaveChangesAsyncOk()
+        {
+            //SETUP
+            var options = this.CreateUniqueClassOptions<ExtraAuthorizeDbContext>();
+            using (var context = new ExtraAuthorizeDbContext(options, null))
+            {
+                context.Database.EnsureCreated();
+
+                //ATTEMPT
+                var entity = RoleToPermissions.CreateRoleWithPermissions(Guid.NewGuid().ToString(), "description",
+                    new List<Permissions> {Permissions.Cache1}, context).Result;
+                context.Add(entity);
+                var numWritten = await context.SaveChangesAsync();
+
+                //VERIFY
+                numWritten.ShouldEqual(1);
             }
         }
 
