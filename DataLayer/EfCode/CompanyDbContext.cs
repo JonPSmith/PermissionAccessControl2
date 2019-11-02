@@ -34,7 +34,7 @@ namespace DataLayer.EfCode
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
-        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
         {
             this.MarkWithDataKeyIfNeeded(DataKey);
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);

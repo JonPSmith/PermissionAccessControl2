@@ -45,7 +45,7 @@ namespace DataLayer.EfCode
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
-        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (_authChange == null)
                 //_authChange is null if not using UpdateCookieOnChange, so bypass permission change code
