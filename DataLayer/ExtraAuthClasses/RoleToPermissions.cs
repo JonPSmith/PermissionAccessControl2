@@ -69,7 +69,7 @@ namespace DataLayer.ExtraAuthClasses
         public void Update(string description, ICollection<Permissions> permissions)
         {
             if (permissions == null || !permissions.Any())
-                throw new ArgumentException("There should be at least one permission associated with a role.", nameof(permissions_));
+                throw new ArgumentException("There should be at least one permission associated with a role.", nameof(permissions));
 
             _permissionsInRole = permissions.PackPermissionsIntoString();
             Description = description;
