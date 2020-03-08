@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
+using DataLayer.ExtraAuthClasses;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionParts;
+using RefreshClaimsParts;
 using ServiceLayer.SeedDemo.Internal;
 using ServiceLayer.UserServices.Internal;
 
@@ -48,6 +50,19 @@ namespace ServiceLayer.SeedDemo
                 var userJson = File.ReadAllText(pathUserJson);
                 var userSetup = new DemoUsersSetup(services);
                 await userSetup.CheckAddDemoUsersAsync(userJson);
+                services.CheckCacheSeedSet();
+            }
+        }
+
+        private static void CheckCacheSeedSet(this IServiceProvider services)
+        {
+            var context = services.GetRequiredService<CompanyDbContext>();
+            if (context.TimeStores.SingleOrDefault(x => x.Key == AuthChangesConsts.FeatureCacheKey) == null)
+            {
+                //We seed the TimeStore database with a low number
+                context.TimeStores.Add(new TimeStore
+                    {Key = AuthChangesConsts.FeatureCacheKey, LastUpdatedTicks = 0});
+                context.SaveChanges();
             }
         }
 

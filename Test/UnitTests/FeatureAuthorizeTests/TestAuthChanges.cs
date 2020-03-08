@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
+using System;
 using RefreshClaimsParts;
 using Test.FakesAndMocks;
 using Xunit;
@@ -32,16 +33,16 @@ namespace Test.UnitTests.FeatureAuthorizeTests
         public void TestIsOutOfDateOrMissingNoOriginalValue()
         {
             //SETUP
-            var fakeTimeStore = new FakeTimeStore("test", 200);
+            var fakeTimeStore = new FakeTimeStore("test", null);
             var authChange = new AuthChanges();
 
             //ATTEMPT
-            var isOutOfDate = authChange.IsOutOfDateOrMissing("test", "100", fakeTimeStore);
+            var ex = Assert.Throws<ApplicationException>(() => authChange.IsOutOfDateOrMissing("test", "100", fakeTimeStore));
 
             //VERIFY
-            isOutOfDate.ShouldEqual(true);
-            fakeTimeStore.Key.ShouldNotBeNull();
+            ex.Message.ShouldStartWith("You must seed the database with a cache value for the key ");
         }
+
 
         [Fact]
         public void TestAddOrUpdateDatabaseUpdate()
