@@ -7,13 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using ServiceLayer.SeedDemo.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using PermissionAccessControl2.SeedDemo.Internal;
 using PermissionParts;
-using ServiceLayer.UserServices.Internal;
+using ServiceLayer.UserServices;
 
-namespace ServiceLayer.SeedDemo
+namespace PermissionAccessControl2.SeedDemo
 {
     public static class SuperAdminSetup
     {

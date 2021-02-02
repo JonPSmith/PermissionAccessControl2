@@ -11,13 +11,13 @@ using PermissionParts;
 
 [assembly: InternalsVisibleTo("Test")]
 
-namespace ServiceLayer.UserServices.Internal
+namespace ServiceLayer.UserServices
 {
     /// <summary>
     /// These contain the individual methods to add/update the database, BUT you should call SaveChanges to update the database after using
     /// (This is different to AspNetUserExtension, where the userManger updates the database immediately)
     /// </summary>
-    internal class ExtraAuthUsersSetup
+    public class ExtraAuthUsersSetup
     {
         private readonly ExtraAuthorizeDbContext _context;
 

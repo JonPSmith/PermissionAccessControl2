@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 
 [assembly: InternalsVisibleTo("Test")]
 
-namespace ServiceLayer.SeedDemo.Internal
+namespace PermissionAccessControl2.SeedDemo.Internal
 {
     internal static class AspNetUserExtension
     {

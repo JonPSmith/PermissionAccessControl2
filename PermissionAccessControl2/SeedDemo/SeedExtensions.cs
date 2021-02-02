@@ -6,16 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DataLayer.EfCode;
-using DataLayer.ExtraAuthClasses;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PermissionAccessControl2.SeedDemo.Internal;
 using PermissionParts;
-using RefreshClaimsParts;
-using ServiceLayer.SeedDemo.Internal;
-using ServiceLayer.UserServices.Internal;
+using ServiceLayer.UserServices;
 
-namespace ServiceLayer.SeedDemo
+namespace PermissionAccessControl2.SeedDemo
 {
     /// <summary>
     /// This extension adds the demo data to the database. It will work with "real" databases,
@@ -41,7 +39,7 @@ namespace ServiceLayer.SeedDemo
             using (var scope = serviceProvider.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var env = services.GetRequiredService<IHostingEnvironment>();
+                var env = services.GetRequiredService<IWebHostEnvironment>();
 
                 CheckAddCompanies(env, services);
                 CheckAddRoles(env, services);
@@ -50,23 +48,10 @@ namespace ServiceLayer.SeedDemo
                 var userJson = File.ReadAllText(pathUserJson);
                 var userSetup = new DemoUsersSetup(services);
                 await userSetup.CheckAddDemoUsersAsync(userJson);
-                services.CheckCacheSeedSet();
             }
         }
 
-        private static void CheckCacheSeedSet(this IServiceProvider services)
-        {
-            var context = services.GetRequiredService<CompanyDbContext>();
-            if (context.TimeStores.SingleOrDefault(x => x.Key == AuthChangesConsts.FeatureCacheKey) == null)
-            {
-                //We seed the TimeStore database with a low number
-                context.TimeStores.Add(new TimeStore
-                    {Key = AuthChangesConsts.FeatureCacheKey, LastUpdatedTicks = 0});
-                context.SaveChanges();
-            }
-        }
-
-        private static void CheckAddCompanies(IHostingEnvironment env, IServiceProvider services)
+        private static void CheckAddCompanies(IWebHostEnvironment env, IServiceProvider services)
         {
             var context = services.GetRequiredService<CompanyDbContext>();
             if (!context.Tenants.IgnoreQueryFilters().Any())
@@ -83,7 +68,7 @@ namespace ServiceLayer.SeedDemo
             }
         }
 
-        private static void CheckAddRoles(IHostingEnvironment env, IServiceProvider services)
+        private static void CheckAddRoles(IWebHostEnvironment env, IServiceProvider services)
         {
             var pathRolesData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, RolesFilename));
             var context = services.GetRequiredService<ExtraAuthorizeDbContext>();

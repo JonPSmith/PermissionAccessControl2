@@ -7,11 +7,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
-using AutoMapper.Configuration.Conventions;
 using DataKeyParts;
 using DataLayer.EfCode;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DataLayer.MultiTenantClasses
 {

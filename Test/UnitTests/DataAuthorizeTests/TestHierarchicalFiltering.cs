@@ -3,7 +3,7 @@
 
 using System.Linq;
 using DataLayer.EfCode;
-using ServiceLayer.SeedDemo.Internal;
+using PermissionAccessControl2.SeedDemo.Internal;
 using Test.FakesAndMocks;
 using TestSupport.EfHelpers;
 using Xunit;

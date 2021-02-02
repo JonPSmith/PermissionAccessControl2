@@ -4,10 +4,8 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataKeyParts;
-using DataLayer.EfCode;
-using GenericServices;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
+using StatusGeneric;
 
 namespace DataLayer.MultiTenantClasses
 {

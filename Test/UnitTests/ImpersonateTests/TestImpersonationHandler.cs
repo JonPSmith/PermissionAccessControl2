@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Test.FakesAndMocks;
 using UserImpersonation.Concrete;
 using Xunit;
@@ -18,15 +19,15 @@ namespace Test.UnitTests.ImpersonateTests
 
         public TestImpersonationHandler()
         {
-            var mocks = new MockHttpContextCookies();
-            _cookieEncryptPurpose = new ImpersonationCookie(mocks.MockContext, null).EncryptPurpose;
+            var httpContext = new DefaultHttpContext();
+            _cookieEncryptPurpose = new ImpersonationCookie(httpContext, null).EncryptPurpose;
         }
 
-        private void AddCookieToHttpContext(MockHttpContextCookies mock, IDataProtectionProvider eProvider, bool keepOwnPermissions = false)
+        private void AddCookieToHttpContext(HttpContext httpContext, IDataProtectionProvider eProvider, bool keepOwnPermissions = false)
         {
             var data = new ImpersonationData("differentUserId", "name@gmail.com", keepOwnPermissions);
-            mock.RequestCookies["UserImpersonation"] = 
-                eProvider.CreateProtector(_cookieEncryptPurpose).Protect(data.GetPackImpersonationData());
+            httpContext.AddRequestCookie("UserImpersonation", 
+                eProvider.CreateProtector(_cookieEncryptPurpose).Protect(data.GetPackImpersonationData()));
         }
 
 
@@ -34,7 +35,7 @@ namespace Test.UnitTests.ImpersonateTests
         public void TestHandlerNoCookieNoClaim()
         {
             //SETUP
-            var mocks = new MockHttpContextCookies();
+            var httpContext = new DefaultHttpContext();
             var eProvider = new EphemeralDataProtectionProvider();
             var claims = new List<Claim>
             {
@@ -42,7 +43,7 @@ namespace Test.UnitTests.ImpersonateTests
             };
 
             //ATTEMPT
-            var handler = new ImpersonationHandler(mocks.MockContext, eProvider, claims);
+            var handler = new ImpersonationHandler(httpContext, eProvider, claims);
 
             //VERIFY
             handler.ImpersonationChange.ShouldBeFalse();
@@ -56,9 +57,9 @@ namespace Test.UnitTests.ImpersonateTests
         public void TestHandlerHasCookieAndClaim()
         {
             //SETUP
-            var mocks = new MockHttpContextCookies();
+            var httpContext = new DefaultHttpContext();
             var eProvider = new EphemeralDataProtectionProvider();
-            AddCookieToHttpContext(mocks, eProvider);
+            AddCookieToHttpContext(httpContext, eProvider);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, "userid"),
@@ -66,7 +67,7 @@ namespace Test.UnitTests.ImpersonateTests
             };
 
             //ATTEMPT
-            var handler = new ImpersonationHandler(mocks.MockContext, eProvider, claims);
+            var handler = new ImpersonationHandler(httpContext, eProvider, claims);
 
             //VERIFY
             handler.ImpersonationChange.ShouldBeFalse();
@@ -80,16 +81,16 @@ namespace Test.UnitTests.ImpersonateTests
         public void TestHandlerStartingKeepOwnPermissions()
         {
             //SETUP
-            var mocks = new MockHttpContextCookies();
+            var httpContext = new DefaultHttpContext();
             var eProvider = new EphemeralDataProtectionProvider();
-            AddCookieToHttpContext(mocks, eProvider, true);
+            AddCookieToHttpContext(httpContext, eProvider, true);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, "userid")
             };
 
             //ATTEMPT
-            var handler = new ImpersonationHandler(mocks.MockContext, eProvider, claims);
+            var handler = new ImpersonationHandler(httpContext, eProvider, claims);
 
             //VERIFY
             handler.ImpersonationChange.ShouldBeTrue();
@@ -103,16 +104,16 @@ namespace Test.UnitTests.ImpersonateTests
         public void TestHandlerStartingUseImpersonationUsersPermissions()
         {
             //SETUP
-            var mocks = new MockHttpContextCookies();
+            var httpContext = new DefaultHttpContext();
             var eProvider = new EphemeralDataProtectionProvider();
-            AddCookieToHttpContext(mocks, eProvider);
+            AddCookieToHttpContext(httpContext, eProvider);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, "userid")
             };
 
             //ATTEMPT
-            var handler = new ImpersonationHandler(mocks.MockContext, eProvider, claims);
+            var handler = new ImpersonationHandler(httpContext, eProvider, claims);
 
             //VERIFY
             handler.ImpersonationChange.ShouldBeTrue();
@@ -126,7 +127,7 @@ namespace Test.UnitTests.ImpersonateTests
         public void TestHandlerStopping()
         {
             //SETUP
-            var mocks = new MockHttpContextCookies();
+            var httpContext = new DefaultHttpContext();
             var eProvider = new EphemeralDataProtectionProvider();
             var claims = new List<Claim>
             {
@@ -135,7 +136,7 @@ namespace Test.UnitTests.ImpersonateTests
             };
 
             //ATTEMPT
-            var handler = new ImpersonationHandler(mocks.MockContext, eProvider, claims);
+            var handler = new ImpersonationHandler(httpContext, eProvider, claims);
 
             //VERIFY
             handler.ImpersonationChange.ShouldBeTrue();

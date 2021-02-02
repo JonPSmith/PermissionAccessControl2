@@ -5,11 +5,9 @@ using System.Reflection;
 using DataKeyParts;
 using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PermissionAccessControl2.Data;
@@ -32,7 +30,8 @@ namespace Test.DiConfigHelpers
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             var startupConfig = AppSettings.GetConfiguration((Assembly)null, "demosettings.json");
-            services.AddSingleton<IHostingEnvironment>(new HostingEnvironment {WebRootPath = TestData.GetTestDataDir()});
+            services.AddLogging();
+            services.AddSingleton<IWebHostEnvironment>(new MockHostingEnvironment { WebRootPath = TestData.GetTestDataDir()});
             services.AddSingleton<IConfiguration>(startupConfig);
             services.AddSingleton<IGetClaimsProvider>(new FakeGetClaimsProvider(null));
             services.AddSingleton<IAuthChanges>(x => null);
