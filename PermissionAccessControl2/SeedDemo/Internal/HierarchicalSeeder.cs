@@ -10,7 +10,7 @@ using PermissionParts;
 
 [assembly: InternalsVisibleTo("Test")]
 
-namespace ServiceLayer.SeedDemo.Internal
+namespace PermissionAccessControl2.SeedDemo.Internal
 {
     /// <summary>
     /// This is a extension method that converts a given format of text data (see default companyDefinitions)

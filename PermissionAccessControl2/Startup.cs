@@ -11,16 +11,15 @@ using GenericServices.Setup;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using PermissionAccessControl2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using ServiceLayer.AppStart;
 using ServiceLayer.UserServices;
-using Swashbuckle.AspNetCore.Swagger;
 using UserImpersonation.AppStart;
 
 namespace PermissionAccessControl2
@@ -47,9 +46,12 @@ namespace PermissionAccessControl2
             //This registers the various databases, either as in-memory or via SQL Server (see appsetting.json for connection strings)
             services.RegisterDatabases(Configuration);
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
+            services.AddDefaultIdentity<IdentityUser>(
+                    //I turn off confirmed account for the demo.
+                    options => options.SignIn.RequireConfirmedAccount = false) //!!!!!!!!!!!!!!!!!!!!!! Turned off
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddControllersWithViews();
+            services.AddRazorPages();
 
             services.AddSingleton(Configuration); //Needed for SuperAdmin setup
             services.Configure<DemoSetupOptions>(Configuration.GetSection("DemoSetup"));
@@ -72,12 +74,11 @@ namespace PermissionAccessControl2
             services.ConfigureGenericServicesEntities(typeof(ExtraAuthorizeDbContext), typeof(CompanyDbContext))
                 .ScanAssemblesForDtos(Assembly.GetAssembly(typeof(ListUsersDto)))
                 .RegisterGenericServices();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
             //I add Swagger so that you can test the FrontEndController that provides the permissions of the current user
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API V1", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API V1", Version = "v1" });
 
                 //see https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml#xml-comments
                 // Set the comments path for the Swagger JSON and UI.
@@ -90,13 +91,12 @@ namespace PermissionAccessControl2
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
 
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
                 app.UseSwagger();
@@ -117,8 +117,11 @@ namespace PermissionAccessControl2
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+
+            app.UseRouting();
+
             app.UseAuthentication();
+            app.UseAuthorization();
 
             //This should come AFTER the app.UseAuthentication() call
             if (Configuration["DemoSetup:UpdateCookieOnChange"] == "True")
@@ -135,11 +138,12 @@ namespace PermissionAccessControl2
                 });
             }
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

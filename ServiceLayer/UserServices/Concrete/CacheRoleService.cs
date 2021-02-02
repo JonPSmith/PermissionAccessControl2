@@ -7,7 +7,6 @@ using DataLayer.ExtraAuthClasses;
 using FeatureAuthorize;
 using PermissionParts;
 using RefreshClaimsParts;
-using ServiceLayer.UserServices.Internal;
 
 namespace ServiceLayer.UserServices.Concrete
 {

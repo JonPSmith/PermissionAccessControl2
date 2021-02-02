@@ -24,10 +24,6 @@ namespace DataLayer.EfCode.Configurations
                 .HasValue<Company>(nameof(Company))
                 .HasValue<SubGroup>(nameof(SubGroup))
                 .HasValue<RetailOutlet>(nameof(RetailOutlet));
-
-            //This is needed in version 2.2 to make the _children collection work, but isn't needed in EF Core 3
-            //see https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes#backing-fields-are-used-by-default
-            modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Field);
         }
 
         public static void ExtraAuthorizeConfig(this ModelBuilder modelBuilder)

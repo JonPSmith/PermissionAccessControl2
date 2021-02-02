@@ -1,14 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DataKeyParts;
 using DataLayer.EfCode;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using PermissionAccessControl2.Data;
-using ServiceLayer.SeedDemo;
+using PermissionAccessControl2.SeedDemo;
 
 namespace PermissionAccessControl2
 {
@@ -16,24 +14,21 @@ namespace PermissionAccessControl2
     {
         public static async Task Main(string[] args)
         {
-            (await BuildWebHostAsync(args)).Run();
+            var host = CreateHostBuilder(args).Build();
+            //This migrates the database and adds any seed data as required
+            await SetupDatabasesAndSeedAsync(host);
+            await host.RunAsync();
         }
 
-        public static async Task<IWebHost> BuildWebHostAsync(string[] args)
-        {
-            var webHost = WebHost.CreateDefaultBuilder(args)
-                .CaptureStartupErrors(true)
-                .UseStartup<Startup>()
-                .Build();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
 
-            //Because I might be using in-memory databases I need to make sure they are created 
-            //before my startup code tries to use them
-            await SetupDatabasesAndSeedAsync(webHost);
-            await webHost.Services.CheckAddSuperAdminAsync();
-            return webHost;
-        }
 
-        private static async Task SetupDatabasesAndSeedAsync(IWebHost webHost)
+        private static async Task SetupDatabasesAndSeedAsync(IHost webHost)
         {
             using (var scope = webHost.Services.CreateScope())
             {

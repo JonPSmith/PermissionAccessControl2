@@ -7,7 +7,7 @@ using DataLayer.EfCode;
 using DataLayer.MultiTenantClasses;
 using Microsoft.EntityFrameworkCore;
 
-namespace ServiceLayer.SeedDemo.Internal
+namespace PermissionAccessControl2.SeedDemo.Internal
 {
     /// <summary>
     /// This adds stock to the shops using the data given by the wwwroot/SeedData/ShopStock.txt file

@@ -12,11 +12,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using ServiceLayer.UserServices.Internal;
+using ServiceLayer.UserServices;
 
 [assembly: InternalsVisibleTo("Test")]
 
-namespace ServiceLayer.SeedDemo.Internal
+namespace PermissionAccessControl2.SeedDemo.Internal
 {
     /// <summary>
     /// This is the code that sets up the demo user, with their roles and data keys.

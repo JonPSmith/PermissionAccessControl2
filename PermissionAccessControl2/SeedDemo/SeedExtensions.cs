@@ -9,11 +9,11 @@ using DataLayer.EfCode;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PermissionAccessControl2.SeedDemo.Internal;
 using PermissionParts;
-using ServiceLayer.SeedDemo.Internal;
-using ServiceLayer.UserServices.Internal;
+using ServiceLayer.UserServices;
 
-namespace ServiceLayer.SeedDemo
+namespace PermissionAccessControl2.SeedDemo
 {
     /// <summary>
     /// This extension adds the demo data to the database. It will work with "real" databases,
@@ -39,7 +39,7 @@ namespace ServiceLayer.SeedDemo
             using (var scope = serviceProvider.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var env = services.GetRequiredService<IHostingEnvironment>();
+                var env = services.GetRequiredService<IWebHostEnvironment>();
 
                 CheckAddCompanies(env, services);
                 CheckAddRoles(env, services);
@@ -51,7 +51,7 @@ namespace ServiceLayer.SeedDemo
             }
         }
 
-        private static void CheckAddCompanies(IHostingEnvironment env, IServiceProvider services)
+        private static void CheckAddCompanies(IWebHostEnvironment env, IServiceProvider services)
         {
             var context = services.GetRequiredService<CompanyDbContext>();
             if (!context.Tenants.IgnoreQueryFilters().Any())
@@ -68,7 +68,7 @@ namespace ServiceLayer.SeedDemo
             }
         }
 
-        private static void CheckAddRoles(IHostingEnvironment env, IServiceProvider services)
+        private static void CheckAddRoles(IWebHostEnvironment env, IServiceProvider services)
         {
             var pathRolesData = Path.GetFullPath(Path.Combine(env.WebRootPath, SeedDataDir, RolesFilename));
             var context = services.GetRequiredService<ExtraAuthorizeDbContext>();

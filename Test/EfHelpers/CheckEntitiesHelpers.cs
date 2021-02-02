@@ -15,7 +15,7 @@ namespace Test.EfHelpers
         {
             foreach (var entityType in entityTypes)
             {
-                if (entityType.QueryFilter == null
+                if (entityType.GetQueryFilter() == null
                     && entityType.BaseType == null //not a TPH subclass
                     && entityType.ClrType.GetCustomAttribute<OwnedAttribute>() == null //not an owned type
                     && entityType.ClrType.GetCustomAttribute<NoQueryFilterNeeded>() == null) //Not marked as global
