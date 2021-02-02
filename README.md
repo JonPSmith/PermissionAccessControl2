@@ -1,6 +1,10 @@
 # PermissionAccessControl2
 
-Welcome to version 2 of the example application that contains my approach to feature and data authorization code. This web site pretends to be a SaaS application which provides stock and sales management to companies with multiple retail outlets.  
+Welcome to version 2 of the example application that contains my approach to feature and data authorization code. This web site pretends to be a SaaS application which provides stock and sales management to companies with multiple retail outlets. 
+
+**NOTE: This version has been updated to NET Core 3.1**  
+*I didn't update to NET 5 because NET Core 3.1 is the long-term support version. The update to NET 5 should be fairly easy (converting from 2.2 to 3.1 was had work!)*
+
 This is open-source application (MIT license).
 
 ## See the articles

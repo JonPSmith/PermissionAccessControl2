@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UserServices\Internal\**" />
+    <EmbeddedResource Remove="UserServices\Internal\**" />
+    <None Remove="UserServices\Internal\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.11" />
     <PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
@@ -16,10 +22,6 @@
     <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\FeatureAuthorize\FeatureAuthorize.csproj" />
     <ProjectReference Include="..\PermissionParts\PermissionParts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UserServices\Internal\" />
   </ItemGroup>
 
 </Project>
