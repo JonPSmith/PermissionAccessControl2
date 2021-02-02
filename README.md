@@ -1,6 +1,9 @@
 # PermissionAccessControl2
 
 Welcome to version 2 of the example application that contains my approach to feature and data authorization code. This web site pretends to be a SaaS application which provides stock and sales management to companies with multiple retail outlets.  
+
+**NOTE: This version is for NET Core 2.2**
+
 This is open-source application (MIT license).
 
 ## See the articles
