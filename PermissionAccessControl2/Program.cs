@@ -49,6 +49,7 @@ namespace PermissionAccessControl2
                     }
 
                     await webHost.Services.CheckSeedDataAndUserAsync();
+                    await webHost.Services.CheckAddSuperAdminAsync();
                 }
             }
         }
