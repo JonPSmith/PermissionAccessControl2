@@ -14,6 +14,11 @@ namespace DataLayer.ExtraAuthClasses
     public class ModulesForUser : IChangeEffectsUser, IAddRemoveEffectsUser
     {
         /// <summary>
+        /// Empty constructor for migration to work.
+        /// </summary>
+        private ModulesForUser() { }
+
+        /// <summary>
         /// This links modules to a user
         /// </summary>
         /// <param name="userId"></param>
