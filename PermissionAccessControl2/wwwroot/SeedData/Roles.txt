@@ -1,6 +1,6 @@
 ﻿Director: EmployeeRead
 AreaManager: StockRead, SalesRead
-SalesAssistant: StockRead, SalesSell
+SalesAssistant: StockRead, SalesRead
 StoreManager: StockRead, StockAddNew, StockRemove, SalesRead, SalesSell, SalesReturn
 UserAdmin: UserRead, UserChange, RoleRead
 CacheRole: Cache1, Cache2

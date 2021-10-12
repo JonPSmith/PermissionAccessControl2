@@ -23,7 +23,7 @@ namespace DataKeyParts
             foreach (var entityEntry in context.ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Added))
             {
-                if (entityEntry.Entity is IShopLevelDataKey hasDataKey)
+                if (entityEntry.Entity is IShopLevelDataKey {DataKey: null} hasDataKey)
                     hasDataKey.SetShopLevelDataKey(accessKey);
             }
         }
