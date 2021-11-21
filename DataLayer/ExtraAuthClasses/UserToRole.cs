@@ -40,6 +40,7 @@ namespace DataLayer.ExtraAuthClasses
 
         public static IStatusGeneric<UserToRole> AddRoleToUser(string userId, string roleName, ExtraAuthorizeDbContext context)
         {
+            if (userId == null) throw new ArgumentNullException(nameof(userId));
             if (roleName == null) throw new ArgumentNullException(nameof(roleName));
 
             var status = new StatusGenericHandler<UserToRole>();
